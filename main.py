@@ -7,7 +7,7 @@ network_number = 5
 net_pool = [Network() for i in range(network_number)]
 
 
-def learning(max_epoch=150000):
+def learning(max_epoch=100000):
 	print('Learning.')
 	init()
 	for epoch in range(max_epoch):

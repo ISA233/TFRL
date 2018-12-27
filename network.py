@@ -28,19 +28,27 @@ def choice(board, probability):
 
 
 class Network:
-	def __init__(self, learning_rate=0.04):
+	def __init__(self, learning_rate=0.02):
 		self.state = tf.placeholder('float', [None, 10])
 
-		layer = tf.layers.dense(
+		layer1 = tf.layers.dense(
 			inputs=self.state,
 			units=50,
-			activation=tf.nn.tanh,
+			activation=tf.nn.relu,
+			kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+			bias_initializer=tf.constant_initializer(0.0)
+		)
+
+		layer2 = tf.layers.dense(
+			inputs=layer1,
+			units=100,
+			activation=tf.nn.relu,
 			kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
 			bias_initializer=tf.constant_initializer(0.0)
 		)
 
 		all_act = tf.layers.dense(
-			inputs=layer,
+			inputs=layer2,
 			units=9,
 			activation=None,
 			kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
@@ -56,7 +64,7 @@ class Network:
 		self.optimizer = tf.train.GradientDescentOptimizer(learning_rate)
 		self.train = self.optimizer.minimize(self.cost)
 
-	def learn_to(self, moves, iam, delay=0.88):
+	def learn_to(self, moves, iam, delay=0.85):
 		print(moves)
 		board = ChessBoard()
 		boards = []
