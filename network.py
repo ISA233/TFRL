@@ -96,7 +96,6 @@ class Network:
 	def play(self, chessboard, player):
 		probability = sess.run(self.probability,
 		                       feed_dict={self.state: [chessboard.to_network_input(player)]})
-		# print(probability)
 		return choice(chessboard.board, probability[0])
 
 	def play_max(self, chessboard, player):
