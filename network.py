@@ -8,21 +8,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 sess = tf.Session()
 
 
-def weight_variable(shape):
-	initial = tf.truncated_normal(shape, mean=0, stddev=0.2)
-	return tf.Variable(initial)
-
-
-def bias_variable(shape):
-	initial = tf.constant(0.0, shape=shape)
-	# initial = tf.random_uniform(shape=shape, minval=-0.3, maxval=0.3)
-	return tf.Variable(initial)
-
-
-def conv2d(MA, MB):
-	return tf.nn.conv2d(MA, MB, strides=[1, 1, 1, 1], padding='SAME')
-
-
 def arg_max(board, probability):
 	board = board.reshape(9)
 	for i in range(9):
@@ -75,21 +60,18 @@ class Network:
 		print(moves)
 		board = ChessBoard()
 		boards = []
-		actions = [to_vector(move) for move in moves[player_01(iam)]] + [to_vector(move) for move in
-		                                                                 moves[player_01(-iam)]]
-		values = [-pow(delay, i) for i in range(len(moves[0]))][::-1] + [pow(delay, i) for i in range(len(moves[0]))][
-		                                                                ::-1]
-		# print(actions)
-		# print('RT:', player_01(-iam))
+		actions0 = [to_vector(move) for move in moves[player_01(iam)]]
+		actions1 = [to_vector(move) for move in moves[player_01(-iam)]]
+		actions = actions0 + actions1
+		values0 = [-pow(delay, i) for i in range(len(moves[0]))][::-1]
+		values1 = [pow(delay, i) for i in range(len(moves[0]))][::-1]
+		values = values0 + values1
 		current_player = 1
 		for move in zip(moves[0], moves[1]):
 			current_player = -current_player
 			boards.append(board.to_network_input(current_player))
 			board.move(move[player_01(current_player)], current_player)
 		boards = boards + boards
-		# print(actions)
-		# print(values)
-		# print(boards)
 		return sess.run(self.train,
 		                feed_dict={self.state: boards, self.action: actions, self.value: values})
 

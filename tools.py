@@ -2,11 +2,13 @@ import numpy as np
 
 
 def player_01(player):
-	return (player + 1) // 2
+	if player == 1:
+		return 1
+	return 0
 
 
-def to_vector(place):
-	v = np.zeros([9])
+def to_vector(place, size=9):
+	v = np.zeros([size])
 	v[place] = 1
 	return v
 

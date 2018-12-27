@@ -20,9 +20,6 @@ def learning(max_epoch=150000):
 		print('player:', _player0, _player1)
 		player0 = net_pool[_player0]
 		player1 = net_pool[_player1]
-		# player0, player1 = net_pool[0 : 2]
-		# if epoch % 2:
-		# 	player0, player1 = player1, player0
 		result = match.match(player0, player1)
 		if result[0] == 1:
 			player0.learn_to(result[1:], iam=-1)
