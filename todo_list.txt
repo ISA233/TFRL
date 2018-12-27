@@ -1,12 +1,10 @@
-gen几万个train网络的instance
-
 研究下怎么保存模型
 
-考虑怎么加速网络
-
 调下模型：
-	加几个全连接层，多几个feature
-	多几层卷积
-	调卷积核
+	加个全连接层
+	lr
+	delay
+	units
+	pool_number
 
 黑白棋，五子棋
