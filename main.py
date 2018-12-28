@@ -1,4 +1,4 @@
-from network import Network, init
+from network import Network
 import match
 import random
 from chess import ChessBoard
@@ -7,9 +7,8 @@ network_number = 3
 net_pool = [Network() for i in range(network_number)]
 
 
-def learning(max_epoch=100000):
+def learning(max_epoch=10000):
 	print('Learning.')
-	init()
 	for epoch in range(max_epoch):
 		print('--------------------------')
 		print('train: ', epoch)

@@ -1,4 +1,4 @@
-from network import Network, init
+from network import Network
 from chess import ChessBoard
 
 
@@ -35,7 +35,6 @@ def match(player0, player1, stdout=0):
 def main():
 	net0 = Network()
 	net1 = Network()
-	init()
 	print(match(net0, net1, 1))
 
 
