@@ -28,7 +28,7 @@ def choice(board, probability, player):
 
 
 class Network:
-	def __init__(self, learning_rate=0.04):
+	def __init__(self, learning_rate=0.05):
 		self.state = tf.placeholder('float', [None, 65])
 
 		layer1 = tf.layers.dense(
@@ -36,7 +36,8 @@ class Network:
 			units=50,
 			activation=tf.nn.relu,
 			kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
-			bias_initializer=tf.constant_initializer(0.0)
+			bias_initializer=tf.constant_initializer(0.0),
+			name='layer1'
 		)
 
 		layer2 = tf.layers.dense(
@@ -44,7 +45,8 @@ class Network:
 			units=100,
 			activation=tf.nn.relu,
 			kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
-			bias_initializer=tf.constant_initializer(0.0)
+			bias_initializer=tf.constant_initializer(0.0),
+			name='layer2'
 		)
 
 		all_act = tf.layers.dense(
@@ -52,7 +54,8 @@ class Network:
 			units=64,
 			activation=None,
 			kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
-			bias_initializer=tf.constant_initializer(0.0)
+			bias_initializer=tf.constant_initializer(0.0),
+			name='map'
 		)
 
 		self.probability = tf.nn.softmax(all_act)
@@ -63,16 +66,17 @@ class Network:
 		                                          reduction_indices=1) * self.value)
 		self.optimizer = tf.train.GradientDescentOptimizer(learning_rate)
 		self.train = self.optimizer.minimize(self.cost)
+		self.saver = tf.train.Saver(max_to_keep=1)  # ======================================
 
-	def learn_to(self, moves, iam, delay=0.98):
+	def learn_to(self, moves, iam, value=1, delay=0.98):
 		# print(moves)
 		board = ChessBoard()
 		boards = []
 		actions0 = [to_vector(move) for move in moves[player_01(iam)] if move != -1]
 		actions1 = [to_vector(move) for move in moves[player_01(-iam)] if move != -1]
 		actions = actions0 + actions1
-		values0 = [-pow(delay, i) for i in range(len(actions0))][::-1]
-		values1 = [pow(delay, i) for i in range(len(actions1))][::-1]
+		values0 = [-pow(delay, i) * value for i in range(len(actions0))][::-1]
+		values1 = [pow(delay, i) * value for i in range(len(actions1))][::-1]
 		values = values0 + values1
 		current_player = 1
 		for move in zip(moves[0], moves[1]):
@@ -82,7 +86,7 @@ class Network:
 			boards.append(board.to_network_input(current_player))
 			board.move(move[player_01(current_player)], current_player)
 		boards = boards + boards
-		print(len(boards), len(actions), len(values))
+		# print(len(boards), len(actions), len(values))
 		return sess.run(self.train,
 		                feed_dict={self.state: boards, self.action: actions, self.value: values})
 
@@ -95,6 +99,9 @@ class Network:
 		probability = sess.run(self.probability,
 		                       feed_dict={self.state: [chessboard.to_network_input(player)]})
 		return arg_max(chessboard, probability[0], player)
+
+	def save(self):
+		return
 
 
 def init():

@@ -147,6 +147,6 @@ if __name__ == '__main__':
 # https://www.jianshu.com/p/e2f62043d02b
 # https://icml.cc/2016/tutorials/deep_rl_tutorial.pdf
 # https://blog.csdn.net/juanjuan1314/article/details/78048065
-# https://blog.csdn.net/songrotek/article/details/51065143
+# http://wiki.jikexueyuan.com/project/tensorflow-zh/tutorials/mnist_beginners.html
 # http://wiki.jikexueyuan.com/project/tensorflow-zh/tutorials/mnist_beginners.html
 # https://www.jianshu.com/p/2ccbab48414b

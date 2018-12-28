@@ -7,7 +7,7 @@ network_number = 3
 net_pool = [Network() for i in range(network_number)]
 
 
-def learning(max_epoch=3000):
+def learning(max_epoch=100000):
 	print('Learning.')
 	init()
 	for epoch in range(max_epoch):
@@ -23,9 +23,9 @@ def learning(max_epoch=3000):
 		result = match.match(player0, player1)
 		print('result:', result[0])
 		if result[0] > 0:
-			player0.learn_to(result[1:], iam=-1)
+			player0.learn_to(result[1:], iam=-1, value=result[0])
 		elif result[0] < 0:
-			player1.learn_to(result[1:], iam=1)
+			player1.learn_to(result[1:], iam=1, value=-result[0])
 
 
 def test():
