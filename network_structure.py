@@ -1,9 +1,10 @@
 import tensorflow as tf
 import numpy as np
+import parameter
 
 
 class NetStructure:
-	def __init__(self, learning_rate=0.03):
+	def __init__(self, learning_rate=parameter.learning_rate):
 		self.name = 'RL_zys'
 		self.state = tf.placeholder('float', [None, 65])
 
