@@ -7,7 +7,7 @@ def player_01(player):
 	return 0
 
 
-def to_vector(place, size=9):
+def to_vector(place, size=64):
 	v = np.zeros([size])
 	v[place] = 1
 	return v

@@ -5,11 +5,17 @@ from chess import ChessBoard
 def match(player0, player1, stdout=0):
 	board = ChessBoard()
 	if stdout:
-		print(board.board)
+		board.out()
 	current_player = 1
 	moves0, moves1 = [], []
-	while board.have_space():
+	while True:
 		current_player = -current_player
+		if not board.drop_list(current_player):
+			if stdout:
+				print(current_player, -1)
+			moves0.append(-1)
+			moves1.append(-1)
+			continue
 		p0 = player0.play(board, current_player)
 		p1 = player1.play(board, current_player)
 		moves0.append(p0)
@@ -18,13 +24,12 @@ def match(player0, player1, stdout=0):
 			move = p0
 		else:
 			move = p1
-		result = board.move(move, current_player)
+		board.move(move, current_player)
 		if stdout:
-			print(move, current_player)
-			print(board.board)
-		if result:
-			return result, moves0, moves1
-	return 0, moves0, moves1
+			print(current_player, move)
+			board.out()
+		if board.is_finish():
+			return board.evaluate(), moves0, moves1
 
 
 def main():

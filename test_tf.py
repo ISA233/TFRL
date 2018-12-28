@@ -47,5 +47,10 @@ import random
 # for p in pool:
 # 	print(p.a)
 
-pro = [0.2, 0, 0.8, 0]
-print(np.random.choice(range(4), p=pro))
+# pro = [0.2, 0, 0.8, 0]
+# print(np.random.choice(range(4), p=pro))
+
+cin = input().split(' ')
+x = int(cin[0])
+y = int(cin[1])
+print(x, y)
