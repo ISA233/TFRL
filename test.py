@@ -46,9 +46,9 @@ def test2(net):
 
 
 def main():
-	net = Network('single_learn0')
+	net = Network('cnn_net0')
 	net.restore()
-	test(net)
+	test2(net)
 
 
 if __name__ == '__main__':

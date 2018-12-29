@@ -1,13 +1,10 @@
 import numpy as np
 
-
-def init_board():
-	board = np.zeros([8, 8])
-	board[3, 3] = 1
-	board[4, 4] = 1
-	board[3, 4] = -1
-	board[4, 3] = -1
-	return board
+init_board = np.zeros([8, 8])
+init_board[3, 3] = 1
+init_board[4, 4] = 1
+init_board[3, 4] = -1
+init_board[4, 3] = -1
 
 
 def out_board(x, y):
@@ -17,13 +14,20 @@ def out_board(x, y):
 
 
 class ChessBoard:
-	def __init__(self, board=init_board()):
+	def __init__(self, board=init_board):
 		self.board = np.array(board, dtype='int')
 		self.xx = [0, 1, 1, 1, 0, -1, -1, -1]
 		self.yy = [-1, -1, 0, 1, 1, 1, 0, -1]
 
 	def to_network_input(self, player):
-		return np.append(self.board.reshape(64), player)
+		network_input = np.zeros([8, 8, 3])
+		dlist_xy = self.drop_list_xy(player)
+		for x in range(8):
+			for y in range(8):
+				network_input[x, y, 0] = self.board[x, y]
+				network_input[x, y, 1] = (x, y) in dlist_xy
+				network_input[x, y, 2] = player
+		return network_input
 
 	def evaluate(self):
 		v0, v1 = 0, 0
@@ -32,7 +36,6 @@ class ChessBoard:
 				v0 += 1
 			if p == 1:
 				v1 += 1
-		# print('value:', v0, v1)
 		return v1 - v0
 
 	def is_finish(self):
@@ -63,7 +66,6 @@ class ChessBoard:
 		if out_board(x, y) or self.board[x, y]:
 			return 0
 		for direct in zip(self.xx, self.yy):
-			# print(direct)
 			if self.check_reverse(x, y, direct, player):
 				return 1
 		return 0
@@ -131,12 +133,6 @@ def main():
 	                  [0, 0, 0, 0, 0, 0, 0, 0],
 	                  [0, 0, 0, 0, 0, 0, 0, 0]])
 	board = ChessBoard(board)
-	board.out()
-	# print(board.evaluate())
-	# print(board.to_network_input())
-	# print(board.could_drop_xy(1, 1, -1))
-	print(board.drop_list_xy(-1))
-	board.move_xy(1, 1, -1)
 	board.out()
 
 

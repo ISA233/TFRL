@@ -4,7 +4,7 @@ import random
 import parameter
 
 network_number = parameter.network_number
-net_pool = [Network('single_learn' + str(i)) for i in range(network_number)]
+net_pool = [Network('cnn_net' + str(i)) for i in range(network_number)]
 
 
 def random_choice_player():
@@ -36,7 +36,6 @@ def learning(max_epoch=parameter.max_epoch):
 			player1.learn_to(result[1:], iam=1, value=-result[0])
 		if epoch % parameter.save_interval == 0:
 			save()
-
 	print('learning end.')
 
 

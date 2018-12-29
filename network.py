@@ -23,35 +23,23 @@ def choice(board, probability, player):
 		if i not in dlist:
 			probability[i] = 0
 	sum_p = np.sum(probability)
+	# print(sum_p)
+	if sum_p < 1e-8:
+		return np.random.choice(dlist)
 	for i in range(64):
 		probability[i] /= sum_p
 	return np.random.choice(range(64), p=probability)
 
 
-# def pretreatment(moves, iam, value, delay):  # double learn
-# 	board = ChessBoard()
-# 	boards = []
-# 	actions0 = [to_vector(move) for move in moves[player_01(iam)] if move != -1]
-# 	actions1 = [to_vector(move) for move in moves[player_01(-iam)] if move != -1]
-# 	actions = actions0 + actions1
-# 	values0 = [-pow(delay, i) * value for i in range(len(actions0))][::-1]
-# 	values1 = [pow(delay, i) * value for i in range(len(actions1))][::-1]
-# 	values = values0 + values1
-# 	current_player = 1
-# 	for move in zip(moves[0], moves[1]):
-# 		current_player = -current_player
-# 		if move[player_01(current_player)] == -1:
-# 			continue
-# 		boards.append(board.to_network_input(current_player))
-# 		board.move(move[player_01(current_player)], current_player)
-# 	boards = boards + boards
-# 	return boards, actions, values
-
-def pretreatment(moves, iam, value, delay):  # single learn
+def pretreatment(moves, iam, value, delay):  # double learn
 	board = ChessBoard()
 	boards = []
-	actions = [to_vector(move) for move in moves[player_01(-iam)] if move != -1]
-	values = [pow(delay, i) * value for i in range(len(actions))][::-1]
+	actions0 = [to_vector(move) for move in moves[player_01(iam)] if move != -1]
+	actions1 = [to_vector(move) for move in moves[player_01(-iam)] if move != -1]
+	actions = actions0 + actions1
+	values0 = [-pow(delay, i) * value for i in range(len(actions0))][::-1]
+	values1 = [pow(delay, i) * value for i in range(len(actions1))][::-1]
+	values = values0 + values1
 	current_player = 1
 	for move in zip(moves[0], moves[1]):
 		current_player = -current_player
@@ -59,7 +47,22 @@ def pretreatment(moves, iam, value, delay):  # single learn
 			continue
 		boards.append(board.to_network_input(current_player))
 		board.move(move[player_01(current_player)], current_player)
+	boards = boards + boards
 	return boards, actions, values
+
+# def pretreatment(moves, iam, value, delay):  # single learn
+# 	board = ChessBoard()
+# 	boards = []
+# 	actions = [to_vector(move) for move in moves[player_01(-iam)] if move != -1]
+# 	values = [pow(delay, i) * value for i in range(len(actions))][::-1]
+# 	current_player = 1
+# 	for move in zip(moves[0], moves[1]):
+# 		current_player = -current_player
+# 		if move[player_01(current_player)] == -1:
+# 			continue
+# 		boards.append(board.to_network_input(current_player))
+# 		board.move(move[player_01(current_player)], current_player)
+# 	return boards, actions, values
 
 
 class Network:
@@ -67,13 +70,10 @@ class Network:
 		self.name = name
 		self.sess = tf.Session()
 		self.sess.run(net.initializer)
-		# print(net.vars)
 		self.saver = tf.train.Saver(net.vars, max_to_keep=1)
 
 	def learn_to(self, moves, iam, value=1, delay=parameter.delay):
-		# print(moves)；
 		boards, actions, values = pretreatment(moves, iam, value, delay)
-		# print(len(boards), len(actions), len(values))
 		return self.sess.run(net.train,
 		                     feed_dict={net.state: boards, net.action: actions, net.value: values})
 
@@ -87,6 +87,7 @@ class Network:
 			for j in range(8):
 				print('%.2f' % (probability[i, j] * 10), end='  ')
 			print()
+		print('--------------------------------')
 
 	def play(self, chessboard, player):
 		probability = self.get_probability(chessboard, player)
