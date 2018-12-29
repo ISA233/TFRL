@@ -1,5 +1,5 @@
 from network import Network
-import random
+import numpy as np
 from chess import ChessBoard
 
 
@@ -18,6 +18,7 @@ def test(player):
 				x, y = int(cin[0]), int(cin[1])
 				board.move_xy(x, y, current_player)
 			else:
+				player.get_probability_out(board, current_player)
 				place = player.play_max(board, current_player)
 				print('AI:', place)
 				board.move(place, current_player)
@@ -29,9 +30,24 @@ def test(player):
 				break
 
 
+def test2(net):
+	_, x, o = 0, -1, 1
+	board = np.array([[_, o, o, o, o, o, o, _],
+	                  [x, o, o, x, o, o, _, x],
+	                  [x, x, o, o, x, o, o, o],
+	                  [x, x, o, o, x, o, o, o],
+	                  [x, x, o, o, x, o, o, o],
+	                  [x, o, o, o, o, o, o, o],
+	                  [x, _, o, o, x, o, _, o],
+	                  [x, x, o, o, o, o, _, _]])
+	board = ChessBoard(board)
+	# board = ChessBoard()
+	net.get_probability_out(board, -1)
+
+
 def main():
-	net = Network()
-	net.restore('model_save/net0')
+	net = Network('single_learn0')
+	net.restore()
 	test(net)
 
 

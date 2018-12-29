@@ -3,30 +3,10 @@ import numpy as np
 import parameter
 
 
-def weight_variable(shape):
-	initial = tf.truncated_normal(shape, mean=0, stddev=0.2)
-	return tf.Variable(initial)
-
-
-def bias_variable(shape):
-	initial = tf.constant(0.0, shape=shape)
-	# initial = tf.random_uniform(shape=shape, minval=-0.3, maxval=0.3)
-	return tf.Variable(initial)
-
-
 class NetStructure:
 	def __init__(self, learning_rate=parameter.learning_rate):
 		self.name = 'RL_zys'
 		self.state = tf.placeholder('float', [None, 65])
-
-		# W_conv1 = weight_variable([5, 5, 2, 16])
-		# b_conv1 = bias_variable([16])
-		# W_conv2 = weight_variable([2, 2, 16, 16])
-		# b_conv2 = bias_variable([16])
-		# W_conv3 = weight_variable([2, 2, 16, 16])
-		# b_conv3 = bias_variable([16])
-		# W_conv4 = weight_variable([1, 1, 16, 1])
-		# b_conv4 = bias_variable([1])
 
 		layer1 = tf.layers.dense(
 			inputs=self.state,
