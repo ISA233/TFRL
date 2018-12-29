@@ -4,7 +4,7 @@ import random
 import parameter
 
 network_number = parameter.network_number
-net_pool = [Network('cnn_net' + str(i)) for i in range(network_number)]
+net_pool = [Network('cnn_fc_net' + str(i)) for i in range(network_number)]
 
 
 def random_choice_player():

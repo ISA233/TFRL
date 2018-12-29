@@ -46,7 +46,7 @@ def test2(net):
 
 
 def main():
-	net = Network('cnn_net0')
+	net = Network('cnn_fc_net0')
 	net.restore()
 	test2(net)
 
