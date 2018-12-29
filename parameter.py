@@ -4,6 +4,6 @@ max_epoch = 1000000
 
 delay = 1
 
-learning_rate = 0.0015
+learning_rate = 0.003
 
 save_interval = 250
