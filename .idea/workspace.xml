@@ -4,72 +4,13 @@
     <list default="true" id="4258d4fb-2682-4999-9b69-09e8d3af271d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chess.py" beforeDir="false" afterPath="$PROJECT_DIR$/chess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net0/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net0/cnn_fc_net0.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net0/cnn_fc_net0.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net0/cnn_fc_net0.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net1/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net1/cnn_fc_net1.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net1/cnn_fc_net1.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net1/cnn_fc_net1.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net2/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net2/cnn_fc_net2.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net2/cnn_fc_net2.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_fc_net2/cnn_fc_net2.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net0/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net0/cnn_net0.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net0/cnn_net0.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net0/cnn_net0.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net1/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net1/cnn_net1.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net1/cnn_net1.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net1/cnn_net1.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net2/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net2/cnn_net2.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net2/cnn_net2.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net2/cnn_net2.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net3/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net3/cnn_net3.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net3/cnn_net3.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/cnn_net3/cnn_net3.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/net0.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/net0.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/net0.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/net1.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/net1.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/net1.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/net2.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/net2.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/net2.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx0/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx0/netsx0.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx0/netsx0.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx0/netsx0.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx1/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx1/netsx1.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx1/netsx1.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx1/netsx1.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx2/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx2/netsx2.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx2/netsx2.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/netsx2/netsx2.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn0/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn0/single_learn0.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn0/single_learn0.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn0/single_learn0.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn1/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn1/single_learn1.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn1/single_learn1.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn1/single_learn1.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn2/checkpoint" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn2/single_learn2.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn2/single_learn2.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_save/single_learn2/single_learn2.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/match.py" beforeDir="false" afterPath="$PROJECT_DIR$/match.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/network.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/network_structure.py" beforeDir="false" afterPath="$PROJECT_DIR$/network_structure.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parameter.py" beforeDir="false" afterPath="$PROJECT_DIR$/parameter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_tf/test_np.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_tf/test_np.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -83,8 +24,8 @@
       <file leaf-file-name="train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="11" column="56" lean-forward="true" selection-start-line="11" selection-start-column="56" selection-end-line="11" selection-end-column="56" />
+            <state relative-caret-position="522">
+              <caret line="29" column="65" selection-start-line="29" selection-start-column="65" selection-end-line="29" selection-end-column="65" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
@@ -92,11 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="test.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="558">
-              <caret line="32" column="15" lean-forward="true" selection-start-line="32" selection-start-column="15" selection-end-line="32" selection-end-column="15" />
+            <state relative-caret-position="504">
+              <caret line="50" column="9" selection-start-line="50" selection-start-column="9" selection-end-line="50" selection-end-column="9" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
@@ -104,11 +45,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="chess.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/chess.py">
+      <file leaf-file-name="parameter.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/parameter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="32" column="57" lean-forward="true" selection-start-line="32" selection-start-column="57" selection-end-line="32" selection-end-column="57" />
+            <state relative-caret-position="108">
+              <caret line="6" column="21" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -117,9 +58,7 @@
         <entry file="file://$PROJECT_DIR$/match.py">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <folding>
-                <element signature="e#0#27#0" expanded="true" />
-              </folding>
+              <caret column="27" selection-start-column="27" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -127,8 +66,8 @@
       <file leaf-file-name="network.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/network.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="47" column="61" lean-forward="true" selection-start-line="47" selection-start-column="61" selection-end-line="47" selection-end-column="61" />
+            <state relative-caret-position="-18">
+              <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="27" selection-end-column="15" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -139,8 +78,8 @@
       <file leaf-file-name="network_structure.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/network_structure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1458">
-              <caret line="81" lean-forward="true" selection-start-line="81" selection-end-line="81" />
+            <state relative-caret-position="72">
+              <caret line="52" column="21" selection-start-line="52" selection-start-column="21" selection-end-line="52" selection-end-column="21" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -148,11 +87,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="parameter.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/parameter.py">
+      <file leaf-file-name="test_np.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test_tf/test_np.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="6" column="20" selection-start-line="6" selection-start-column="20" selection-end-line="6" selection-end-column="20" />
+            <state relative-caret-position="216">
+              <caret line="12" column="31" selection-start-line="12" selection-start-column="31" selection-end-line="12" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="chess.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/chess.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-414">
+              <caret line="7" selection-start-line="7" selection-end-line="7" />
             </state>
           </provider>
         </entry>
@@ -194,28 +145,30 @@
         <option value="$PROJECT_DIR$/../Lapse/game.py" />
         <option value="$PROJECT_DIR$/../Lapse/agents.py" />
         <option value="$PROJECT_DIR$/../Lapse/agent0.py" />
-        <option value="$PROJECT_DIR$/tools.py" />
         <option value="$PROJECT_DIR$/agent.py" />
         <option value="$PROJECT_DIR$/test_tf.py" />
-        <option value="$PROJECT_DIR$/match.py" />
         <option value="$PROJECT_DIR$/contest.py" />
         <option value="$PROJECT_DIR$/../TFRL-1dd2d97866b9bdd63ae5f79ad179eea7ba8413f3/network.py" />
         <option value="$PROJECT_DIR$/../TFRL_1dd2/main.py" />
         <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/no_use_now/0000.py" />
         <option value="$PROJECT_DIR$/test_tf/wright.py" />
-        <option value="$PROJECT_DIR$/train.py" />
-        <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/network.py" />
+        <option value="$PROJECT_DIR$/tools.py" />
+        <option value="$PROJECT_DIR$/match.py" />
+        <option value="$PROJECT_DIR$/test_tf/test_queue.py" />
         <option value="$PROJECT_DIR$/chess.py" />
-        <option value="$PROJECT_DIR$/network_structure.py" />
+        <option value="$PROJECT_DIR$/test_tf/test_np.py" />
+        <option value="$PROJECT_DIR$/train.py" />
         <option value="$PROJECT_DIR$/parameter.py" />
+        <option value="$PROJECT_DIR$/network.py" />
+        <option value="$PROJECT_DIR$/network_structure.py" />
+        <option value="$PROJECT_DIR$/test.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="227" />
-    <option name="y" value="182" />
+    <option name="x" value="402" />
+    <option name="y" value="112" />
     <option name="width" value="1605" />
     <option name="height" value="880" />
   </component>
@@ -243,6 +196,24 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.test">
+    <configuration name="network" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="TFRL" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/network.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <configuration name="network_structure" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="TFRL" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -256,24 +227,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/network_structure.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
-    <configuration name="test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="TFRL" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../TFRL2" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../TFRL2/test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -297,6 +250,24 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
+    <configuration name="test_np" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="TFRL" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test_tf" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_tf/test_np.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <configuration name="train" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="TFRL" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -315,38 +286,20 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <configuration name="wright" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="TFRL" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test_tf" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_tf/wright.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
     <list>
       <item itemvalue="Python.train" />
-      <item itemvalue="Python.test" />
-      <item itemvalue="Python.wright" />
-      <item itemvalue="Python.test (1)" />
       <item itemvalue="Python.network_structure" />
+      <item itemvalue="Python.test_np" />
+      <item itemvalue="Python.network" />
+      <item itemvalue="Python.test" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.test" />
         <item itemvalue="Python.train" />
+        <item itemvalue="Python.network" />
         <item itemvalue="Python.network_structure" />
-        <item itemvalue="Python.test (1)" />
-        <item itemvalue="Python.wright" />
+        <item itemvalue="Python.test_np" />
       </list>
     </recent_temporary>
   </component>
@@ -364,18 +317,18 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="182" y="146" width="1284" height="704" extended-state="0" />
+    <frame x="157" y="112" width="1284" height="704" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.16797642" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.32892805" />
-      <window_info anchor="bottom" x="81" y="157" width="837" height="633" id="Run" order="2" type="WINDOWED" weight="0.23291492" />
+      <window_info anchor="bottom" x="652" y="62" width="854" height="633" id="Run" order="2" type="WINDOWED" weight="0.23291492" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32991204" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24949698" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.398827" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3983051" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -395,27 +348,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/match.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="16" column="32" selection-start-line="16" selection-start-column="32" selection-end-line="16" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../Lapse/game.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="18" lean-forward="true" selection-start-column="18" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../Lapse/agents.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="13" selection-start-column="13" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main.py" />
     <entry file="file://$PROJECT_DIR$/match.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -497,13 +429,6 @@
     <entry file="file://$PROJECT_DIR$/network_save/0000.py" />
     <entry file="file://$PROJECT_DIR$/agent.py" />
     <entry file="file://$PROJECT_DIR$/test_tf.py" />
-    <entry file="file://$PROJECT_DIR$/tools.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="21" selection-start-line="21" selection-end-line="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../TFRL-1dd2d97866b9bdd63ae5f79ad179eea7ba8413f3/match.py" />
     <entry file="file://$PROJECT_DIR$/../TFRL-1dd2d97866b9bdd63ae5f79ad179eea7ba8413f3/main.py" />
     <entry file="file://$PROJECT_DIR$/../TFRL-1dd2d97866b9bdd63ae5f79ad179eea7ba8413f3/network.py" />
@@ -591,10 +516,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tools.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_tf/test_queue.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="17" column="16" lean-forward="true" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/tensorflow/python/ops/init_ops.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="11160">
+          <caret line="636" selection-start-line="636" selection-end-line="636" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/network.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="47" column="61" lean-forward="true" selection-start-line="47" selection-start-column="61" selection-end-line="47" selection-end-column="61" />
+        <state relative-caret-position="-18">
+          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="27" selection-end-column="15" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -604,26 +550,21 @@
     <entry file="file://$PROJECT_DIR$/match.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <folding>
-            <element signature="e#0#27#0" expanded="true" />
-          </folding>
+          <caret column="27" selection-start-column="27" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/parameter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="21" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="56" lean-forward="true" selection-start-line="11" selection-start-column="56" selection-end-line="11" selection-end-column="56" />
-          <folding>
-            <element signature="e#0#27#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="32" column="15" lean-forward="true" selection-start-line="32" selection-start-column="15" selection-end-line="32" selection-end-column="15" />
+        <state relative-caret-position="522">
+          <caret line="29" column="65" selection-start-line="29" selection-start-column="65" selection-end-line="29" selection-end-column="65" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
           </folding>
@@ -632,25 +573,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/chess.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="32" column="57" lean-forward="true" selection-start-line="32" selection-start-column="57" selection-end-line="32" selection-end-column="57" />
+        <state relative-caret-position="-414">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/network_structure.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1458">
-          <caret line="81" lean-forward="true" selection-start-line="81" selection-end-line="81" />
+        <state relative-caret-position="72">
+          <caret line="52" column="21" selection-start-line="52" selection-start-column="21" selection-end-line="52" selection-end-column="21" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/parameter.py">
+    <entry file="file://$PROJECT_DIR$/test_tf/test_np.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="20" selection-start-line="6" selection-start-column="20" selection-end-line="6" selection-end-column="20" />
+        <state relative-caret-position="216">
+          <caret line="12" column="31" selection-start-line="12" selection-start-column="31" selection-end-line="12" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="50" column="9" selection-start-line="50" selection-start-column="9" selection-end-line="50" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#27#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

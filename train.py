@@ -1,41 +1,42 @@
 from network import Network
+from tools import porn
 import match
 import random
 import parameter
 
 network_number = parameter.network_number
-net_pool = [Network('cnn_fc_net' + str(i)) for i in range(network_number)]
-
-
-def random_choice_player():
-	_player0 = random.randint(1, network_number) - 1
-	_player1 = random.randint(1, network_number - 1) - 1
-	if _player1 >= _player0:
-		_player1 += 1
-	print('player:', _player0, _player1)
-	return net_pool[_player0], net_pool[_player1]
-
-
-def save():
-	for i in range(network_number):
-		net_pool[i].save()
-	print('model SAVED.')
+network_name = 'cnn_fc_net'
 
 
 def learning(max_epoch=parameter.max_epoch):
 	print('Learning.')
+	net_pool = [Network(network_name + str(i)) for i in range(network_number)]
+	new_player_id = network_number - 1
 	for epoch in range(max_epoch):
-		print('--------------------------')
-		print('train: ', epoch)
-		player0, player1 = random_choice_player()
-		result = match.match(player0, player1)
-		print('result:', result[0])
-		if result[0] > 0:
-			player0.learn_to(result[1:], iam=-1, value=result[0])
-		elif result[0] < 0:
-			player1.learn_to(result[1:], iam=1, value=-result[0])
-		if epoch % parameter.save_interval == 0:
-			save()
+		print('----------------------------')
+		new_player_id = (new_player_id + 1) % (network_number + 1)
+		new_player = Network(network_name + str(new_player_id))
+		print('train', epoch, new_player_id, parameter.learning_rate)
+		history = [0] * 250
+		cnt = 0
+		while True:
+			cnt += 1
+			opponent = random.choice(net_pool)
+			xo = (random.randint(0, 1) * 2) - 1
+			if xo == -1:
+				result, moves = match.match(new_player, opponent)
+				result = -porn(result)
+			else:
+				result, moves = match.match(opponent, new_player)
+				result = porn(result)
+			new_player.learn_to(moves, iam=xo, value=result)
+			history = history[1:] + [result]
+			p = history.count(1) / 250
+			print(cnt, ':', p)
+			if p > 0.62:
+				break
+		net_pool = net_pool[1:] + [new_player]
+		new_player.save()
 	print('learning end.')
 
 

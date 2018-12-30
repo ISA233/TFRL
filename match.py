@@ -7,29 +7,25 @@ def match(player0, player1, stdout=0):
 	if stdout:
 		board.out()
 	current_player = 1
-	moves0, moves1 = [], []
+	moves = []
 	while True:
 		current_player = -current_player
 		if not board.drop_list(current_player):
 			if stdout:
 				print(current_player, -1)
-			moves0.append(-1)
-			moves1.append(-1)
+			moves.append(-1)
 			continue
-		p0 = player0.play(board, current_player)
-		p1 = player1.play(board, current_player)
-		moves0.append(p0)
-		moves1.append(p1)
 		if current_player == -1:
-			move = p0
+			move = player0.play(board, current_player)
 		else:
-			move = p1
+			move = player1.play(board, current_player)
+		moves.append(move)
 		board.move(move, current_player)
 		if stdout:
 			print(current_player, move)
 			board.out()
 		if board.is_finish():
-			return board.evaluate(), moves0, moves1
+			return board.evaluate(), moves
 
 
 def main():

@@ -1,4 +1,5 @@
 import tensorflow as tf
+from chess import ChessBoard
 import numpy as np
 import parameter
 
@@ -28,7 +29,7 @@ class NetStructure:
 			b_conv2 = bias_variable([32])
 			W_conv3 = weight_variable([3, 3, 32, 32])
 			b_conv3 = bias_variable([32])
-			W_conv4 = weight_variable([1, 1, 3, 1])
+			W_conv4 = weight_variable([1, 1, 32, 1])
 			b_conv4 = bias_variable([1])
 
 		h_conv1 = tf.nn.relu(conv2d(self.state, W_conv1) + b_conv1)
@@ -36,7 +37,7 @@ class NetStructure:
 		h_conv3 = tf.nn.relu(conv2d(h_conv2, W_conv3) + b_conv3)
 		h_conv4 = tf.nn.relu(conv2d(h_conv3, W_conv4) + b_conv4)
 
-		feature = tf.reshape(h_conv4, [-1, 192])
+		feature = tf.reshape(h_conv4, [-1, 64])
 
 		layer = tf.layers.dense(
 			inputs=feature,
@@ -60,10 +61,10 @@ class NetStructure:
 
 		self.action = tf.placeholder('float', [None, 64])
 		self.value = tf.placeholder('float', [None])
+		# self.cost = tf.reduce_mean(
+		# 	-tf.reduce_sum(self.action * tf.log(self.probability), reduction_indices=1) * self.value)
 		self.cost = tf.reduce_mean(
 			tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.feature_map, labels=self.action) * self.value)
-		# self.cost = tf.reduce_mean(-tf.reduce_sum(self.action * tf.log(self.probability),
-		#                                           reduction_indices=1) * self.value)
 		self.optimizer = tf.train.GradientDescentOptimizer(learning_rate)
 		self.train = self.optimizer.minimize(self.cost)
 		self.vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=self.name)
@@ -78,7 +79,8 @@ net = NetStructure()
 def main():
 	sess = tf.Session()
 	sess.run(net.initializer)
-	print(sess.run(net.probability, feed_dict={net.state: [np.zeros([8, 8, 3])]}))
+	board = ChessBoard()
+	print(sess.run(net.probability, feed_dict={net.state: [board.to_network_input(-1)]}))
 
 
 if __name__ == '__main__':

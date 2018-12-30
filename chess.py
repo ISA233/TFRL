@@ -27,11 +27,6 @@ class ChessBoard:
 				network_input[x, y, 0] = self.board[x, y]
 				network_input[x, y, 1] = (x, y) in dlist_xy
 				network_input[x, y, 2] = player
-		# network_input = np.zeros([8, 8, 2])
-		# for x in range(8):
-		# 	for y in range(8):
-		# 		network_input[x, y, 0] = self.board[x, y]
-		# 		network_input[x, y, 1] = player
 		return network_input
 
 	def evaluate(self):

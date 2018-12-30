@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 import parameter
 from network_structure import net
-from tools import player_01, to_vector
+from tools import to_vector
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -31,38 +31,24 @@ def choice(board, probability, player):
 	return np.random.choice(range(64), p=probability)
 
 
-def pretreatment(moves, iam, value, delay):  # double learn
+def pretreatment(moves, iam, value, delay):  # single learn
 	board = ChessBoard()
-	boards = []
-	actions0 = [to_vector(move) for move in moves[player_01(iam)] if move != -1]
-	actions1 = [to_vector(move) for move in moves[player_01(-iam)] if move != -1]
-	actions = actions0 + actions1
-	values0 = [-pow(delay, i) * value for i in range(len(actions0))][::-1]
-	values1 = [pow(delay, i) * value for i in range(len(actions1))][::-1]
-	values = values0 + values1
+	boards, actions, values = [], [], []
 	current_player = 1
-	for move in zip(moves[0], moves[1]):
+	for move in moves:
 		current_player = -current_player
-		if move[player_01(current_player)] == -1:
+		if move == -1:
 			continue
-		boards.append(board.to_network_input(current_player))
-		board.move(move[player_01(current_player)], current_player)
-	boards = boards + boards
+		if current_player == iam:
+			boards.append(board.to_network_input(current_player))
+			actions.append(to_vector(move))
+			if not values:
+				values.append(value)
+			else:
+				values.append(values[-1] * delay)
+		board.move(move, current_player)
+	values = values[::-1]
 	return boards, actions, values
-
-# def pretreatment(moves, iam, value, delay):  # single learn
-# 	board = ChessBoard()
-# 	boards = []
-# 	actions = [to_vector(move) for move in moves[player_01(-iam)] if move != -1]
-# 	values = [pow(delay, i) * value for i in range(len(actions))][::-1]
-# 	current_player = 1
-# 	for move in zip(moves[0], moves[1]):
-# 		current_player = -current_player
-# 		if move[player_01(current_player)] == -1:
-# 			continue
-# 		boards.append(board.to_network_input(current_player))
-# 		board.move(move[player_01(current_player)], current_player)
-# 	return boards, actions, values
 
 
 class Network:
@@ -72,10 +58,16 @@ class Network:
 		self.sess.run(net.initializer)
 		self.saver = tf.train.Saver(net.vars, max_to_keep=1)
 
+	# def __del__(self):
+	# 	print('del', self.name)
+
+	def train(self, boards, actions, values):
+		return self.sess.run(net.train, feed_dict={net.state: boards, net.action: actions, net.value: values})
+
 	def learn_to(self, moves, iam, value=1, delay=parameter.delay):
 		boards, actions, values = pretreatment(moves, iam, value, delay)
-		return self.sess.run(net.train,
-		                     feed_dict={net.state: boards, net.action: actions, net.value: values})
+		# print(len(boards), len(actions), len(values))
+		return self.train(boards, actions, values)
 
 	def get_probability(self, chessboard, player):
 		return self.sess.run(net.probability, feed_dict={net.state: [chessboard.to_network_input(player)]})
@@ -117,7 +109,8 @@ def main():
 	                  [0, 0, 0, 0, 0, 0, 0, 0]])
 	board = ChessBoard(board)
 	net0 = Network()
-	print(net0.play(board, -1))
+	net0.get_probability_out(board, -1)
+	# print(net0.play(board, -1))
 
 
 if __name__ == '__main__':
