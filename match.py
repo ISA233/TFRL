@@ -1,5 +1,5 @@
 from network import Network
-from chess import ChessBoard
+from chess.chess import ChessBoard
 
 
 def match(player0, player1, stdout=0):

@@ -3,6 +3,7 @@ from tools import porn
 import match
 import random
 import parameter
+import profile
 
 network_number = parameter.network_number
 network_name = 'cnn_fc_net'
@@ -21,6 +22,8 @@ def learning(max_epoch=parameter.max_epoch):
 		cnt = 0
 		while True:
 			cnt += 1
+			if cnt >= 500:
+				break
 			opponent = random.choice(net_pool)
 			xo = (random.randint(0, 1) * 2) - 1
 			if xo == -1:
@@ -37,12 +40,13 @@ def learning(max_epoch=parameter.max_epoch):
 				break
 		net_pool = net_pool[1:] + [new_player]
 		new_player.save()
+		break
 	print('learning end.')
 
 
 def main():
 	# import profile
-	# profile.run('learning()')
+	# profile.run('learning()', sort=1)
 	learning()
 
 
