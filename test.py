@@ -1,6 +1,6 @@
 from network import Network
 import numpy as np
-from chess import ChessBoard
+from chess.chess import ChessBoard
 
 
 def test(player):
