@@ -10,7 +10,7 @@ def match(player0, player1, stdout=0):
 	moves = []
 	while True:
 		current_player = -current_player
-		if not board.drop_list(current_player):
+		if not board.could_drop_by(current_player):
 			if stdout:
 				print(current_player, -1)
 			moves.append(-1)

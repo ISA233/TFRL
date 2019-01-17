@@ -32,21 +32,21 @@ def test(player):
 
 def test2(net):
 	_, x, o = 0, -1, 1
-	# board = np.array([[_, o, o, o, o, o, o, _],
-	#                   [x, o, o, x, o, o, _, x],
-	#                   [x, x, o, o, x, o, o, o],
-	#                   [x, x, o, o, x, o, o, o],
-	#                   [x, x, o, o, x, o, o, o],
-	#                   [x, o, o, o, o, o, o, o],
-	#                   [x, _, o, o, x, o, _, o],
-	#                   [x, x, o, o, o, o, _, _]])
-	# board = ChessBoard(board)
-	board = ChessBoard()
+	board = np.array([[_, o, o, o, o, o, o, _],
+	                  [x, o, o, x, o, o, _, x],
+	                  [x, x, o, o, x, o, o, o],
+	                  [x, x, o, o, x, o, o, o],
+	                  [x, x, o, o, x, o, o, o],
+	                  [x, o, o, o, o, o, o, o],
+	                  [x, _, o, o, x, o, _, o],
+	                  [x, x, o, o, o, o, _, _]])
+	board = ChessBoard(board)
+	# board = ChessBoard()
 	net.get_probability_out(board, -1)
 
 
 def main():
-	net = Network('cnn_fc_net3')
+	net = Network('cnn_fc_net0')
 	net.restore()
 	test2(net)
 

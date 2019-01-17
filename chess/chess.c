@@ -953,19 +953,16 @@ struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
 
-/* "chess.pyx":19
+/* "chess.pyx":23
  * 
  * 
  * cdef class ChessBoard:             # <<<<<<<<<<<<<<
- * 	cdef int n
- * 	cdef int[:] xx, yy
+ * 	cdef int[:, :] board
+ * 	def __init__(self, int[:, :] _board=init_board):
  */
 struct __pyx_obj_5chess_ChessBoard {
   PyObject_HEAD
   struct __pyx_vtabstruct_5chess_ChessBoard *__pyx_vtab;
-  int n;
-  __Pyx_memviewslice xx;
-  __Pyx_memviewslice yy;
   __Pyx_memviewslice board;
 };
 
@@ -1048,12 +1045,12 @@ struct __pyx_memoryviewslice_obj {
 
 
 
-/* "chess.pyx":19
+/* "chess.pyx":23
  * 
  * 
  * cdef class ChessBoard:             # <<<<<<<<<<<<<<
- * 	cdef int n
- * 	cdef int[:] xx, yy
+ * 	cdef int[:, :] board
+ * 	def __init__(self, int[:, :] _board=init_board):
  */
 
 struct __pyx_vtabstruct_5chess_ChessBoard {
@@ -1063,10 +1060,12 @@ struct __pyx_vtabstruct_5chess_ChessBoard {
   int (*check_reverse)(struct __pyx_obj_5chess_ChessBoard *, int, int, int, int, int, int __pyx_skip_dispatch);
   int (*could_drop_xy)(struct __pyx_obj_5chess_ChessBoard *, int, int, int, int __pyx_skip_dispatch);
   int (*could_drop)(struct __pyx_obj_5chess_ChessBoard *, int, int, int __pyx_skip_dispatch);
+  int (*could_drop_by)(struct __pyx_obj_5chess_ChessBoard *, int, int __pyx_skip_dispatch);
   int (*move_xy)(struct __pyx_obj_5chess_ChessBoard *, int, int, int, int __pyx_skip_dispatch);
   int (*move)(struct __pyx_obj_5chess_ChessBoard *, int, int, int __pyx_skip_dispatch);
   void (*out)(struct __pyx_obj_5chess_ChessBoard *, int __pyx_skip_dispatch);
   int (*have_space)(struct __pyx_obj_5chess_ChessBoard *, int __pyx_skip_dispatch);
+  struct __pyx_obj_5chess_ChessBoard *(*clone)(struct __pyx_obj_5chess_ChessBoard *, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_5chess_ChessBoard *__pyx_vtabptr_5chess_ChessBoard;
 
@@ -1351,10 +1350,17 @@ static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int full_traceback, int nogil);
 
 /* None.proto */
-static CYTHON_INLINE long __Pyx_div_long(long, long);
+static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname);
 
 /* None.proto */
-static CYTHON_INLINE long __Pyx_mod_long(long, long);
+static CYTHON_INLINE int __Pyx_div_int(int, int);
+
+/* UnaryNegOverflows.proto */
+#define UNARY_NEG_WOULD_OVERFLOW(x)\
+        (((x) < 0) & ((unsigned long)(x) == 0-(unsigned long)(x)))
+
+/* None.proto */
+static CYTHON_INLINE int __Pyx_mod_int(int, int);
 
 /* ListAppend.proto */
 #if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
@@ -1372,6 +1378,15 @@ static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
 #else
 #define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
 #endif
+
+/* None.proto */
+static CYTHON_INLINE long __Pyx_div_long(long, long);
+
+/* None.proto */
+static CYTHON_INLINE long __Pyx_mod_long(long, long);
+
+/* ExtTypeTest.proto */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
 
 /* PyErrExceptionMatches.proto */
 #if CYTHON_FAST_THREAD_STATE
@@ -1446,10 +1461,6 @@ static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int 
 /* None.proto */
 static CYTHON_INLINE Py_ssize_t __Pyx_div_Py_ssize_t(Py_ssize_t, Py_ssize_t);
 
-/* UnaryNegOverflows.proto */
-#define UNARY_NEG_WOULD_OVERFLOW(x)\
-        (((x) < 0) & ((unsigned long)(x) == 0-(unsigned long)(x)))
-
 static CYTHON_UNUSED int __pyx_array_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /*proto*/
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *); /*proto*/
 /* ObjectGetItem.proto */
@@ -1487,9 +1498,6 @@ static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index);
 
 /* RaiseNoneIterError.proto */
 static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void);
-
-/* ExtTypeTest.proto */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
 
 /* GetTopmostException.proto */
 #if CYTHON_USE_EXC_INFO_STACK
@@ -1574,9 +1582,6 @@ static CYTHON_INLINE int __Pyx_PyList_Extend(PyObject* L, PyObject* v) {
     return PyList_SetSlice(L, PY_SSIZE_T_MAX, PY_SSIZE_T_MAX, v);
 #endif
 }
-
-/* None.proto */
-static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname);
 
 /* PyObject_GenericGetAttrNoDict.proto */
 #if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
@@ -1691,12 +1696,6 @@ static int __Pyx_ValidateAndInit_memviewslice(
 /* ObjectToMemviewSlice.proto */
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_int(PyObject *, int writable_flag);
 
-/* ObjectToMemviewSlice.proto */
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyObject *, int writable_flag);
-
-/* None.proto */
-static CYTHON_INLINE long __Pyx_pow_long(long, long);
-
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
@@ -1713,6 +1712,18 @@ static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 
+/* CopyContentsUtility.proto */
+#define __pyx_memoryview_copy_slice_d_dc_int_c(slice)\
+        __pyx_memoryview_copy_new_contig(&slice, "c", 2,\
+                                         sizeof(int), (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT),\
+                                         0)
+
+/* CopyContentsUtility.proto */
+#define __pyx_memoryview_copy_slice_dcd__int_f(slice)\
+        __pyx_memoryview_copy_new_contig(&slice, "fortran", 2,\
+                                         sizeof(int), (PyBUF_F_CONTIGUOUS | PyBUF_FORMAT),\
+                                         0)
+
 /* CIntFromPy.proto */
 static CYTHON_INLINE char __Pyx_PyInt_As_char(PyObject *);
 
@@ -1721,6 +1732,9 @@ static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsdsds
 
 /* CheckBinaryVersion.proto */
 static int __Pyx_check_binary_version(void);
+
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyObject *, int writable_flag);
 
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
@@ -1731,10 +1745,12 @@ static int __pyx_f_5chess_10ChessBoard_is_finish(struct __pyx_obj_5chess_ChessBo
 static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_x, int __pyx_v_y, int __pyx_v_directx, int __pyx_v_directy, int __pyx_v_player, int __pyx_skip_dispatch); /* proto*/
 static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_x, int __pyx_v_y, int __pyx_v_player, int __pyx_skip_dispatch); /* proto*/
 static int __pyx_f_5chess_10ChessBoard_could_drop(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_p, int __pyx_v_player, int __pyx_skip_dispatch); /* proto*/
+static int __pyx_f_5chess_10ChessBoard_could_drop_by(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player, int __pyx_skip_dispatch); /* proto*/
 static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_x, int __pyx_v_y, int __pyx_v_player, int __pyx_skip_dispatch); /* proto*/
 static int __pyx_f_5chess_10ChessBoard_move(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_p, int __pyx_v_player, int __pyx_skip_dispatch); /* proto*/
 static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
 static int __pyx_f_5chess_10ChessBoard_have_space(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
+static struct __pyx_obj_5chess_ChessBoard *__pyx_f_5chess_10ChessBoard_clone(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self); /* proto*/
 static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index); /* proto*/
 static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_obj); /* proto*/
@@ -1753,6 +1769,9 @@ static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
 static PyTypeObject *__pyx_memoryviewslice_type = 0;
 static __Pyx_memviewslice __pyx_v_5chess_init_board = { 0, 0, { 0 }, { 0 }, { 0 } };
+static int __pyx_v_5chess_n;
+static __Pyx_memviewslice __pyx_v_5chess_xx = { 0, 0, { 0 }, { 0 }, { 0 } };
+static __Pyx_memviewslice __pyx_v_5chess_yy = { 0, 0, { 0 }, { 0 }, { 0 } };
 static PyObject *generic = 0;
 static PyObject *strided = 0;
 static PyObject *indirect = 0;
@@ -1836,6 +1855,7 @@ static const char __pyx_k_array[] = "array";
 static const char __pyx_k_board[] = "_board";
 static const char __pyx_k_chess[] = "chess";
 static const char __pyx_k_class[] = "__class__";
+static const char __pyx_k_clone[] = "clone";
 static const char __pyx_k_dtype[] = "dtype";
 static const char __pyx_k_error[] = "error";
 static const char __pyx_k_flags[] = "flags";
@@ -1886,6 +1906,7 @@ static const char __pyx_k_PickleError[] = "PickleError";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_check_reverse[] = "check_reverse";
+static const char __pyx_k_could_drop_by[] = "could_drop_by";
 static const char __pyx_k_could_drop_xy[] = "could_drop_xy";
 static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
@@ -1914,7 +1935,7 @@ static const char __pyx_k_Can_only_create_a_buffer_that_is[] = "Can only create 
 static const char __pyx_k_Cannot_assign_to_read_only_memor[] = "Cannot assign to read-only memoryview";
 static const char __pyx_k_Cannot_create_writable_memory_vi[] = "Cannot create writable memory view from read-only memoryview";
 static const char __pyx_k_Empty_shape_tuple_for_cython_arr[] = "Empty shape tuple for cython.array";
-static const char __pyx_k_Incompatible_checksums_s_vs_0x51[] = "Incompatible checksums (%s vs 0x51d7e41 = (board, n, xx, yy))";
+static const char __pyx_k_Incompatible_checksums_s_vs_0x11[] = "Incompatible checksums (%s vs 0x1145f26 = (board))";
 static const char __pyx_k_Incompatible_checksums_s_vs_0xb0[] = "Incompatible checksums (%s vs 0xb068931 = (name))";
 static const char __pyx_k_Indirect_dimensions_not_supporte[] = "Indirect dimensions not supported";
 static const char __pyx_k_Invalid_mode_expected_c_or_fortr[] = "Invalid mode, expected 'c' or 'fortran', got %s";
@@ -1932,7 +1953,7 @@ static PyObject *__pyx_kp_s_Cannot_index_with_type_s;
 static PyObject *__pyx_n_s_ChessBoard;
 static PyObject *__pyx_n_s_Ellipsis;
 static PyObject *__pyx_kp_s_Empty_shape_tuple_for_cython_arr;
-static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x51;
+static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x11;
 static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0xb0;
 static PyObject *__pyx_n_s_IndexError;
 static PyObject *__pyx_kp_s_Indirect_dimensions_not_supporte;
@@ -1960,9 +1981,11 @@ static PyObject *__pyx_n_s_chess;
 static PyObject *__pyx_kp_s_chess_pyx;
 static PyObject *__pyx_n_s_class;
 static PyObject *__pyx_n_s_cline_in_traceback;
+static PyObject *__pyx_n_s_clone;
 static PyObject *__pyx_kp_s_contiguous_and_direct;
 static PyObject *__pyx_kp_s_contiguous_and_indirect;
 static PyObject *__pyx_n_s_could_drop;
+static PyObject *__pyx_n_s_could_drop_by;
 static PyObject *__pyx_n_s_could_drop_xy;
 static PyObject *__pyx_n_s_dict;
 static PyObject *__pyx_n_s_directx;
@@ -2046,14 +2069,17 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_6is_finish(struct __pyx_obj_5chess
 static PyObject *__pyx_pf_5chess_10ChessBoard_8check_reverse(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_x, int __pyx_v_y, int __pyx_v_directx, int __pyx_v_directy, int __pyx_v_player); /* proto */
 static PyObject *__pyx_pf_5chess_10ChessBoard_10could_drop_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_x, int __pyx_v_y, int __pyx_v_player); /* proto */
 static PyObject *__pyx_pf_5chess_10ChessBoard_12could_drop(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_p, int __pyx_v_player); /* proto */
-static PyObject *__pyx_pf_5chess_10ChessBoard_14drop_list(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player); /* proto */
-static PyObject *__pyx_pf_5chess_10ChessBoard_16drop_list_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player); /* proto */
-static PyObject *__pyx_pf_5chess_10ChessBoard_18move_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_x, int __pyx_v_y, int __pyx_v_player); /* proto */
-static PyObject *__pyx_pf_5chess_10ChessBoard_20move(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_p, int __pyx_v_player); /* proto */
-static PyObject *__pyx_pf_5chess_10ChessBoard_22out(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5chess_10ChessBoard_24have_space(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5chess_10ChessBoard_26__reduce_cython__(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5chess_10ChessBoard_28__setstate_cython__(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_5chess_10ChessBoard_14could_drop_by(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player); /* proto */
+static PyObject *__pyx_pf_5chess_10ChessBoard_16drop_list(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player); /* proto */
+static PyObject *__pyx_pf_5chess_10ChessBoard_18drop_list_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player); /* proto */
+static PyObject *__pyx_pf_5chess_10ChessBoard_20move_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_x, int __pyx_v_y, int __pyx_v_player); /* proto */
+static PyObject *__pyx_pf_5chess_10ChessBoard_22move(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_p, int __pyx_v_player); /* proto */
+static PyObject *__pyx_pf_5chess_10ChessBoard_24out(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5chess_10ChessBoard_26have_space(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5chess_10ChessBoard_28clone(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5chess_10ChessBoard_30board_array(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5chess_10ChessBoard_32__reduce_cython__(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5chess_10ChessBoard_34__setstate_cython__(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_pf_5chess_2__pyx_unpickle_ChessBoard(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -2107,7 +2133,7 @@ static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_3;
 static PyObject *__pyx_int_8;
-static PyObject *__pyx_int_85818945;
+static PyObject *__pyx_int_18112294;
 static PyObject *__pyx_int_184977713;
 static PyObject *__pyx_int_neg_1;
 static __Pyx_memviewslice __pyx_k_;
@@ -2142,7 +2168,7 @@ static PyObject *__pyx_codeobj__23;
 static PyObject *__pyx_codeobj__30;
 /* Late includes */
 
-/* "chess.pyx":13
+/* "chess.pyx":17
  * 
  * 
  * cdef inline int out_board(int x, int y):             # <<<<<<<<<<<<<<
@@ -2157,7 +2183,7 @@ static CYTHON_INLINE int __pyx_f_5chess_out_board(int __pyx_v_x, int __pyx_v_y) 
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("out_board", 0);
 
-  /* "chess.pyx":14
+  /* "chess.pyx":18
  * 
  * cdef inline int out_board(int x, int y):
  * 	if x >= 8 or x < 0 or y >= 8 or y < 0:             # <<<<<<<<<<<<<<
@@ -2187,7 +2213,7 @@ static CYTHON_INLINE int __pyx_f_5chess_out_board(int __pyx_v_x, int __pyx_v_y) 
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "chess.pyx":15
+    /* "chess.pyx":19
  * cdef inline int out_board(int x, int y):
  * 	if x >= 8 or x < 0 or y >= 8 or y < 0:
  * 		return 1             # <<<<<<<<<<<<<<
@@ -2197,7 +2223,7 @@ static CYTHON_INLINE int __pyx_f_5chess_out_board(int __pyx_v_x, int __pyx_v_y) 
     __pyx_r = 1;
     goto __pyx_L0;
 
-    /* "chess.pyx":14
+    /* "chess.pyx":18
  * 
  * cdef inline int out_board(int x, int y):
  * 	if x >= 8 or x < 0 or y >= 8 or y < 0:             # <<<<<<<<<<<<<<
@@ -2206,7 +2232,7 @@ static CYTHON_INLINE int __pyx_f_5chess_out_board(int __pyx_v_x, int __pyx_v_y) 
  */
   }
 
-  /* "chess.pyx":16
+  /* "chess.pyx":20
  * 	if x >= 8 or x < 0 or y >= 8 or y < 0:
  * 		return 1
  * 	return 0             # <<<<<<<<<<<<<<
@@ -2216,7 +2242,7 @@ static CYTHON_INLINE int __pyx_f_5chess_out_board(int __pyx_v_x, int __pyx_v_y) 
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "chess.pyx":13
+  /* "chess.pyx":17
  * 
  * 
  * cdef inline int out_board(int x, int y):             # <<<<<<<<<<<<<<
@@ -2230,12 +2256,12 @@ static CYTHON_INLINE int __pyx_f_5chess_out_board(int __pyx_v_x, int __pyx_v_y) 
   return __pyx_r;
 }
 
-/* "chess.pyx":23
- * 	cdef int[:] xx, yy
+/* "chess.pyx":25
+ * cdef class ChessBoard:
  * 	cdef int[:, :] board
  * 	def __init__(self, int[:, :] _board=init_board):             # <<<<<<<<<<<<<<
- * 		self.n = 8
- * 		self.xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)
+ * 		self.board = np.array(_board.copy(), dtype=int)
+ * 
  */
 
 /* Python wrapper */
@@ -2266,7 +2292,7 @@ static int __pyx_pw_5chess_10ChessBoard_1__init__(PyObject *__pyx_v_self, PyObje
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 23, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 25, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2277,7 +2303,7 @@ static int __pyx_pw_5chess_10ChessBoard_1__init__(PyObject *__pyx_v_self, PyObje
       }
     }
     if (values[0]) {
-      __pyx_v__board = __Pyx_PyObject_to_MemoryviewSlice_dsds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v__board.memview)) __PYX_ERR(0, 23, __pyx_L3_error)
+      __pyx_v__board = __Pyx_PyObject_to_MemoryviewSlice_dsds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v__board.memview)) __PYX_ERR(0, 25, __pyx_L3_error)
     } else {
       __pyx_v__board = __pyx_k_;
       __PYX_INC_MEMVIEW(&__pyx_v__board, 1);
@@ -2285,7 +2311,7 @@ static int __pyx_pw_5chess_10ChessBoard_1__init__(PyObject *__pyx_v_self, PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 23, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 25, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("chess.ChessBoard.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2303,177 +2329,56 @@ static int __pyx_pf_5chess_10ChessBoard___init__(struct __pyx_obj_5chess_ChessBo
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
+  __Pyx_memviewslice __pyx_t_3 = { 0, 0, { 0 }, { 0 }, { 0 } };
   PyObject *__pyx_t_4 = NULL;
-  __Pyx_memviewslice __pyx_t_5 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  PyObject *__pyx_t_5 = NULL;
   __Pyx_memviewslice __pyx_t_6 = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "chess.pyx":24
+  /* "chess.pyx":26
  * 	cdef int[:, :] board
  * 	def __init__(self, int[:, :] _board=init_board):
- * 		self.n = 8             # <<<<<<<<<<<<<<
- * 		self.xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)
- * 		self.yy = np.array([-1, -1, 0, 1, 1, 1, 0, -1], dtype=int)
- */
-  __pyx_v_self->n = 8;
-
-  /* "chess.pyx":25
- * 	def __init__(self, int[:, :] _board=init_board):
- * 		self.n = 8
- * 		self.xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)             # <<<<<<<<<<<<<<
- * 		self.yy = np.array([-1, -1, 0, 1, 1, 1, 0, -1], dtype=int)
- * 		self.board = np.array(_board, dtype=int)
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyList_New(8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_int_0);
-  __Pyx_GIVEREF(__pyx_int_0);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_int_0);
-  __Pyx_INCREF(__pyx_int_1);
-  __Pyx_GIVEREF(__pyx_int_1);
-  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_int_1);
-  __Pyx_INCREF(__pyx_int_1);
-  __Pyx_GIVEREF(__pyx_int_1);
-  PyList_SET_ITEM(__pyx_t_1, 2, __pyx_int_1);
-  __Pyx_INCREF(__pyx_int_1);
-  __Pyx_GIVEREF(__pyx_int_1);
-  PyList_SET_ITEM(__pyx_t_1, 3, __pyx_int_1);
-  __Pyx_INCREF(__pyx_int_0);
-  __Pyx_GIVEREF(__pyx_int_0);
-  PyList_SET_ITEM(__pyx_t_1, 4, __pyx_int_0);
-  __Pyx_INCREF(__pyx_int_neg_1);
-  __Pyx_GIVEREF(__pyx_int_neg_1);
-  PyList_SET_ITEM(__pyx_t_1, 5, __pyx_int_neg_1);
-  __Pyx_INCREF(__pyx_int_neg_1);
-  __Pyx_GIVEREF(__pyx_int_neg_1);
-  PyList_SET_ITEM(__pyx_t_1, 6, __pyx_int_neg_1);
-  __Pyx_INCREF(__pyx_int_neg_1);
-  __Pyx_GIVEREF(__pyx_int_neg_1);
-  PyList_SET_ITEM(__pyx_t_1, 7, __pyx_int_neg_1);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 25, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, ((PyObject *)(&PyInt_Type))) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 25, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_5 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_5.memview)) __PYX_ERR(0, 25, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __PYX_XDEC_MEMVIEW(&__pyx_v_self->xx, 0);
-  __pyx_v_self->xx = __pyx_t_5;
-  __pyx_t_5.memview = NULL;
-  __pyx_t_5.data = NULL;
-
-  /* "chess.pyx":26
- * 		self.n = 8
- * 		self.xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)
- * 		self.yy = np.array([-1, -1, 0, 1, 1, 1, 0, -1], dtype=int)             # <<<<<<<<<<<<<<
- * 		self.board = np.array(_board, dtype=int)
- * 
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 26, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyList_New(8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 26, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_INCREF(__pyx_int_neg_1);
-  __Pyx_GIVEREF(__pyx_int_neg_1);
-  PyList_SET_ITEM(__pyx_t_4, 0, __pyx_int_neg_1);
-  __Pyx_INCREF(__pyx_int_neg_1);
-  __Pyx_GIVEREF(__pyx_int_neg_1);
-  PyList_SET_ITEM(__pyx_t_4, 1, __pyx_int_neg_1);
-  __Pyx_INCREF(__pyx_int_0);
-  __Pyx_GIVEREF(__pyx_int_0);
-  PyList_SET_ITEM(__pyx_t_4, 2, __pyx_int_0);
-  __Pyx_INCREF(__pyx_int_1);
-  __Pyx_GIVEREF(__pyx_int_1);
-  PyList_SET_ITEM(__pyx_t_4, 3, __pyx_int_1);
-  __Pyx_INCREF(__pyx_int_1);
-  __Pyx_GIVEREF(__pyx_int_1);
-  PyList_SET_ITEM(__pyx_t_4, 4, __pyx_int_1);
-  __Pyx_INCREF(__pyx_int_1);
-  __Pyx_GIVEREF(__pyx_int_1);
-  PyList_SET_ITEM(__pyx_t_4, 5, __pyx_int_1);
-  __Pyx_INCREF(__pyx_int_0);
-  __Pyx_GIVEREF(__pyx_int_0);
-  PyList_SET_ITEM(__pyx_t_4, 6, __pyx_int_0);
-  __Pyx_INCREF(__pyx_int_neg_1);
-  __Pyx_GIVEREF(__pyx_int_neg_1);
-  PyList_SET_ITEM(__pyx_t_4, 7, __pyx_int_neg_1);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 26, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4);
-  __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 26, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, ((PyObject *)(&PyInt_Type))) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_5 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_5.memview)) __PYX_ERR(0, 26, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __PYX_XDEC_MEMVIEW(&__pyx_v_self->yy, 0);
-  __pyx_v_self->yy = __pyx_t_5;
-  __pyx_t_5.memview = NULL;
-  __pyx_t_5.data = NULL;
-
-  /* "chess.pyx":27
- * 		self.xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)
- * 		self.yy = np.array([-1, -1, 0, 1, 1, 1, 0, -1], dtype=int)
- * 		self.board = np.array(_board, dtype=int)             # <<<<<<<<<<<<<<
+ * 		self.board = np.array(_board.copy(), dtype=int)             # <<<<<<<<<<<<<<
  * 
  * 	cpdef int[:, :, :] to_network_input(self, int player):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v__board, 2, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, ((PyObject *)(&PyInt_Type))) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = __pyx_memoryview_copy_slice_d_dc_int_c(__pyx_v__board); if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_t_3, 2, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_3, 1);
+  __pyx_t_3.memview = NULL;
+  __pyx_t_3.data = NULL;
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, ((PyObject *)(&PyInt_Type))) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_int(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->board, 0);
   __pyx_v_self->board = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "chess.pyx":23
- * 	cdef int[:] xx, yy
+  /* "chess.pyx":25
+ * cdef class ChessBoard:
  * 	cdef int[:, :] board
  * 	def __init__(self, int[:, :] _board=init_board):             # <<<<<<<<<<<<<<
- * 		self.n = 8
- * 		self.xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)
+ * 		self.board = np.array(_board.copy(), dtype=int)
+ * 
  */
 
   /* function exit code */
@@ -2482,9 +2387,9 @@ static int __pyx_pf_5chess_10ChessBoard___init__(struct __pyx_obj_5chess_ChessBo
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_3, 1);
   __Pyx_XDECREF(__pyx_t_4);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_5, 1);
+  __Pyx_XDECREF(__pyx_t_5);
   __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
   __Pyx_AddTraceback("chess.ChessBoard.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
@@ -2494,11 +2399,11 @@ static int __pyx_pf_5chess_10ChessBoard___init__(struct __pyx_obj_5chess_ChessBo
   return __pyx_r;
 }
 
-/* "chess.pyx":29
- * 		self.board = np.array(_board, dtype=int)
+/* "chess.pyx":28
+ * 		self.board = np.array(_board.copy(), dtype=int)
  * 
  * 	cpdef int[:, :, :] to_network_input(self, int player):             # <<<<<<<<<<<<<<
- * 		cdef int[:, :, :] network_input = np.zeros([8, 8, 3], dtype=int)
+ * 		cdef int[:, :, :] network_input = np.zeros([n, n, 3], dtype=int)
  * 		cdef int x, y
  */
 
@@ -2544,10 +2449,10 @@ static __Pyx_memviewslice __pyx_f_5chess_10ChessBoard_to_network_input(struct __
     else {
       PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_to_network_input); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_to_network_input); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_3to_network_input)) {
-        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
@@ -2563,10 +2468,10 @@ static __Pyx_memviewslice __pyx_f_5chess_10ChessBoard_to_network_input(struct __
         __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds_int(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 29, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds_int(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 28, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_6;
         __pyx_t_6.memview = NULL;
@@ -2587,80 +2492,84 @@ static __Pyx_memviewslice __pyx_f_5chess_10ChessBoard_to_network_input(struct __
     #endif
   }
 
-  /* "chess.pyx":30
+  /* "chess.pyx":29
  * 
  * 	cpdef int[:, :, :] to_network_input(self, int player):
- * 		cdef int[:, :, :] network_input = np.zeros([8, 8, 3], dtype=int)             # <<<<<<<<<<<<<<
+ * 		cdef int[:, :, :] network_input = np.zeros([n, n, 3], dtype=int)             # <<<<<<<<<<<<<<
  * 		cdef int x, y
- * 		for x in range(self.n):
+ * 		for x in range(n):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyList_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_5chess_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_int_8);
-  __Pyx_GIVEREF(__pyx_int_8);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_int_8);
-  __Pyx_INCREF(__pyx_int_8);
-  __Pyx_GIVEREF(__pyx_int_8);
-  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_int_8);
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_5chess_n); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = PyList_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyList_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyList_SET_ITEM(__pyx_t_3, 1, __pyx_t_4);
   __Pyx_INCREF(__pyx_int_3);
   __Pyx_GIVEREF(__pyx_int_3);
-  PyList_SET_ITEM(__pyx_t_1, 2, __pyx_int_3);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 30, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
+  PyList_SET_ITEM(__pyx_t_3, 2, __pyx_int_3);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, ((PyObject *)(&PyInt_Type))) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_4 = 0;
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
+  __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, ((PyObject *)(&PyInt_Type))) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds_int(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_network_input = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "chess.pyx":32
- * 		cdef int[:, :, :] network_input = np.zeros([8, 8, 3], dtype=int)
+  /* "chess.pyx":31
+ * 		cdef int[:, :, :] network_input = np.zeros([n, n, 3], dtype=int)
  * 		cdef int x, y
- * 		for x in range(self.n):             # <<<<<<<<<<<<<<
- * 			for y in range(self.n):
+ * 		for x in range(n):             # <<<<<<<<<<<<<<
+ * 			for y in range(n):
  * 				network_input[x, y, 0] = self.board[x, y]
  */
-  __pyx_t_7 = __pyx_v_self->n;
+  __pyx_t_7 = __pyx_v_5chess_n;
   __pyx_t_8 = __pyx_t_7;
   for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
     __pyx_v_x = __pyx_t_9;
 
-    /* "chess.pyx":33
+    /* "chess.pyx":32
  * 		cdef int x, y
- * 		for x in range(self.n):
- * 			for y in range(self.n):             # <<<<<<<<<<<<<<
+ * 		for x in range(n):
+ * 			for y in range(n):             # <<<<<<<<<<<<<<
  * 				network_input[x, y, 0] = self.board[x, y]
  * 				network_input[x, y, 1] = self.could_drop_xy(x, y, player)
  */
-    __pyx_t_10 = __pyx_v_self->n;
+    __pyx_t_10 = __pyx_v_5chess_n;
     __pyx_t_11 = __pyx_t_10;
     for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
       __pyx_v_y = __pyx_t_12;
 
-      /* "chess.pyx":34
- * 		for x in range(self.n):
- * 			for y in range(self.n):
+      /* "chess.pyx":33
+ * 		for x in range(n):
+ * 			for y in range(n):
  * 				network_input[x, y, 0] = self.board[x, y]             # <<<<<<<<<<<<<<
  * 				network_input[x, y, 1] = self.could_drop_xy(x, y, player)
  * 				network_input[x, y, 2] = player
  */
-      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 34, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 33, __pyx_L1_error)}
       __pyx_t_13 = __pyx_v_x;
       __pyx_t_14 = __pyx_v_y;
       __pyx_t_15 = -1;
@@ -2674,7 +2583,7 @@ static __Pyx_memviewslice __pyx_f_5chess_10ChessBoard_to_network_input(struct __
       } else if (unlikely(__pyx_t_14 >= __pyx_v_self->board.shape[1])) __pyx_t_15 = 1;
       if (unlikely(__pyx_t_15 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 34, __pyx_L1_error)
+        __PYX_ERR(0, 33, __pyx_L1_error)
       }
       __pyx_t_16 = __pyx_v_x;
       __pyx_t_17 = __pyx_v_y;
@@ -2694,12 +2603,12 @@ static __Pyx_memviewslice __pyx_f_5chess_10ChessBoard_to_network_input(struct __
       } else if (unlikely(__pyx_t_18 >= __pyx_v_network_input.shape[2])) __pyx_t_15 = 2;
       if (unlikely(__pyx_t_15 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 34, __pyx_L1_error)
+        __PYX_ERR(0, 33, __pyx_L1_error)
       }
       *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_network_input.data + __pyx_t_16 * __pyx_v_network_input.strides[0]) ) + __pyx_t_17 * __pyx_v_network_input.strides[1]) ) + __pyx_t_18 * __pyx_v_network_input.strides[2]) )) = (*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_13 * __pyx_v_self->board.strides[0]) ) + __pyx_t_14 * __pyx_v_self->board.strides[1]) )));
 
-      /* "chess.pyx":35
- * 			for y in range(self.n):
+      /* "chess.pyx":34
+ * 			for y in range(n):
  * 				network_input[x, y, 0] = self.board[x, y]
  * 				network_input[x, y, 1] = self.could_drop_xy(x, y, player)             # <<<<<<<<<<<<<<
  * 				network_input[x, y, 2] = player
@@ -2723,11 +2632,11 @@ static __Pyx_memviewslice __pyx_f_5chess_10ChessBoard_to_network_input(struct __
       } else if (unlikely(__pyx_t_21 >= __pyx_v_network_input.shape[2])) __pyx_t_15 = 2;
       if (unlikely(__pyx_t_15 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 35, __pyx_L1_error)
+        __PYX_ERR(0, 34, __pyx_L1_error)
       }
       *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_network_input.data + __pyx_t_19 * __pyx_v_network_input.strides[0]) ) + __pyx_t_20 * __pyx_v_network_input.strides[1]) ) + __pyx_t_21 * __pyx_v_network_input.strides[2]) )) = ((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->could_drop_xy(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_player, 0);
 
-      /* "chess.pyx":36
+      /* "chess.pyx":35
  * 				network_input[x, y, 0] = self.board[x, y]
  * 				network_input[x, y, 1] = self.could_drop_xy(x, y, player)
  * 				network_input[x, y, 2] = player             # <<<<<<<<<<<<<<
@@ -2752,13 +2661,13 @@ static __Pyx_memviewslice __pyx_f_5chess_10ChessBoard_to_network_input(struct __
       } else if (unlikely(__pyx_t_24 >= __pyx_v_network_input.shape[2])) __pyx_t_15 = 2;
       if (unlikely(__pyx_t_15 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 36, __pyx_L1_error)
+        __PYX_ERR(0, 35, __pyx_L1_error)
       }
       *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_network_input.data + __pyx_t_22 * __pyx_v_network_input.strides[0]) ) + __pyx_t_23 * __pyx_v_network_input.strides[1]) ) + __pyx_t_24 * __pyx_v_network_input.strides[2]) )) = __pyx_v_player;
     }
   }
 
-  /* "chess.pyx":37
+  /* "chess.pyx":36
  * 				network_input[x, y, 1] = self.could_drop_xy(x, y, player)
  * 				network_input[x, y, 2] = player
  * 		return network_input             # <<<<<<<<<<<<<<
@@ -2769,11 +2678,11 @@ static __Pyx_memviewslice __pyx_f_5chess_10ChessBoard_to_network_input(struct __
   __pyx_r = __pyx_v_network_input;
   goto __pyx_L0;
 
-  /* "chess.pyx":29
- * 		self.board = np.array(_board, dtype=int)
+  /* "chess.pyx":28
+ * 		self.board = np.array(_board.copy(), dtype=int)
  * 
  * 	cpdef int[:, :, :] to_network_input(self, int player):             # <<<<<<<<<<<<<<
- * 		cdef int[:, :, :] network_input = np.zeros([8, 8, 3], dtype=int)
+ * 		cdef int[:, :, :] network_input = np.zeros([n, n, 3], dtype=int)
  * 		cdef int x, y
  */
 
@@ -2807,7 +2716,7 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_3to_network_input(PyObject *__pyx_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("to_network_input (wrapper)", 0);
   assert(__pyx_arg_player); {
-    __pyx_v_player = __Pyx_PyInt_As_int(__pyx_arg_player); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 29, __pyx_L3_error)
+    __pyx_v_player = __Pyx_PyInt_As_int(__pyx_arg_player); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 28, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -2829,8 +2738,8 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_2to_network_input(struct __pyx_obj
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("to_network_input", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5chess_10ChessBoard_to_network_input(__pyx_v_self, __pyx_v_player, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 29, __pyx_L1_error)
-  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_1, 3, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5chess_10ChessBoard_to_network_input(__pyx_v_self, __pyx_v_player, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_1, 3, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __pyx_t_1.memview = NULL;
@@ -2851,7 +2760,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_2to_network_input(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "chess.pyx":39
+/* "chess.pyx":38
  * 		return network_input
  * 
  * 	cpdef int evaluate(self):             # <<<<<<<<<<<<<<
@@ -2894,7 +2803,7 @@ static int __pyx_f_5chess_10ChessBoard_evaluate(struct __pyx_obj_5chess_ChessBoa
     else {
       PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_5evaluate)) {
         __Pyx_INCREF(__pyx_t_1);
@@ -2910,10 +2819,10 @@ static int __pyx_f_5chess_10ChessBoard_evaluate(struct __pyx_obj_5chess_ChessBoa
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 39, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_5;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -2932,7 +2841,7 @@ static int __pyx_f_5chess_10ChessBoard_evaluate(struct __pyx_obj_5chess_ChessBoa
     #endif
   }
 
-  /* "chess.pyx":40
+  /* "chess.pyx":39
  * 
  * 	cpdef int evaluate(self):
  * 		cdef int v0 = 0             # <<<<<<<<<<<<<<
@@ -2941,47 +2850,47 @@ static int __pyx_f_5chess_10ChessBoard_evaluate(struct __pyx_obj_5chess_ChessBoa
  */
   __pyx_v_v0 = 0;
 
-  /* "chess.pyx":41
+  /* "chess.pyx":40
  * 	cpdef int evaluate(self):
  * 		cdef int v0 = 0
  * 		cdef int v1 = 0             # <<<<<<<<<<<<<<
  * 		cdef int i, j
- * 		for i in range(self.n):
+ * 		for i in range(n):
  */
   __pyx_v_v1 = 0;
 
-  /* "chess.pyx":43
+  /* "chess.pyx":42
  * 		cdef int v1 = 0
  * 		cdef int i, j
- * 		for i in range(self.n):             # <<<<<<<<<<<<<<
- * 			for j in range(self.n):
+ * 		for i in range(n):             # <<<<<<<<<<<<<<
+ * 			for j in range(n):
  * 				if self.board[i, j] == -1:
  */
-  __pyx_t_5 = __pyx_v_self->n;
+  __pyx_t_5 = __pyx_v_5chess_n;
   __pyx_t_6 = __pyx_t_5;
   for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
     __pyx_v_i = __pyx_t_7;
 
-    /* "chess.pyx":44
+    /* "chess.pyx":43
  * 		cdef int i, j
- * 		for i in range(self.n):
- * 			for j in range(self.n):             # <<<<<<<<<<<<<<
+ * 		for i in range(n):
+ * 			for j in range(n):             # <<<<<<<<<<<<<<
  * 				if self.board[i, j] == -1:
  * 					v0 += 1
  */
-    __pyx_t_8 = __pyx_v_self->n;
+    __pyx_t_8 = __pyx_v_5chess_n;
     __pyx_t_9 = __pyx_t_8;
     for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
       __pyx_v_j = __pyx_t_10;
 
-      /* "chess.pyx":45
- * 		for i in range(self.n):
- * 			for j in range(self.n):
+      /* "chess.pyx":44
+ * 		for i in range(n):
+ * 			for j in range(n):
  * 				if self.board[i, j] == -1:             # <<<<<<<<<<<<<<
  * 					v0 += 1
  * 				if self.board[i, j] == 1:
  */
-      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 45, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 44, __pyx_L1_error)}
       __pyx_t_11 = __pyx_v_i;
       __pyx_t_12 = __pyx_v_j;
       __pyx_t_13 = -1;
@@ -2995,13 +2904,13 @@ static int __pyx_f_5chess_10ChessBoard_evaluate(struct __pyx_obj_5chess_ChessBoa
       } else if (unlikely(__pyx_t_12 >= __pyx_v_self->board.shape[1])) __pyx_t_13 = 1;
       if (unlikely(__pyx_t_13 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_13);
-        __PYX_ERR(0, 45, __pyx_L1_error)
+        __PYX_ERR(0, 44, __pyx_L1_error)
       }
       __pyx_t_14 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_11 * __pyx_v_self->board.strides[0]) ) + __pyx_t_12 * __pyx_v_self->board.strides[1]) ))) == -1L) != 0);
       if (__pyx_t_14) {
 
-        /* "chess.pyx":46
- * 			for j in range(self.n):
+        /* "chess.pyx":45
+ * 			for j in range(n):
  * 				if self.board[i, j] == -1:
  * 					v0 += 1             # <<<<<<<<<<<<<<
  * 				if self.board[i, j] == 1:
@@ -3009,23 +2918,23 @@ static int __pyx_f_5chess_10ChessBoard_evaluate(struct __pyx_obj_5chess_ChessBoa
  */
         __pyx_v_v0 = (__pyx_v_v0 + 1);
 
-        /* "chess.pyx":45
- * 		for i in range(self.n):
- * 			for j in range(self.n):
+        /* "chess.pyx":44
+ * 		for i in range(n):
+ * 			for j in range(n):
  * 				if self.board[i, j] == -1:             # <<<<<<<<<<<<<<
  * 					v0 += 1
  * 				if self.board[i, j] == 1:
  */
       }
 
-      /* "chess.pyx":47
+      /* "chess.pyx":46
  * 				if self.board[i, j] == -1:
  * 					v0 += 1
  * 				if self.board[i, j] == 1:             # <<<<<<<<<<<<<<
  * 					v1 += 1
  * 		return v1 - v0
  */
-      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 47, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 46, __pyx_L1_error)}
       __pyx_t_15 = __pyx_v_i;
       __pyx_t_16 = __pyx_v_j;
       __pyx_t_13 = -1;
@@ -3039,12 +2948,12 @@ static int __pyx_f_5chess_10ChessBoard_evaluate(struct __pyx_obj_5chess_ChessBoa
       } else if (unlikely(__pyx_t_16 >= __pyx_v_self->board.shape[1])) __pyx_t_13 = 1;
       if (unlikely(__pyx_t_13 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_13);
-        __PYX_ERR(0, 47, __pyx_L1_error)
+        __PYX_ERR(0, 46, __pyx_L1_error)
       }
       __pyx_t_14 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_15 * __pyx_v_self->board.strides[0]) ) + __pyx_t_16 * __pyx_v_self->board.strides[1]) ))) == 1) != 0);
       if (__pyx_t_14) {
 
-        /* "chess.pyx":48
+        /* "chess.pyx":47
  * 					v0 += 1
  * 				if self.board[i, j] == 1:
  * 					v1 += 1             # <<<<<<<<<<<<<<
@@ -3053,7 +2962,7 @@ static int __pyx_f_5chess_10ChessBoard_evaluate(struct __pyx_obj_5chess_ChessBoa
  */
         __pyx_v_v1 = (__pyx_v_v1 + 1);
 
-        /* "chess.pyx":47
+        /* "chess.pyx":46
  * 				if self.board[i, j] == -1:
  * 					v0 += 1
  * 				if self.board[i, j] == 1:             # <<<<<<<<<<<<<<
@@ -3064,7 +2973,7 @@ static int __pyx_f_5chess_10ChessBoard_evaluate(struct __pyx_obj_5chess_ChessBoa
     }
   }
 
-  /* "chess.pyx":49
+  /* "chess.pyx":48
  * 				if self.board[i, j] == 1:
  * 					v1 += 1
  * 		return v1 - v0             # <<<<<<<<<<<<<<
@@ -3074,7 +2983,7 @@ static int __pyx_f_5chess_10ChessBoard_evaluate(struct __pyx_obj_5chess_ChessBoa
   __pyx_r = (__pyx_v_v1 - __pyx_v_v0);
   goto __pyx_L0;
 
-  /* "chess.pyx":39
+  /* "chess.pyx":38
  * 		return network_input
  * 
  * 	cpdef int evaluate(self):             # <<<<<<<<<<<<<<
@@ -3114,7 +3023,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_4evaluate(struct __pyx_obj_5chess_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("evaluate", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_evaluate(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_evaluate(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3131,7 +3040,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_4evaluate(struct __pyx_obj_5chess_
   return __pyx_r;
 }
 
-/* "chess.pyx":51
+/* "chess.pyx":50
  * 		return v1 - v0
  * 
  * 	cpdef int is_finish(self):             # <<<<<<<<<<<<<<
@@ -3141,7 +3050,6 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_4evaluate(struct __pyx_obj_5chess_
 
 static PyObject *__pyx_pw_5chess_10ChessBoard_7is_finish(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static int __pyx_f_5chess_10ChessBoard_is_finish(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_skip_dispatch) {
-  int __pyx_v_p;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3150,9 +3058,7 @@ static int __pyx_f_5chess_10ChessBoard_is_finish(struct __pyx_obj_5chess_ChessBo
   PyObject *__pyx_t_4 = NULL;
   int __pyx_t_5;
   int __pyx_t_6;
-  long __pyx_t_7;
-  long __pyx_t_8;
-  int __pyx_t_9;
+  int __pyx_t_7;
   __Pyx_RefNannySetupContext("is_finish", 0);
   /* Check if called by wrapper */
   if (unlikely(__pyx_skip_dispatch)) ;
@@ -3164,7 +3070,7 @@ static int __pyx_f_5chess_10ChessBoard_is_finish(struct __pyx_obj_5chess_ChessBo
     else {
       PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_is_finish); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_is_finish); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_7is_finish)) {
         __Pyx_INCREF(__pyx_t_1);
@@ -3180,10 +3086,10 @@ static int __pyx_f_5chess_10ChessBoard_is_finish(struct __pyx_obj_5chess_ChessBo
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 51, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 50, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_5;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -3202,88 +3108,75 @@ static int __pyx_f_5chess_10ChessBoard_is_finish(struct __pyx_obj_5chess_ChessBo
     #endif
   }
 
-  /* "chess.pyx":52
+  /* "chess.pyx":51
  * 
  * 	cpdef int is_finish(self):
  * 		if not self.have_space():             # <<<<<<<<<<<<<<
  * 			return 1
- * 		cdef int p
+ * 		if self.could_drop_by(1) or self.could_drop_by(-1):
  */
   __pyx_t_6 = ((!(((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->have_space(__pyx_v_self, 0) != 0)) != 0);
   if (__pyx_t_6) {
 
-    /* "chess.pyx":53
+    /* "chess.pyx":52
  * 	cpdef int is_finish(self):
  * 		if not self.have_space():
  * 			return 1             # <<<<<<<<<<<<<<
- * 		cdef int p
- * 		for p in range(self.n ** 2):
+ * 		if self.could_drop_by(1) or self.could_drop_by(-1):
+ * 			return 0
  */
     __pyx_r = 1;
     goto __pyx_L0;
 
-    /* "chess.pyx":52
+    /* "chess.pyx":51
  * 
  * 	cpdef int is_finish(self):
  * 		if not self.have_space():             # <<<<<<<<<<<<<<
  * 			return 1
- * 		cdef int p
+ * 		if self.could_drop_by(1) or self.could_drop_by(-1):
+ */
+  }
+
+  /* "chess.pyx":53
+ * 		if not self.have_space():
+ * 			return 1
+ * 		if self.could_drop_by(1) or self.could_drop_by(-1):             # <<<<<<<<<<<<<<
+ * 			return 0
+ * 		return 1
+ */
+  __pyx_t_7 = (((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->could_drop_by(__pyx_v_self, 1, 0) != 0);
+  if (!__pyx_t_7) {
+  } else {
+    __pyx_t_6 = __pyx_t_7;
+    goto __pyx_L5_bool_binop_done;
+  }
+  __pyx_t_7 = (((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->could_drop_by(__pyx_v_self, -1, 0) != 0);
+  __pyx_t_6 = __pyx_t_7;
+  __pyx_L5_bool_binop_done:;
+  if (__pyx_t_6) {
+
+    /* "chess.pyx":54
+ * 			return 1
+ * 		if self.could_drop_by(1) or self.could_drop_by(-1):
+ * 			return 0             # <<<<<<<<<<<<<<
+ * 		return 1
+ * 
+ */
+    __pyx_r = 0;
+    goto __pyx_L0;
+
+    /* "chess.pyx":53
+ * 		if not self.have_space():
+ * 			return 1
+ * 		if self.could_drop_by(1) or self.could_drop_by(-1):             # <<<<<<<<<<<<<<
+ * 			return 0
+ * 		return 1
  */
   }
 
   /* "chess.pyx":55
- * 			return 1
- * 		cdef int p
- * 		for p in range(self.n ** 2):             # <<<<<<<<<<<<<<
- * 			if self.could_drop(p, -1) or self.could_drop(p, 1):
- * 				return 0
- */
-  __pyx_t_7 = __Pyx_pow_long(((long)__pyx_v_self->n), 2);
-  __pyx_t_8 = __pyx_t_7;
-  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_8; __pyx_t_5+=1) {
-    __pyx_v_p = __pyx_t_5;
-
-    /* "chess.pyx":56
- * 		cdef int p
- * 		for p in range(self.n ** 2):
- * 			if self.could_drop(p, -1) or self.could_drop(p, 1):             # <<<<<<<<<<<<<<
- * 				return 0
- * 		return 1
- */
-    __pyx_t_9 = (((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->could_drop(__pyx_v_self, __pyx_v_p, -1, 0) != 0);
-    if (!__pyx_t_9) {
-    } else {
-      __pyx_t_6 = __pyx_t_9;
-      goto __pyx_L7_bool_binop_done;
-    }
-    __pyx_t_9 = (((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->could_drop(__pyx_v_self, __pyx_v_p, 1, 0) != 0);
-    __pyx_t_6 = __pyx_t_9;
-    __pyx_L7_bool_binop_done:;
-    if (__pyx_t_6) {
-
-      /* "chess.pyx":57
- * 		for p in range(self.n ** 2):
- * 			if self.could_drop(p, -1) or self.could_drop(p, 1):
- * 				return 0             # <<<<<<<<<<<<<<
- * 		return 1
- * 
- */
-      __pyx_r = 0;
-      goto __pyx_L0;
-
-      /* "chess.pyx":56
- * 		cdef int p
- * 		for p in range(self.n ** 2):
- * 			if self.could_drop(p, -1) or self.could_drop(p, 1):             # <<<<<<<<<<<<<<
- * 				return 0
- * 		return 1
- */
-    }
-  }
-
-  /* "chess.pyx":58
- * 			if self.could_drop(p, -1) or self.could_drop(p, 1):
- * 				return 0
+ * 		if self.could_drop_by(1) or self.could_drop_by(-1):
+ * 			return 0
  * 		return 1             # <<<<<<<<<<<<<<
  * 
  * 	cpdef int check_reverse(self, int x, int y, int directx, int directy, int player):
@@ -3291,7 +3184,7 @@ static int __pyx_f_5chess_10ChessBoard_is_finish(struct __pyx_obj_5chess_ChessBo
   __pyx_r = 1;
   goto __pyx_L0;
 
-  /* "chess.pyx":51
+  /* "chess.pyx":50
  * 		return v1 - v0
  * 
  * 	cpdef int is_finish(self):             # <<<<<<<<<<<<<<
@@ -3331,7 +3224,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_6is_finish(struct __pyx_obj_5chess
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("is_finish", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_is_finish(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_is_finish(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3348,7 +3241,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_6is_finish(struct __pyx_obj_5chess
   return __pyx_r;
 }
 
-/* "chess.pyx":60
+/* "chess.pyx":57
  * 		return 1
  * 
  * 	cpdef int check_reverse(self, int x, int y, int directx, int directy, int player):             # <<<<<<<<<<<<<<
@@ -3392,18 +3285,18 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
     else {
       PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_check_reverse); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_check_reverse); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_9check_reverse)) {
-        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_directx); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_directx); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 57, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_directy); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_directy); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 57, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 57, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_8 = __pyx_t_1; __pyx_t_9 = NULL;
@@ -3421,7 +3314,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_8)) {
           PyObject *__pyx_temp[6] = {__pyx_t_9, __pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_t_7};
-          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_10, 5+__pyx_t_10); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_10, 5+__pyx_t_10); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3434,7 +3327,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_8)) {
           PyObject *__pyx_temp[6] = {__pyx_t_9, __pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_t_7};
-          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_10, 5+__pyx_t_10); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_10, 5+__pyx_t_10); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3445,7 +3338,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
         } else
         #endif
         {
-          __pyx_t_11 = PyTuple_New(5+__pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 60, __pyx_L1_error)
+          __pyx_t_11 = PyTuple_New(5+__pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 57, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_11);
           if (__pyx_t_9) {
             __Pyx_GIVEREF(__pyx_t_9); PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_9); __pyx_t_9 = NULL;
@@ -3465,12 +3358,12 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
           __pyx_t_5 = 0;
           __pyx_t_6 = 0;
           __pyx_t_7 = 0;
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_11, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_11, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         }
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        __pyx_t_10 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_10 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_10 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_10 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_10;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -3489,7 +3382,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
     #endif
   }
 
-  /* "chess.pyx":61
+  /* "chess.pyx":58
  * 
  * 	cpdef int check_reverse(self, int x, int y, int directx, int directy, int player):
  * 		x += directx             # <<<<<<<<<<<<<<
@@ -3498,7 +3391,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
  */
   __pyx_v_x = (__pyx_v_x + __pyx_v_directx);
 
-  /* "chess.pyx":62
+  /* "chess.pyx":59
  * 	cpdef int check_reverse(self, int x, int y, int directx, int directy, int player):
  * 		x += directx
  * 		y += directy             # <<<<<<<<<<<<<<
@@ -3507,7 +3400,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
  */
   __pyx_v_y = (__pyx_v_y + __pyx_v_directy);
 
-  /* "chess.pyx":63
+  /* "chess.pyx":60
  * 		x += directx
  * 		y += directy
  * 		if out_board(x, y):             # <<<<<<<<<<<<<<
@@ -3517,7 +3410,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
   __pyx_t_12 = (__pyx_f_5chess_out_board(__pyx_v_x, __pyx_v_y) != 0);
   if (__pyx_t_12) {
 
-    /* "chess.pyx":64
+    /* "chess.pyx":61
  * 		y += directy
  * 		if out_board(x, y):
  * 			return 0             # <<<<<<<<<<<<<<
@@ -3527,7 +3420,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "chess.pyx":63
+    /* "chess.pyx":60
  * 		x += directx
  * 		y += directy
  * 		if out_board(x, y):             # <<<<<<<<<<<<<<
@@ -3536,14 +3429,14 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
  */
   }
 
-  /* "chess.pyx":65
+  /* "chess.pyx":62
  * 		if out_board(x, y):
  * 			return 0
  * 		if self.board[x, y] == 0 or self.board[x, y] == player:             # <<<<<<<<<<<<<<
  * 			return 0
  * 		while True:
  */
-  if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 65, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 62, __pyx_L1_error)}
   __pyx_t_13 = __pyx_v_x;
   __pyx_t_14 = __pyx_v_y;
   __pyx_t_10 = -1;
@@ -3557,7 +3450,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
   } else if (unlikely(__pyx_t_14 >= __pyx_v_self->board.shape[1])) __pyx_t_10 = 1;
   if (unlikely(__pyx_t_10 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_10);
-    __PYX_ERR(0, 65, __pyx_L1_error)
+    __PYX_ERR(0, 62, __pyx_L1_error)
   }
   __pyx_t_15 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_13 * __pyx_v_self->board.strides[0]) ) + __pyx_t_14 * __pyx_v_self->board.strides[1]) ))) == 0) != 0);
   if (!__pyx_t_15) {
@@ -3565,7 +3458,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
     __pyx_t_12 = __pyx_t_15;
     goto __pyx_L5_bool_binop_done;
   }
-  if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 65, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 62, __pyx_L1_error)}
   __pyx_t_16 = __pyx_v_x;
   __pyx_t_17 = __pyx_v_y;
   __pyx_t_10 = -1;
@@ -3579,14 +3472,14 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
   } else if (unlikely(__pyx_t_17 >= __pyx_v_self->board.shape[1])) __pyx_t_10 = 1;
   if (unlikely(__pyx_t_10 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_10);
-    __PYX_ERR(0, 65, __pyx_L1_error)
+    __PYX_ERR(0, 62, __pyx_L1_error)
   }
   __pyx_t_15 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_16 * __pyx_v_self->board.strides[0]) ) + __pyx_t_17 * __pyx_v_self->board.strides[1]) ))) == __pyx_v_player) != 0);
   __pyx_t_12 = __pyx_t_15;
   __pyx_L5_bool_binop_done:;
   if (__pyx_t_12) {
 
-    /* "chess.pyx":66
+    /* "chess.pyx":63
  * 			return 0
  * 		if self.board[x, y] == 0 or self.board[x, y] == player:
  * 			return 0             # <<<<<<<<<<<<<<
@@ -3596,7 +3489,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "chess.pyx":65
+    /* "chess.pyx":62
  * 		if out_board(x, y):
  * 			return 0
  * 		if self.board[x, y] == 0 or self.board[x, y] == player:             # <<<<<<<<<<<<<<
@@ -3605,7 +3498,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
  */
   }
 
-  /* "chess.pyx":67
+  /* "chess.pyx":64
  * 		if self.board[x, y] == 0 or self.board[x, y] == player:
  * 			return 0
  * 		while True:             # <<<<<<<<<<<<<<
@@ -3614,7 +3507,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
  */
   while (1) {
 
-    /* "chess.pyx":68
+    /* "chess.pyx":65
  * 			return 0
  * 		while True:
  * 			x += directx             # <<<<<<<<<<<<<<
@@ -3623,7 +3516,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
  */
     __pyx_v_x = (__pyx_v_x + __pyx_v_directx);
 
-    /* "chess.pyx":69
+    /* "chess.pyx":66
  * 		while True:
  * 			x += directx
  * 			y += directy             # <<<<<<<<<<<<<<
@@ -3632,7 +3525,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
  */
     __pyx_v_y = (__pyx_v_y + __pyx_v_directy);
 
-    /* "chess.pyx":70
+    /* "chess.pyx":67
  * 			x += directx
  * 			y += directy
  * 			if out_board(x, y) or self.board[x, y] == 0:             # <<<<<<<<<<<<<<
@@ -3645,7 +3538,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
       __pyx_t_12 = __pyx_t_15;
       goto __pyx_L10_bool_binop_done;
     }
-    if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 70, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 67, __pyx_L1_error)}
     __pyx_t_18 = __pyx_v_x;
     __pyx_t_19 = __pyx_v_y;
     __pyx_t_10 = -1;
@@ -3659,14 +3552,14 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
     } else if (unlikely(__pyx_t_19 >= __pyx_v_self->board.shape[1])) __pyx_t_10 = 1;
     if (unlikely(__pyx_t_10 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_10);
-      __PYX_ERR(0, 70, __pyx_L1_error)
+      __PYX_ERR(0, 67, __pyx_L1_error)
     }
     __pyx_t_15 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_18 * __pyx_v_self->board.strides[0]) ) + __pyx_t_19 * __pyx_v_self->board.strides[1]) ))) == 0) != 0);
     __pyx_t_12 = __pyx_t_15;
     __pyx_L10_bool_binop_done:;
     if (__pyx_t_12) {
 
-      /* "chess.pyx":71
+      /* "chess.pyx":68
  * 			y += directy
  * 			if out_board(x, y) or self.board[x, y] == 0:
  * 				break             # <<<<<<<<<<<<<<
@@ -3675,7 +3568,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
  */
       goto __pyx_L8_break;
 
-      /* "chess.pyx":70
+      /* "chess.pyx":67
  * 			x += directx
  * 			y += directy
  * 			if out_board(x, y) or self.board[x, y] == 0:             # <<<<<<<<<<<<<<
@@ -3684,14 +3577,14 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
  */
     }
 
-    /* "chess.pyx":72
+    /* "chess.pyx":69
  * 			if out_board(x, y) or self.board[x, y] == 0:
  * 				break
  * 			if self.board[x, y] == player:             # <<<<<<<<<<<<<<
  * 				return 1
  * 		return 0
  */
-    if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 72, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 69, __pyx_L1_error)}
     __pyx_t_20 = __pyx_v_x;
     __pyx_t_21 = __pyx_v_y;
     __pyx_t_10 = -1;
@@ -3705,12 +3598,12 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
     } else if (unlikely(__pyx_t_21 >= __pyx_v_self->board.shape[1])) __pyx_t_10 = 1;
     if (unlikely(__pyx_t_10 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_10);
-      __PYX_ERR(0, 72, __pyx_L1_error)
+      __PYX_ERR(0, 69, __pyx_L1_error)
     }
     __pyx_t_12 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_20 * __pyx_v_self->board.strides[0]) ) + __pyx_t_21 * __pyx_v_self->board.strides[1]) ))) == __pyx_v_player) != 0);
     if (__pyx_t_12) {
 
-      /* "chess.pyx":73
+      /* "chess.pyx":70
  * 				break
  * 			if self.board[x, y] == player:
  * 				return 1             # <<<<<<<<<<<<<<
@@ -3720,7 +3613,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
       __pyx_r = 1;
       goto __pyx_L0;
 
-      /* "chess.pyx":72
+      /* "chess.pyx":69
  * 			if out_board(x, y) or self.board[x, y] == 0:
  * 				break
  * 			if self.board[x, y] == player:             # <<<<<<<<<<<<<<
@@ -3731,7 +3624,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
   }
   __pyx_L8_break:;
 
-  /* "chess.pyx":74
+  /* "chess.pyx":71
  * 			if self.board[x, y] == player:
  * 				return 1
  * 		return 0             # <<<<<<<<<<<<<<
@@ -3741,7 +3634,7 @@ static int __pyx_f_5chess_10ChessBoard_check_reverse(struct __pyx_obj_5chess_Che
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "chess.pyx":60
+  /* "chess.pyx":57
  * 		return 1
  * 
  * 	cpdef int check_reverse(self, int x, int y, int directx, int directy, int player):             # <<<<<<<<<<<<<<
@@ -3808,29 +3701,29 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_9check_reverse(PyObject *__pyx_v_s
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("check_reverse", 1, 5, 5, 1); __PYX_ERR(0, 60, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("check_reverse", 1, 5, 5, 1); __PYX_ERR(0, 57, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_directx)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("check_reverse", 1, 5, 5, 2); __PYX_ERR(0, 60, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("check_reverse", 1, 5, 5, 2); __PYX_ERR(0, 57, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_directy)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("check_reverse", 1, 5, 5, 3); __PYX_ERR(0, 60, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("check_reverse", 1, 5, 5, 3); __PYX_ERR(0, 57, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_player)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("check_reverse", 1, 5, 5, 4); __PYX_ERR(0, 60, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("check_reverse", 1, 5, 5, 4); __PYX_ERR(0, 57, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "check_reverse") < 0)) __PYX_ERR(0, 60, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "check_reverse") < 0)) __PYX_ERR(0, 57, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
       goto __pyx_L5_argtuple_error;
@@ -3841,15 +3734,15 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_9check_reverse(PyObject *__pyx_v_s
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
     }
-    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
-    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
-    __pyx_v_directx = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_directx == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
-    __pyx_v_directy = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_directy == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
-    __pyx_v_player = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
+    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
+    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
+    __pyx_v_directx = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_directx == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
+    __pyx_v_directy = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_directy == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
+    __pyx_v_player = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("check_reverse", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 60, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("check_reverse", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 57, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("chess.ChessBoard.check_reverse", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3868,7 +3761,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_8check_reverse(struct __pyx_obj_5c
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("check_reverse", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_check_reverse(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_directx, __pyx_v_directy, __pyx_v_player, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_check_reverse(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_directx, __pyx_v_directy, __pyx_v_player, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3885,7 +3778,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_8check_reverse(struct __pyx_obj_5c
   return __pyx_r;
 }
 
-/* "chess.pyx":76
+/* "chess.pyx":73
  * 		return 0
  * 
  * 	cpdef int could_drop_xy(self, int x, int y, int player):             # <<<<<<<<<<<<<<
@@ -3928,14 +3821,14 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
     else {
       PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_could_drop_xy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_could_drop_xy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_11could_drop_xy)) {
-        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 73, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 73, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_6 = __pyx_t_1; __pyx_t_7 = NULL;
@@ -3953,7 +3846,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_6)) {
           PyObject *__pyx_temp[4] = {__pyx_t_7, __pyx_t_3, __pyx_t_4, __pyx_t_5};
-          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 3+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 3+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3964,7 +3857,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
           PyObject *__pyx_temp[4] = {__pyx_t_7, __pyx_t_3, __pyx_t_4, __pyx_t_5};
-          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 3+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 3+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3973,7 +3866,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
         } else
         #endif
         {
-          __pyx_t_9 = PyTuple_New(3+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 76, __pyx_L1_error)
+          __pyx_t_9 = PyTuple_New(3+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 73, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           if (__pyx_t_7) {
             __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
@@ -3987,12 +3880,12 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
           __pyx_t_3 = 0;
           __pyx_t_4 = 0;
           __pyx_t_5 = 0;
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_9, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_9, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 73, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_8;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4011,7 +3904,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
     #endif
   }
 
-  /* "chess.pyx":77
+  /* "chess.pyx":74
  * 
  * 	cpdef int could_drop_xy(self, int x, int y, int player):
  * 		if out_board(x, y) or self.board[x, y]:             # <<<<<<<<<<<<<<
@@ -4024,7 +3917,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
     __pyx_t_10 = __pyx_t_11;
     goto __pyx_L4_bool_binop_done;
   }
-  if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 77, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 74, __pyx_L1_error)}
   __pyx_t_12 = __pyx_v_x;
   __pyx_t_13 = __pyx_v_y;
   __pyx_t_8 = -1;
@@ -4038,14 +3931,14 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
   } else if (unlikely(__pyx_t_13 >= __pyx_v_self->board.shape[1])) __pyx_t_8 = 1;
   if (unlikely(__pyx_t_8 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_8);
-    __PYX_ERR(0, 77, __pyx_L1_error)
+    __PYX_ERR(0, 74, __pyx_L1_error)
   }
   __pyx_t_11 = ((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_12 * __pyx_v_self->board.strides[0]) ) + __pyx_t_13 * __pyx_v_self->board.strides[1]) ))) != 0);
   __pyx_t_10 = __pyx_t_11;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_10) {
 
-    /* "chess.pyx":78
+    /* "chess.pyx":75
  * 	cpdef int could_drop_xy(self, int x, int y, int player):
  * 		if out_board(x, y) or self.board[x, y]:
  * 			return 0             # <<<<<<<<<<<<<<
@@ -4055,7 +3948,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "chess.pyx":77
+    /* "chess.pyx":74
  * 
  * 	cpdef int could_drop_xy(self, int x, int y, int player):
  * 		if out_board(x, y) or self.board[x, y]:             # <<<<<<<<<<<<<<
@@ -4064,53 +3957,53 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
  */
   }
 
-  /* "chess.pyx":81
+  /* "chess.pyx":78
  * 		cdef int i
  * 		cdef int directx, directy
  * 		for i in range(8):             # <<<<<<<<<<<<<<
- * 			directx, directy = self.xx[i], self.yy[i]
+ * 			directx, directy = xx[i], yy[i]
  * 			if self.check_reverse(x, y, directx, directy, player):
  */
   for (__pyx_t_8 = 0; __pyx_t_8 < 8; __pyx_t_8+=1) {
     __pyx_v_i = __pyx_t_8;
 
-    /* "chess.pyx":82
+    /* "chess.pyx":79
  * 		cdef int directx, directy
  * 		for i in range(8):
- * 			directx, directy = self.xx[i], self.yy[i]             # <<<<<<<<<<<<<<
+ * 			directx, directy = xx[i], yy[i]             # <<<<<<<<<<<<<<
  * 			if self.check_reverse(x, y, directx, directy, player):
  * 				return 1
  */
-    if (unlikely(!__pyx_v_self->xx.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 82, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_5chess_xx.memview)) { __Pyx_RaiseUnboundLocalError("xx"); __PYX_ERR(0, 79, __pyx_L1_error) }
     __pyx_t_14 = __pyx_v_i;
     __pyx_t_15 = -1;
     if (__pyx_t_14 < 0) {
-      __pyx_t_14 += __pyx_v_self->xx.shape[0];
+      __pyx_t_14 += __pyx_v_5chess_xx.shape[0];
       if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
-    } else if (unlikely(__pyx_t_14 >= __pyx_v_self->xx.shape[0])) __pyx_t_15 = 0;
+    } else if (unlikely(__pyx_t_14 >= __pyx_v_5chess_xx.shape[0])) __pyx_t_15 = 0;
     if (unlikely(__pyx_t_15 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_15);
-      __PYX_ERR(0, 82, __pyx_L1_error)
+      __PYX_ERR(0, 79, __pyx_L1_error)
     }
-    __pyx_t_15 = (*((int *) ( /* dim=0 */ (__pyx_v_self->xx.data + __pyx_t_14 * __pyx_v_self->xx.strides[0]) )));
-    if (unlikely(!__pyx_v_self->yy.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 82, __pyx_L1_error)}
+    __pyx_t_15 = (*((int *) ( /* dim=0 */ (__pyx_v_5chess_xx.data + __pyx_t_14 * __pyx_v_5chess_xx.strides[0]) )));
+    if (unlikely(!__pyx_v_5chess_yy.memview)) { __Pyx_RaiseUnboundLocalError("yy"); __PYX_ERR(0, 79, __pyx_L1_error) }
     __pyx_t_16 = __pyx_v_i;
     __pyx_t_17 = -1;
     if (__pyx_t_16 < 0) {
-      __pyx_t_16 += __pyx_v_self->yy.shape[0];
+      __pyx_t_16 += __pyx_v_5chess_yy.shape[0];
       if (unlikely(__pyx_t_16 < 0)) __pyx_t_17 = 0;
-    } else if (unlikely(__pyx_t_16 >= __pyx_v_self->yy.shape[0])) __pyx_t_17 = 0;
+    } else if (unlikely(__pyx_t_16 >= __pyx_v_5chess_yy.shape[0])) __pyx_t_17 = 0;
     if (unlikely(__pyx_t_17 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_17);
-      __PYX_ERR(0, 82, __pyx_L1_error)
+      __PYX_ERR(0, 79, __pyx_L1_error)
     }
-    __pyx_t_17 = (*((int *) ( /* dim=0 */ (__pyx_v_self->yy.data + __pyx_t_16 * __pyx_v_self->yy.strides[0]) )));
+    __pyx_t_17 = (*((int *) ( /* dim=0 */ (__pyx_v_5chess_yy.data + __pyx_t_16 * __pyx_v_5chess_yy.strides[0]) )));
     __pyx_v_directx = __pyx_t_15;
     __pyx_v_directy = __pyx_t_17;
 
-    /* "chess.pyx":83
+    /* "chess.pyx":80
  * 		for i in range(8):
- * 			directx, directy = self.xx[i], self.yy[i]
+ * 			directx, directy = xx[i], yy[i]
  * 			if self.check_reverse(x, y, directx, directy, player):             # <<<<<<<<<<<<<<
  * 				return 1
  * 		return 0
@@ -4118,8 +4011,8 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
     __pyx_t_10 = (((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->check_reverse(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_directx, __pyx_v_directy, __pyx_v_player, 0) != 0);
     if (__pyx_t_10) {
 
-      /* "chess.pyx":84
- * 			directx, directy = self.xx[i], self.yy[i]
+      /* "chess.pyx":81
+ * 			directx, directy = xx[i], yy[i]
  * 			if self.check_reverse(x, y, directx, directy, player):
  * 				return 1             # <<<<<<<<<<<<<<
  * 		return 0
@@ -4128,9 +4021,9 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
       __pyx_r = 1;
       goto __pyx_L0;
 
-      /* "chess.pyx":83
+      /* "chess.pyx":80
  * 		for i in range(8):
- * 			directx, directy = self.xx[i], self.yy[i]
+ * 			directx, directy = xx[i], yy[i]
  * 			if self.check_reverse(x, y, directx, directy, player):             # <<<<<<<<<<<<<<
  * 				return 1
  * 		return 0
@@ -4138,7 +4031,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
     }
   }
 
-  /* "chess.pyx":85
+  /* "chess.pyx":82
  * 			if self.check_reverse(x, y, directx, directy, player):
  * 				return 1
  * 		return 0             # <<<<<<<<<<<<<<
@@ -4148,7 +4041,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop_xy(struct __pyx_obj_5chess_Che
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "chess.pyx":76
+  /* "chess.pyx":73
  * 		return 0
  * 
  * 	cpdef int could_drop_xy(self, int x, int y, int player):             # <<<<<<<<<<<<<<
@@ -4207,17 +4100,17 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_11could_drop_xy(PyObject *__pyx_v_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("could_drop_xy", 1, 3, 3, 1); __PYX_ERR(0, 76, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("could_drop_xy", 1, 3, 3, 1); __PYX_ERR(0, 73, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_player)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("could_drop_xy", 1, 3, 3, 2); __PYX_ERR(0, 76, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("could_drop_xy", 1, 3, 3, 2); __PYX_ERR(0, 73, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "could_drop_xy") < 0)) __PYX_ERR(0, 76, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "could_drop_xy") < 0)) __PYX_ERR(0, 73, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -4226,13 +4119,13 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_11could_drop_xy(PyObject *__pyx_v_
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 76, __pyx_L3_error)
-    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 76, __pyx_L3_error)
-    __pyx_v_player = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 76, __pyx_L3_error)
+    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 73, __pyx_L3_error)
+    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 73, __pyx_L3_error)
+    __pyx_v_player = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 73, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("could_drop_xy", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 76, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("could_drop_xy", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 73, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("chess.ChessBoard.could_drop_xy", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4251,7 +4144,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_10could_drop_xy(struct __pyx_obj_5
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("could_drop_xy", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_could_drop_xy(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_player, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_could_drop_xy(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_player, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4268,12 +4161,12 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_10could_drop_xy(struct __pyx_obj_5
   return __pyx_r;
 }
 
-/* "chess.pyx":87
+/* "chess.pyx":84
  * 		return 0
  * 
  * 	cpdef int could_drop(self, int p, int player):             # <<<<<<<<<<<<<<
  * 		cdef int x, y
- * 		x, y = p // 8, p % 8
+ * 		x, y = p // n, p % n
  */
 
 static PyObject *__pyx_pw_5chess_10ChessBoard_13could_drop(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
@@ -4290,8 +4183,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop(struct __pyx_obj_5chess_ChessB
   PyObject *__pyx_t_6 = NULL;
   int __pyx_t_7;
   PyObject *__pyx_t_8 = NULL;
-  long __pyx_t_9;
-  long __pyx_t_10;
+  int __pyx_t_9;
   __Pyx_RefNannySetupContext("could_drop", 0);
   /* Check if called by wrapper */
   if (unlikely(__pyx_skip_dispatch)) ;
@@ -4303,12 +4195,12 @@ static int __pyx_f_5chess_10ChessBoard_could_drop(struct __pyx_obj_5chess_ChessB
     else {
       PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_could_drop); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_could_drop); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_13could_drop)) {
-        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_p); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_p); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 87, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 84, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_5 = __pyx_t_1; __pyx_t_6 = NULL;
@@ -4326,7 +4218,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop(struct __pyx_obj_5chess_ChessB
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_5)) {
           PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_3, __pyx_t_4};
-          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -4336,7 +4228,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop(struct __pyx_obj_5chess_ChessB
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
           PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_3, __pyx_t_4};
-          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -4344,7 +4236,7 @@ static int __pyx_f_5chess_10ChessBoard_could_drop(struct __pyx_obj_5chess_ChessB
         } else
         #endif
         {
-          __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 87, __pyx_L1_error)
+          __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 84, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           if (__pyx_t_6) {
             __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -4355,12 +4247,12 @@ static int __pyx_f_5chess_10ChessBoard_could_drop(struct __pyx_obj_5chess_ChessB
           PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_t_4);
           __pyx_t_3 = 0;
           __pyx_t_4 = 0;
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         }
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_7;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4379,34 +4271,46 @@ static int __pyx_f_5chess_10ChessBoard_could_drop(struct __pyx_obj_5chess_ChessB
     #endif
   }
 
-  /* "chess.pyx":89
+  /* "chess.pyx":86
  * 	cpdef int could_drop(self, int p, int player):
  * 		cdef int x, y
- * 		x, y = p // 8, p % 8             # <<<<<<<<<<<<<<
+ * 		x, y = p // n, p % n             # <<<<<<<<<<<<<<
  * 		return self.could_drop_xy(x, y, player)
  * 
  */
-  __pyx_t_9 = __Pyx_div_long(__pyx_v_p, 8);
-  __pyx_t_10 = __Pyx_mod_long(__pyx_v_p, 8);
-  __pyx_v_x = __pyx_t_9;
-  __pyx_v_y = __pyx_t_10;
+  if (unlikely(__pyx_v_5chess_n == 0)) {
+    PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
+    __PYX_ERR(0, 86, __pyx_L1_error)
+  }
+  else if (sizeof(int) == sizeof(long) && (!(((int)-1) > 0)) && unlikely(__pyx_v_5chess_n == (int)-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_v_p))) {
+    PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
+    __PYX_ERR(0, 86, __pyx_L1_error)
+  }
+  __pyx_t_7 = __Pyx_div_int(__pyx_v_p, __pyx_v_5chess_n);
+  if (unlikely(__pyx_v_5chess_n == 0)) {
+    PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
+    __PYX_ERR(0, 86, __pyx_L1_error)
+  }
+  __pyx_t_9 = __Pyx_mod_int(__pyx_v_p, __pyx_v_5chess_n);
+  __pyx_v_x = __pyx_t_7;
+  __pyx_v_y = __pyx_t_9;
 
-  /* "chess.pyx":90
+  /* "chess.pyx":87
  * 		cdef int x, y
- * 		x, y = p // 8, p % 8
+ * 		x, y = p // n, p % n
  * 		return self.could_drop_xy(x, y, player)             # <<<<<<<<<<<<<<
  * 
- * 	def drop_list(self, int player):
+ * 	cpdef int could_drop_by(self, int player):
  */
   __pyx_r = ((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->could_drop_xy(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_player, 0);
   goto __pyx_L0;
 
-  /* "chess.pyx":87
+  /* "chess.pyx":84
  * 		return 0
  * 
  * 	cpdef int could_drop(self, int p, int player):             # <<<<<<<<<<<<<<
  * 		cdef int x, y
- * 		x, y = p // 8, p % 8
+ * 		x, y = p // n, p % n
  */
 
   /* function exit code */
@@ -4456,11 +4360,11 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_13could_drop(PyObject *__pyx_v_sel
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_player)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("could_drop", 1, 2, 2, 1); __PYX_ERR(0, 87, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("could_drop", 1, 2, 2, 1); __PYX_ERR(0, 84, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "could_drop") < 0)) __PYX_ERR(0, 87, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "could_drop") < 0)) __PYX_ERR(0, 84, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -4468,12 +4372,12 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_13could_drop(PyObject *__pyx_v_sel
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_p = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_p == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L3_error)
-    __pyx_v_player = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L3_error)
+    __pyx_v_p = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_p == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L3_error)
+    __pyx_v_player = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("could_drop", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 87, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("could_drop", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 84, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("chess.ChessBoard.could_drop", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4492,7 +4396,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_12could_drop(struct __pyx_obj_5che
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("could_drop", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_could_drop(__pyx_v_self, __pyx_v_p, __pyx_v_player, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_could_drop(__pyx_v_self, __pyx_v_p, __pyx_v_player, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4509,8 +4413,202 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_12could_drop(struct __pyx_obj_5che
   return __pyx_r;
 }
 
-/* "chess.pyx":92
+/* "chess.pyx":89
  * 		return self.could_drop_xy(x, y, player)
+ * 
+ * 	cpdef int could_drop_by(self, int player):             # <<<<<<<<<<<<<<
+ * 		cdef int p
+ * 		for p in range(n * n):
+ */
+
+static PyObject *__pyx_pw_5chess_10ChessBoard_15could_drop_by(PyObject *__pyx_v_self, PyObject *__pyx_arg_player); /*proto*/
+static int __pyx_f_5chess_10ChessBoard_could_drop_by(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player, int __pyx_skip_dispatch) {
+  int __pyx_v_p;
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  __Pyx_RefNannySetupContext("could_drop_by", 0);
+  /* Check if called by wrapper */
+  if (unlikely(__pyx_skip_dispatch)) ;
+  /* Check if overridden in Python */
+  else if (unlikely((Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0) || (Py_TYPE(((PyObject *)__pyx_v_self))->tp_flags & (Py_TPFLAGS_IS_ABSTRACT | Py_TPFLAGS_HEAPTYPE)))) {
+    #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP
+    static PY_UINT64_T tp_dict_version = 0, obj_dict_version = 0;
+    if (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict && tp_dict_version == __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) && (!Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset || obj_dict_version == __PYX_GET_DICT_VERSION(_PyObject_GetDictPtr(((PyObject *)__pyx_v_self))))));
+    else {
+      PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
+      #endif
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_could_drop_by); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_15could_drop_by)) {
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_1);
+        __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
+        if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
+          __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
+          if (likely(__pyx_t_5)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+            __Pyx_INCREF(__pyx_t_5);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_4, function);
+          }
+        }
+        __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3);
+        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __pyx_r = __pyx_t_6;
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        goto __pyx_L0;
+      }
+      #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP
+      tp_dict_version = likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
+      obj_dict_version = likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset) ? __PYX_GET_DICT_VERSION(_PyObject_GetDictPtr(((PyObject *)__pyx_v_self))) : 0;
+      if (unlikely(type_dict_guard != tp_dict_version)) {
+        tp_dict_version = obj_dict_version = 0;
+      }
+      #endif
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP
+    }
+    #endif
+  }
+
+  /* "chess.pyx":91
+ * 	cpdef int could_drop_by(self, int player):
+ * 		cdef int p
+ * 		for p in range(n * n):             # <<<<<<<<<<<<<<
+ * 			if self.could_drop(p, player):
+ * 				return 1
+ */
+  __pyx_t_6 = (__pyx_v_5chess_n * __pyx_v_5chess_n);
+  __pyx_t_7 = __pyx_t_6;
+  for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
+    __pyx_v_p = __pyx_t_8;
+
+    /* "chess.pyx":92
+ * 		cdef int p
+ * 		for p in range(n * n):
+ * 			if self.could_drop(p, player):             # <<<<<<<<<<<<<<
+ * 				return 1
+ * 		return 0
+ */
+    __pyx_t_9 = (((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->could_drop(__pyx_v_self, __pyx_v_p, __pyx_v_player, 0) != 0);
+    if (__pyx_t_9) {
+
+      /* "chess.pyx":93
+ * 		for p in range(n * n):
+ * 			if self.could_drop(p, player):
+ * 				return 1             # <<<<<<<<<<<<<<
+ * 		return 0
+ * 
+ */
+      __pyx_r = 1;
+      goto __pyx_L0;
+
+      /* "chess.pyx":92
+ * 		cdef int p
+ * 		for p in range(n * n):
+ * 			if self.could_drop(p, player):             # <<<<<<<<<<<<<<
+ * 				return 1
+ * 		return 0
+ */
+    }
+  }
+
+  /* "chess.pyx":94
+ * 			if self.could_drop(p, player):
+ * 				return 1
+ * 		return 0             # <<<<<<<<<<<<<<
+ * 
+ * 	def drop_list(self, int player):
+ */
+  __pyx_r = 0;
+  goto __pyx_L0;
+
+  /* "chess.pyx":89
+ * 		return self.could_drop_xy(x, y, player)
+ * 
+ * 	cpdef int could_drop_by(self, int player):             # <<<<<<<<<<<<<<
+ * 		cdef int p
+ * 		for p in range(n * n):
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_WriteUnraisable("chess.ChessBoard.could_drop_by", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5chess_10ChessBoard_15could_drop_by(PyObject *__pyx_v_self, PyObject *__pyx_arg_player); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_15could_drop_by(PyObject *__pyx_v_self, PyObject *__pyx_arg_player) {
+  int __pyx_v_player;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("could_drop_by (wrapper)", 0);
+  assert(__pyx_arg_player); {
+    __pyx_v_player = __Pyx_PyInt_As_int(__pyx_arg_player); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("chess.ChessBoard.could_drop_by", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_5chess_10ChessBoard_14could_drop_by(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self), ((int)__pyx_v_player));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5chess_10ChessBoard_14could_drop_by(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("could_drop_by", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_could_drop_by(__pyx_v_self, __pyx_v_player, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("chess.ChessBoard.could_drop_by", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "chess.pyx":96
+ * 		return 0
  * 
  * 	def drop_list(self, int player):             # <<<<<<<<<<<<<<
  * 		dlist = []
@@ -4518,14 +4616,14 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_12could_drop(struct __pyx_obj_5che
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5chess_10ChessBoard_15drop_list(PyObject *__pyx_v_self, PyObject *__pyx_arg_player); /*proto*/
-static PyObject *__pyx_pw_5chess_10ChessBoard_15drop_list(PyObject *__pyx_v_self, PyObject *__pyx_arg_player) {
+static PyObject *__pyx_pw_5chess_10ChessBoard_17drop_list(PyObject *__pyx_v_self, PyObject *__pyx_arg_player); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_17drop_list(PyObject *__pyx_v_self, PyObject *__pyx_arg_player) {
   int __pyx_v_player;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("drop_list (wrapper)", 0);
   assert(__pyx_arg_player); {
-    __pyx_v_player = __Pyx_PyInt_As_int(__pyx_arg_player); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L3_error)
+    __pyx_v_player = __Pyx_PyInt_As_int(__pyx_arg_player); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 96, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4533,14 +4631,14 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_15drop_list(PyObject *__pyx_v_self
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5chess_10ChessBoard_14drop_list(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self), ((int)__pyx_v_player));
+  __pyx_r = __pyx_pf_5chess_10ChessBoard_16drop_list(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self), ((int)__pyx_v_player));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5chess_10ChessBoard_14drop_list(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player) {
+static PyObject *__pyx_pf_5chess_10ChessBoard_16drop_list(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player) {
   PyObject *__pyx_v_dlist = NULL;
   int __pyx_v_p;
   PyObject *__pyx_r = NULL;
@@ -4549,55 +4647,59 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_14drop_list(struct __pyx_obj_5ches
   int __pyx_t_2;
   int __pyx_t_3;
   int __pyx_t_4;
+  int __pyx_t_5;
+  int __pyx_t_6;
   __Pyx_RefNannySetupContext("drop_list", 0);
 
-  /* "chess.pyx":93
+  /* "chess.pyx":97
  * 
  * 	def drop_list(self, int player):
  * 		dlist = []             # <<<<<<<<<<<<<<
  * 		cdef int p
- * 		for p in range(64):
+ * 		for p in range(n * n):
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_dlist = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "chess.pyx":95
+  /* "chess.pyx":99
  * 		dlist = []
  * 		cdef int p
- * 		for p in range(64):             # <<<<<<<<<<<<<<
+ * 		for p in range(n * n):             # <<<<<<<<<<<<<<
  * 			if self.could_drop(p, player):
  * 				dlist.append(p)
  */
-  for (__pyx_t_2 = 0; __pyx_t_2 < 64; __pyx_t_2+=1) {
-    __pyx_v_p = __pyx_t_2;
+  __pyx_t_2 = (__pyx_v_5chess_n * __pyx_v_5chess_n);
+  __pyx_t_3 = __pyx_t_2;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v_p = __pyx_t_4;
 
-    /* "chess.pyx":96
+    /* "chess.pyx":100
  * 		cdef int p
- * 		for p in range(64):
+ * 		for p in range(n * n):
  * 			if self.could_drop(p, player):             # <<<<<<<<<<<<<<
  * 				dlist.append(p)
  * 		return dlist
  */
-    __pyx_t_3 = (((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->could_drop(__pyx_v_self, __pyx_v_p, __pyx_v_player, 0) != 0);
-    if (__pyx_t_3) {
+    __pyx_t_5 = (((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->could_drop(__pyx_v_self, __pyx_v_p, __pyx_v_player, 0) != 0);
+    if (__pyx_t_5) {
 
-      /* "chess.pyx":97
- * 		for p in range(64):
+      /* "chess.pyx":101
+ * 		for p in range(n * n):
  * 			if self.could_drop(p, player):
  * 				dlist.append(p)             # <<<<<<<<<<<<<<
  * 		return dlist
  * 
  */
-      __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_p); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_p); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_dlist, __pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 97, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_dlist, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 101, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "chess.pyx":96
+      /* "chess.pyx":100
  * 		cdef int p
- * 		for p in range(64):
+ * 		for p in range(n * n):
  * 			if self.could_drop(p, player):             # <<<<<<<<<<<<<<
  * 				dlist.append(p)
  * 		return dlist
@@ -4605,7 +4707,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_14drop_list(struct __pyx_obj_5ches
     }
   }
 
-  /* "chess.pyx":98
+  /* "chess.pyx":102
  * 			if self.could_drop(p, player):
  * 				dlist.append(p)
  * 		return dlist             # <<<<<<<<<<<<<<
@@ -4617,8 +4719,8 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_14drop_list(struct __pyx_obj_5ches
   __pyx_r = __pyx_v_dlist;
   goto __pyx_L0;
 
-  /* "chess.pyx":92
- * 		return self.could_drop_xy(x, y, player)
+  /* "chess.pyx":96
+ * 		return 0
  * 
  * 	def drop_list(self, int player):             # <<<<<<<<<<<<<<
  * 		dlist = []
@@ -4637,7 +4739,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_14drop_list(struct __pyx_obj_5ches
   return __pyx_r;
 }
 
-/* "chess.pyx":100
+/* "chess.pyx":104
  * 		return dlist
  * 
  * 	def drop_list_xy(self, int player):             # <<<<<<<<<<<<<<
@@ -4646,14 +4748,14 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_14drop_list(struct __pyx_obj_5ches
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5chess_10ChessBoard_17drop_list_xy(PyObject *__pyx_v_self, PyObject *__pyx_arg_player); /*proto*/
-static PyObject *__pyx_pw_5chess_10ChessBoard_17drop_list_xy(PyObject *__pyx_v_self, PyObject *__pyx_arg_player) {
+static PyObject *__pyx_pw_5chess_10ChessBoard_19drop_list_xy(PyObject *__pyx_v_self, PyObject *__pyx_arg_player); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_19drop_list_xy(PyObject *__pyx_v_self, PyObject *__pyx_arg_player) {
   int __pyx_v_player;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("drop_list_xy (wrapper)", 0);
   assert(__pyx_arg_player); {
-    __pyx_v_player = __Pyx_PyInt_As_int(__pyx_arg_player); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 100, __pyx_L3_error)
+    __pyx_v_player = __Pyx_PyInt_As_int(__pyx_arg_player); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4661,14 +4763,14 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_17drop_list_xy(PyObject *__pyx_v_s
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5chess_10ChessBoard_16drop_list_xy(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self), ((int)__pyx_v_player));
+  __pyx_r = __pyx_pf_5chess_10ChessBoard_18drop_list_xy(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self), ((int)__pyx_v_player));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5chess_10ChessBoard_16drop_list_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player) {
+static PyObject *__pyx_pf_5chess_10ChessBoard_18drop_list_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_player) {
   PyObject *__pyx_v_dlist = NULL;
   PyObject *__pyx_v_dlist_xy = NULL;
   int __pyx_v_p;
@@ -4684,16 +4786,16 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_16drop_list_xy(struct __pyx_obj_5c
   int __pyx_t_8;
   __Pyx_RefNannySetupContext("drop_list_xy", 0);
 
-  /* "chess.pyx":101
+  /* "chess.pyx":105
  * 
  * 	def drop_list_xy(self, int player):
  * 		dlist = self.drop_list(player)             # <<<<<<<<<<<<<<
  * 		dlist_xy = []
  * 		cdef int p
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_drop_list); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_drop_list); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -4708,55 +4810,55 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_16drop_list_xy(struct __pyx_obj_5c
   __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_dlist = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "chess.pyx":102
+  /* "chess.pyx":106
  * 	def drop_list_xy(self, int player):
  * 		dlist = self.drop_list(player)
  * 		dlist_xy = []             # <<<<<<<<<<<<<<
  * 		cdef int p
  * 		for p in dlist:
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_dlist_xy = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "chess.pyx":104
+  /* "chess.pyx":108
  * 		dlist_xy = []
  * 		cdef int p
  * 		for p in dlist:             # <<<<<<<<<<<<<<
- * 			dlist_xy.append((p // 8, p % 8))
+ * 			dlist_xy.append((p // n, p % n))
  * 		return dlist_xy
  */
   if (likely(PyList_CheckExact(__pyx_v_dlist)) || PyTuple_CheckExact(__pyx_v_dlist)) {
     __pyx_t_1 = __pyx_v_dlist; __Pyx_INCREF(__pyx_t_1); __pyx_t_5 = 0;
     __pyx_t_6 = NULL;
   } else {
-    __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_dlist); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
+    __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_dlist); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 104, __pyx_L1_error)
+    __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 108, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_6)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 108, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 104, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 108, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 104, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -4766,28 +4868,40 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_16drop_list_xy(struct __pyx_obj_5c
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 104, __pyx_L1_error)
+          else __PYX_ERR(0, 108, __pyx_L1_error)
         }
         break;
       }
       __Pyx_GOTREF(__pyx_t_2);
     }
-    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 108, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_v_p = __pyx_t_7;
 
-    /* "chess.pyx":105
+    /* "chess.pyx":109
  * 		cdef int p
  * 		for p in dlist:
- * 			dlist_xy.append((p // 8, p % 8))             # <<<<<<<<<<<<<<
+ * 			dlist_xy.append((p // n, p % n))             # <<<<<<<<<<<<<<
  * 		return dlist_xy
  * 
  */
-    __pyx_t_2 = __Pyx_PyInt_From_long(__Pyx_div_long(__pyx_v_p, 8)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
+    if (unlikely(__pyx_v_5chess_n == 0)) {
+      PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
+      __PYX_ERR(0, 109, __pyx_L1_error)
+    }
+    else if (sizeof(int) == sizeof(long) && (!(((int)-1) > 0)) && unlikely(__pyx_v_5chess_n == (int)-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_v_p))) {
+      PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
+      __PYX_ERR(0, 109, __pyx_L1_error)
+    }
+    __pyx_t_2 = __Pyx_PyInt_From_int(__Pyx_div_int(__pyx_v_p, __pyx_v_5chess_n)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyInt_From_long(__Pyx_mod_long(__pyx_v_p, 8)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
+    if (unlikely(__pyx_v_5chess_n == 0)) {
+      PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
+      __PYX_ERR(0, 109, __pyx_L1_error)
+    }
+    __pyx_t_3 = __Pyx_PyInt_From_int(__Pyx_mod_int(__pyx_v_p, __pyx_v_5chess_n)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 109, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 105, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 109, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
@@ -4795,22 +4909,22 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_16drop_list_xy(struct __pyx_obj_5c
     PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_3);
     __pyx_t_2 = 0;
     __pyx_t_3 = 0;
-    __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_dlist_xy, __pyx_t_4); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 105, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_dlist_xy, __pyx_t_4); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 109, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "chess.pyx":104
+    /* "chess.pyx":108
  * 		dlist_xy = []
  * 		cdef int p
  * 		for p in dlist:             # <<<<<<<<<<<<<<
- * 			dlist_xy.append((p // 8, p % 8))
+ * 			dlist_xy.append((p // n, p % n))
  * 		return dlist_xy
  */
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "chess.pyx":106
+  /* "chess.pyx":110
  * 		for p in dlist:
- * 			dlist_xy.append((p // 8, p % 8))
+ * 			dlist_xy.append((p // n, p % n))
  * 		return dlist_xy             # <<<<<<<<<<<<<<
  * 
  * 	cpdef int move_xy(self, int x, int y, int player):
@@ -4820,7 +4934,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_16drop_list_xy(struct __pyx_obj_5c
   __pyx_r = __pyx_v_dlist_xy;
   goto __pyx_L0;
 
-  /* "chess.pyx":100
+  /* "chess.pyx":104
  * 		return dlist
  * 
  * 	def drop_list_xy(self, int player):             # <<<<<<<<<<<<<<
@@ -4844,7 +4958,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_16drop_list_xy(struct __pyx_obj_5c
   return __pyx_r;
 }
 
-/* "chess.pyx":108
+/* "chess.pyx":112
  * 		return dlist_xy
  * 
  * 	cpdef int move_xy(self, int x, int y, int player):             # <<<<<<<<<<<<<<
@@ -4852,7 +4966,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_16drop_list_xy(struct __pyx_obj_5c
  * 			return 0
  */
 
-static PyObject *__pyx_pw_5chess_10ChessBoard_19move_xy(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_21move_xy(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_x, int __pyx_v_y, int __pyx_v_player, int __pyx_skip_dispatch) {
   int __pyx_v_original_x;
   int __pyx_v_original_y;
@@ -4892,14 +5006,14 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
     else {
       PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_move_xy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_move_xy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_19move_xy)) {
-        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_21move_xy)) {
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 112, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 112, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 108, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 112, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_6 = __pyx_t_1; __pyx_t_7 = NULL;
@@ -4917,7 +5031,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_6)) {
           PyObject *__pyx_temp[4] = {__pyx_t_7, __pyx_t_3, __pyx_t_4, __pyx_t_5};
-          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 3+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 3+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -4928,7 +5042,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
           PyObject *__pyx_temp[4] = {__pyx_t_7, __pyx_t_3, __pyx_t_4, __pyx_t_5};
-          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 3+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 3+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -4937,7 +5051,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
         } else
         #endif
         {
-          __pyx_t_9 = PyTuple_New(3+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 108, __pyx_L1_error)
+          __pyx_t_9 = PyTuple_New(3+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 112, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           if (__pyx_t_7) {
             __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
@@ -4951,12 +5065,12 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
           __pyx_t_3 = 0;
           __pyx_t_4 = 0;
           __pyx_t_5 = 0;
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_9, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_9, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 108, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 112, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_8;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4975,7 +5089,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
     #endif
   }
 
-  /* "chess.pyx":109
+  /* "chess.pyx":113
  * 
  * 	cpdef int move_xy(self, int x, int y, int player):
  * 		if not self.could_drop_xy(x, y, player):             # <<<<<<<<<<<<<<
@@ -4985,7 +5099,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
   __pyx_t_10 = ((!(((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->could_drop_xy(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_player, 0) != 0)) != 0);
   if (__pyx_t_10) {
 
-    /* "chess.pyx":110
+    /* "chess.pyx":114
  * 	cpdef int move_xy(self, int x, int y, int player):
  * 		if not self.could_drop_xy(x, y, player):
  * 			return 0             # <<<<<<<<<<<<<<
@@ -4995,7 +5109,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "chess.pyx":109
+    /* "chess.pyx":113
  * 
  * 	cpdef int move_xy(self, int x, int y, int player):
  * 		if not self.could_drop_xy(x, y, player):             # <<<<<<<<<<<<<<
@@ -5004,14 +5118,14 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
  */
   }
 
-  /* "chess.pyx":111
+  /* "chess.pyx":115
  * 		if not self.could_drop_xy(x, y, player):
  * 			return 0
  * 		self.board[x, y] = player             # <<<<<<<<<<<<<<
  * 		cdef int original_x, original_y
  * 		cdef int directx, directy
  */
-  if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 111, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 115, __pyx_L1_error)}
   __pyx_t_11 = __pyx_v_x;
   __pyx_t_12 = __pyx_v_y;
   __pyx_t_8 = -1;
@@ -5025,11 +5139,11 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
   } else if (unlikely(__pyx_t_12 >= __pyx_v_self->board.shape[1])) __pyx_t_8 = 1;
   if (unlikely(__pyx_t_8 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_8);
-    __PYX_ERR(0, 111, __pyx_L1_error)
+    __PYX_ERR(0, 115, __pyx_L1_error)
   }
   *((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_11 * __pyx_v_self->board.strides[0]) ) + __pyx_t_12 * __pyx_v_self->board.strides[1]) )) = __pyx_v_player;
 
-  /* "chess.pyx":114
+  /* "chess.pyx":118
  * 		cdef int original_x, original_y
  * 		cdef int directx, directy
  * 		original_x, original_y = x, y             # <<<<<<<<<<<<<<
@@ -5041,53 +5155,53 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
   __pyx_v_original_x = __pyx_t_8;
   __pyx_v_original_y = __pyx_t_13;
 
-  /* "chess.pyx":116
+  /* "chess.pyx":120
  * 		original_x, original_y = x, y
  * 		cdef int i
  * 		for i in range(8):             # <<<<<<<<<<<<<<
- * 			directx, directy = self.xx[i], self.yy[i]
+ * 			directx, directy = xx[i], yy[i]
  * 			x, y = original_x, original_y
  */
   for (__pyx_t_13 = 0; __pyx_t_13 < 8; __pyx_t_13+=1) {
     __pyx_v_i = __pyx_t_13;
 
-    /* "chess.pyx":117
+    /* "chess.pyx":121
  * 		cdef int i
  * 		for i in range(8):
- * 			directx, directy = self.xx[i], self.yy[i]             # <<<<<<<<<<<<<<
+ * 			directx, directy = xx[i], yy[i]             # <<<<<<<<<<<<<<
  * 			x, y = original_x, original_y
  * 			if self.check_reverse(x, y, directx, directy, player):
  */
-    if (unlikely(!__pyx_v_self->xx.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 117, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_5chess_xx.memview)) { __Pyx_RaiseUnboundLocalError("xx"); __PYX_ERR(0, 121, __pyx_L1_error) }
     __pyx_t_14 = __pyx_v_i;
     __pyx_t_8 = -1;
     if (__pyx_t_14 < 0) {
-      __pyx_t_14 += __pyx_v_self->xx.shape[0];
+      __pyx_t_14 += __pyx_v_5chess_xx.shape[0];
       if (unlikely(__pyx_t_14 < 0)) __pyx_t_8 = 0;
-    } else if (unlikely(__pyx_t_14 >= __pyx_v_self->xx.shape[0])) __pyx_t_8 = 0;
+    } else if (unlikely(__pyx_t_14 >= __pyx_v_5chess_xx.shape[0])) __pyx_t_8 = 0;
     if (unlikely(__pyx_t_8 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_8);
-      __PYX_ERR(0, 117, __pyx_L1_error)
+      __PYX_ERR(0, 121, __pyx_L1_error)
     }
-    __pyx_t_8 = (*((int *) ( /* dim=0 */ (__pyx_v_self->xx.data + __pyx_t_14 * __pyx_v_self->xx.strides[0]) )));
-    if (unlikely(!__pyx_v_self->yy.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 117, __pyx_L1_error)}
+    __pyx_t_8 = (*((int *) ( /* dim=0 */ (__pyx_v_5chess_xx.data + __pyx_t_14 * __pyx_v_5chess_xx.strides[0]) )));
+    if (unlikely(!__pyx_v_5chess_yy.memview)) { __Pyx_RaiseUnboundLocalError("yy"); __PYX_ERR(0, 121, __pyx_L1_error) }
     __pyx_t_15 = __pyx_v_i;
     __pyx_t_16 = -1;
     if (__pyx_t_15 < 0) {
-      __pyx_t_15 += __pyx_v_self->yy.shape[0];
+      __pyx_t_15 += __pyx_v_5chess_yy.shape[0];
       if (unlikely(__pyx_t_15 < 0)) __pyx_t_16 = 0;
-    } else if (unlikely(__pyx_t_15 >= __pyx_v_self->yy.shape[0])) __pyx_t_16 = 0;
+    } else if (unlikely(__pyx_t_15 >= __pyx_v_5chess_yy.shape[0])) __pyx_t_16 = 0;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 117, __pyx_L1_error)
+      __PYX_ERR(0, 121, __pyx_L1_error)
     }
-    __pyx_t_16 = (*((int *) ( /* dim=0 */ (__pyx_v_self->yy.data + __pyx_t_15 * __pyx_v_self->yy.strides[0]) )));
+    __pyx_t_16 = (*((int *) ( /* dim=0 */ (__pyx_v_5chess_yy.data + __pyx_t_15 * __pyx_v_5chess_yy.strides[0]) )));
     __pyx_v_directx = __pyx_t_8;
     __pyx_v_directy = __pyx_t_16;
 
-    /* "chess.pyx":118
+    /* "chess.pyx":122
  * 		for i in range(8):
- * 			directx, directy = self.xx[i], self.yy[i]
+ * 			directx, directy = xx[i], yy[i]
  * 			x, y = original_x, original_y             # <<<<<<<<<<<<<<
  * 			if self.check_reverse(x, y, directx, directy, player):
  * 				while True:
@@ -5097,8 +5211,8 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
     __pyx_v_x = __pyx_t_16;
     __pyx_v_y = __pyx_t_8;
 
-    /* "chess.pyx":119
- * 			directx, directy = self.xx[i], self.yy[i]
+    /* "chess.pyx":123
+ * 			directx, directy = xx[i], yy[i]
  * 			x, y = original_x, original_y
  * 			if self.check_reverse(x, y, directx, directy, player):             # <<<<<<<<<<<<<<
  * 				while True:
@@ -5107,7 +5221,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
     __pyx_t_10 = (((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->check_reverse(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_directx, __pyx_v_directy, __pyx_v_player, 0) != 0);
     if (__pyx_t_10) {
 
-      /* "chess.pyx":120
+      /* "chess.pyx":124
  * 			x, y = original_x, original_y
  * 			if self.check_reverse(x, y, directx, directy, player):
  * 				while True:             # <<<<<<<<<<<<<<
@@ -5116,7 +5230,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
  */
       while (1) {
 
-        /* "chess.pyx":121
+        /* "chess.pyx":125
  * 			if self.check_reverse(x, y, directx, directy, player):
  * 				while True:
  * 					x += directx             # <<<<<<<<<<<<<<
@@ -5125,7 +5239,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
  */
         __pyx_v_x = (__pyx_v_x + __pyx_v_directx);
 
-        /* "chess.pyx":122
+        /* "chess.pyx":126
  * 				while True:
  * 					x += directx
  * 					y += directy             # <<<<<<<<<<<<<<
@@ -5134,14 +5248,14 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
  */
         __pyx_v_y = (__pyx_v_y + __pyx_v_directy);
 
-        /* "chess.pyx":123
+        /* "chess.pyx":127
  * 					x += directx
  * 					y += directy
  * 					if self.board[x, y] == player:             # <<<<<<<<<<<<<<
  * 						break
  * 					self.board[x, y] = player
  */
-        if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 123, __pyx_L1_error)}
+        if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 127, __pyx_L1_error)}
         __pyx_t_17 = __pyx_v_x;
         __pyx_t_18 = __pyx_v_y;
         __pyx_t_8 = -1;
@@ -5155,12 +5269,12 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
         } else if (unlikely(__pyx_t_18 >= __pyx_v_self->board.shape[1])) __pyx_t_8 = 1;
         if (unlikely(__pyx_t_8 != -1)) {
           __Pyx_RaiseBufferIndexError(__pyx_t_8);
-          __PYX_ERR(0, 123, __pyx_L1_error)
+          __PYX_ERR(0, 127, __pyx_L1_error)
         }
         __pyx_t_10 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_17 * __pyx_v_self->board.strides[0]) ) + __pyx_t_18 * __pyx_v_self->board.strides[1]) ))) == __pyx_v_player) != 0);
         if (__pyx_t_10) {
 
-          /* "chess.pyx":124
+          /* "chess.pyx":128
  * 					y += directy
  * 					if self.board[x, y] == player:
  * 						break             # <<<<<<<<<<<<<<
@@ -5169,7 +5283,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
  */
           goto __pyx_L8_break;
 
-          /* "chess.pyx":123
+          /* "chess.pyx":127
  * 					x += directx
  * 					y += directy
  * 					if self.board[x, y] == player:             # <<<<<<<<<<<<<<
@@ -5178,14 +5292,14 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
  */
         }
 
-        /* "chess.pyx":125
+        /* "chess.pyx":129
  * 					if self.board[x, y] == player:
  * 						break
  * 					self.board[x, y] = player             # <<<<<<<<<<<<<<
  * 		return 1
  * 
  */
-        if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 125, __pyx_L1_error)}
+        if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 129, __pyx_L1_error)}
         __pyx_t_19 = __pyx_v_x;
         __pyx_t_20 = __pyx_v_y;
         __pyx_t_8 = -1;
@@ -5199,14 +5313,14 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
         } else if (unlikely(__pyx_t_20 >= __pyx_v_self->board.shape[1])) __pyx_t_8 = 1;
         if (unlikely(__pyx_t_8 != -1)) {
           __Pyx_RaiseBufferIndexError(__pyx_t_8);
-          __PYX_ERR(0, 125, __pyx_L1_error)
+          __PYX_ERR(0, 129, __pyx_L1_error)
         }
         *((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_19 * __pyx_v_self->board.strides[0]) ) + __pyx_t_20 * __pyx_v_self->board.strides[1]) )) = __pyx_v_player;
       }
       __pyx_L8_break:;
 
-      /* "chess.pyx":119
- * 			directx, directy = self.xx[i], self.yy[i]
+      /* "chess.pyx":123
+ * 			directx, directy = xx[i], yy[i]
  * 			x, y = original_x, original_y
  * 			if self.check_reverse(x, y, directx, directy, player):             # <<<<<<<<<<<<<<
  * 				while True:
@@ -5215,7 +5329,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
     }
   }
 
-  /* "chess.pyx":126
+  /* "chess.pyx":130
  * 						break
  * 					self.board[x, y] = player
  * 		return 1             # <<<<<<<<<<<<<<
@@ -5225,7 +5339,7 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
   __pyx_r = 1;
   goto __pyx_L0;
 
-  /* "chess.pyx":108
+  /* "chess.pyx":112
  * 		return dlist_xy
  * 
  * 	cpdef int move_xy(self, int x, int y, int player):             # <<<<<<<<<<<<<<
@@ -5251,8 +5365,8 @@ static int __pyx_f_5chess_10ChessBoard_move_xy(struct __pyx_obj_5chess_ChessBoar
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5chess_10ChessBoard_19move_xy(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5chess_10ChessBoard_19move_xy(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5chess_10ChessBoard_21move_xy(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_21move_xy(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_x;
   int __pyx_v_y;
   int __pyx_v_player;
@@ -5284,17 +5398,17 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_19move_xy(PyObject *__pyx_v_self, 
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("move_xy", 1, 3, 3, 1); __PYX_ERR(0, 108, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("move_xy", 1, 3, 3, 1); __PYX_ERR(0, 112, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_player)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("move_xy", 1, 3, 3, 2); __PYX_ERR(0, 108, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("move_xy", 1, 3, 3, 2); __PYX_ERR(0, 112, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "move_xy") < 0)) __PYX_ERR(0, 108, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "move_xy") < 0)) __PYX_ERR(0, 112, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -5303,32 +5417,32 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_19move_xy(PyObject *__pyx_v_self, 
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 108, __pyx_L3_error)
-    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 108, __pyx_L3_error)
-    __pyx_v_player = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 108, __pyx_L3_error)
+    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 112, __pyx_L3_error)
+    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 112, __pyx_L3_error)
+    __pyx_v_player = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 112, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("move_xy", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 108, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("move_xy", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 112, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("chess.ChessBoard.move_xy", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5chess_10ChessBoard_18move_xy(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self), __pyx_v_x, __pyx_v_y, __pyx_v_player);
+  __pyx_r = __pyx_pf_5chess_10ChessBoard_20move_xy(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self), __pyx_v_x, __pyx_v_y, __pyx_v_player);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5chess_10ChessBoard_18move_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_x, int __pyx_v_y, int __pyx_v_player) {
+static PyObject *__pyx_pf_5chess_10ChessBoard_20move_xy(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_x, int __pyx_v_y, int __pyx_v_player) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("move_xy", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_move_xy(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_player, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_move_xy(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_player, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5345,7 +5459,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_18move_xy(struct __pyx_obj_5chess_
   return __pyx_r;
 }
 
-/* "chess.pyx":128
+/* "chess.pyx":132
  * 		return 1
  * 
  * 	cpdef int move(self, int p, int player):             # <<<<<<<<<<<<<<
@@ -5353,7 +5467,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_18move_xy(struct __pyx_obj_5chess_
  * 		x, y = p // 8, p % 8
  */
 
-static PyObject *__pyx_pw_5chess_10ChessBoard_21move(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_23move(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_f_5chess_10ChessBoard_move(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_p, int __pyx_v_player, int __pyx_skip_dispatch) {
   int __pyx_v_x;
   int __pyx_v_y;
@@ -5380,12 +5494,12 @@ static int __pyx_f_5chess_10ChessBoard_move(struct __pyx_obj_5chess_ChessBoard *
     else {
       PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_move); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_move); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 132, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_21move)) {
-        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_p); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 128, __pyx_L1_error)
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_23move)) {
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_p); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 132, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 128, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_player); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 132, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_5 = __pyx_t_1; __pyx_t_6 = NULL;
@@ -5403,7 +5517,7 @@ static int __pyx_f_5chess_10ChessBoard_move(struct __pyx_obj_5chess_ChessBoard *
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_5)) {
           PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_3, __pyx_t_4};
-          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -5413,7 +5527,7 @@ static int __pyx_f_5chess_10ChessBoard_move(struct __pyx_obj_5chess_ChessBoard *
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
           PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_3, __pyx_t_4};
-          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -5421,7 +5535,7 @@ static int __pyx_f_5chess_10ChessBoard_move(struct __pyx_obj_5chess_ChessBoard *
         } else
         #endif
         {
-          __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 128, __pyx_L1_error)
+          __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 132, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           if (__pyx_t_6) {
             __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -5432,12 +5546,12 @@ static int __pyx_f_5chess_10ChessBoard_move(struct __pyx_obj_5chess_ChessBoard *
           PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_t_4);
           __pyx_t_3 = 0;
           __pyx_t_4 = 0;
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         }
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 128, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 132, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_7;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -5456,7 +5570,7 @@ static int __pyx_f_5chess_10ChessBoard_move(struct __pyx_obj_5chess_ChessBoard *
     #endif
   }
 
-  /* "chess.pyx":130
+  /* "chess.pyx":134
  * 	cpdef int move(self, int p, int player):
  * 		cdef int x, y
  * 		x, y = p // 8, p % 8             # <<<<<<<<<<<<<<
@@ -5468,7 +5582,7 @@ static int __pyx_f_5chess_10ChessBoard_move(struct __pyx_obj_5chess_ChessBoard *
   __pyx_v_x = __pyx_t_9;
   __pyx_v_y = __pyx_t_10;
 
-  /* "chess.pyx":131
+  /* "chess.pyx":135
  * 		cdef int x, y
  * 		x, y = p // 8, p % 8
  * 		return self.move_xy(x, y, player)             # <<<<<<<<<<<<<<
@@ -5478,7 +5592,7 @@ static int __pyx_f_5chess_10ChessBoard_move(struct __pyx_obj_5chess_ChessBoard *
   __pyx_r = ((struct __pyx_vtabstruct_5chess_ChessBoard *)__pyx_v_self->__pyx_vtab)->move_xy(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_player, 0);
   goto __pyx_L0;
 
-  /* "chess.pyx":128
+  /* "chess.pyx":132
  * 		return 1
  * 
  * 	cpdef int move(self, int p, int player):             # <<<<<<<<<<<<<<
@@ -5503,8 +5617,8 @@ static int __pyx_f_5chess_10ChessBoard_move(struct __pyx_obj_5chess_ChessBoard *
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5chess_10ChessBoard_21move(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5chess_10ChessBoard_21move(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5chess_10ChessBoard_23move(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_23move(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_p;
   int __pyx_v_player;
   PyObject *__pyx_r = 0;
@@ -5533,11 +5647,11 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_21move(PyObject *__pyx_v_self, PyO
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_player)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("move", 1, 2, 2, 1); __PYX_ERR(0, 128, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("move", 1, 2, 2, 1); __PYX_ERR(0, 132, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "move") < 0)) __PYX_ERR(0, 128, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "move") < 0)) __PYX_ERR(0, 132, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -5545,31 +5659,31 @@ static PyObject *__pyx_pw_5chess_10ChessBoard_21move(PyObject *__pyx_v_self, PyO
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_p = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_p == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 128, __pyx_L3_error)
-    __pyx_v_player = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 128, __pyx_L3_error)
+    __pyx_v_p = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_p == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 132, __pyx_L3_error)
+    __pyx_v_player = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_player == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 132, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("move", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 128, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("move", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 132, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("chess.ChessBoard.move", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5chess_10ChessBoard_20move(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self), __pyx_v_p, __pyx_v_player);
+  __pyx_r = __pyx_pf_5chess_10ChessBoard_22move(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self), __pyx_v_p, __pyx_v_player);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5chess_10ChessBoard_20move(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_p, int __pyx_v_player) {
+static PyObject *__pyx_pf_5chess_10ChessBoard_22move(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_v_p, int __pyx_v_player) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("move", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_move(__pyx_v_self, __pyx_v_p, __pyx_v_player, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_move(__pyx_v_self, __pyx_v_p, __pyx_v_player, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 132, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5586,15 +5700,15 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_20move(struct __pyx_obj_5chess_Che
   return __pyx_r;
 }
 
-/* "chess.pyx":133
+/* "chess.pyx":137
  * 		return self.move_xy(x, y, player)
  * 
  * 	cpdef void out(self):             # <<<<<<<<<<<<<<
  * 		cpdef int i, j
- * 		for i in range(8):
+ * 		for i in range(n):
  */
 
-static PyObject *__pyx_pw_5chess_10ChessBoard_23out(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_25out(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_skip_dispatch) {
   int __pyx_v_i;
   int __pyx_v_j;
@@ -5605,12 +5719,16 @@ static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *
   PyObject *__pyx_t_4 = NULL;
   int __pyx_t_5;
   int __pyx_t_6;
-  Py_ssize_t __pyx_t_7;
-  Py_ssize_t __pyx_t_8;
+  int __pyx_t_7;
+  int __pyx_t_8;
   int __pyx_t_9;
   int __pyx_t_10;
   Py_ssize_t __pyx_t_11;
   Py_ssize_t __pyx_t_12;
+  int __pyx_t_13;
+  int __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  Py_ssize_t __pyx_t_16;
   __Pyx_RefNannySetupContext("out", 0);
   /* Check if called by wrapper */
   if (unlikely(__pyx_skip_dispatch)) ;
@@ -5622,9 +5740,9 @@ static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *
     else {
       PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_out); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_out); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_23out)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_25out)) {
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -5638,7 +5756,7 @@ static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5658,54 +5776,58 @@ static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *
     #endif
   }
 
-  /* "chess.pyx":135
+  /* "chess.pyx":139
  * 	cpdef void out(self):
  * 		cpdef int i, j
- * 		for i in range(8):             # <<<<<<<<<<<<<<
- * 			for j in range(8):
+ * 		for i in range(n):             # <<<<<<<<<<<<<<
+ * 			for j in range(n):
  * 				if self.board[i][j] == -1:
  */
-  for (__pyx_t_5 = 0; __pyx_t_5 < 8; __pyx_t_5+=1) {
-    __pyx_v_i = __pyx_t_5;
+  __pyx_t_5 = __pyx_v_5chess_n;
+  __pyx_t_6 = __pyx_t_5;
+  for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
+    __pyx_v_i = __pyx_t_7;
 
-    /* "chess.pyx":136
+    /* "chess.pyx":140
  * 		cpdef int i, j
- * 		for i in range(8):
- * 			for j in range(8):             # <<<<<<<<<<<<<<
+ * 		for i in range(n):
+ * 			for j in range(n):             # <<<<<<<<<<<<<<
  * 				if self.board[i][j] == -1:
  * 					printf('x ')
  */
-    for (__pyx_t_6 = 0; __pyx_t_6 < 8; __pyx_t_6+=1) {
-      __pyx_v_j = __pyx_t_6;
+    __pyx_t_8 = __pyx_v_5chess_n;
+    __pyx_t_9 = __pyx_t_8;
+    for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
+      __pyx_v_j = __pyx_t_10;
 
-      /* "chess.pyx":137
- * 		for i in range(8):
- * 			for j in range(8):
+      /* "chess.pyx":141
+ * 		for i in range(n):
+ * 			for j in range(n):
  * 				if self.board[i][j] == -1:             # <<<<<<<<<<<<<<
  * 					printf('x ')
  * 				elif self.board[i][j] == 1:
  */
-      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 137, __pyx_L1_error)}
-      __pyx_t_7 = __pyx_v_i;
-      __pyx_t_8 = __pyx_v_j;
-      __pyx_t_9 = -1;
-      if (__pyx_t_7 < 0) {
-        __pyx_t_7 += __pyx_v_self->board.shape[0];
-        if (unlikely(__pyx_t_7 < 0)) __pyx_t_9 = 0;
-      } else if (unlikely(__pyx_t_7 >= __pyx_v_self->board.shape[0])) __pyx_t_9 = 0;
-      if (__pyx_t_8 < 0) {
-        __pyx_t_8 += __pyx_v_self->board.shape[1];
-        if (unlikely(__pyx_t_8 < 0)) __pyx_t_9 = 1;
-      } else if (unlikely(__pyx_t_8 >= __pyx_v_self->board.shape[1])) __pyx_t_9 = 1;
-      if (unlikely(__pyx_t_9 != -1)) {
-        __Pyx_RaiseBufferIndexError(__pyx_t_9);
-        __PYX_ERR(0, 137, __pyx_L1_error)
+      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 141, __pyx_L1_error)}
+      __pyx_t_11 = __pyx_v_i;
+      __pyx_t_12 = __pyx_v_j;
+      __pyx_t_13 = -1;
+      if (__pyx_t_11 < 0) {
+        __pyx_t_11 += __pyx_v_self->board.shape[0];
+        if (unlikely(__pyx_t_11 < 0)) __pyx_t_13 = 0;
+      } else if (unlikely(__pyx_t_11 >= __pyx_v_self->board.shape[0])) __pyx_t_13 = 0;
+      if (__pyx_t_12 < 0) {
+        __pyx_t_12 += __pyx_v_self->board.shape[1];
+        if (unlikely(__pyx_t_12 < 0)) __pyx_t_13 = 1;
+      } else if (unlikely(__pyx_t_12 >= __pyx_v_self->board.shape[1])) __pyx_t_13 = 1;
+      if (unlikely(__pyx_t_13 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_13);
+        __PYX_ERR(0, 141, __pyx_L1_error)
       }
-      __pyx_t_10 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_7 * __pyx_v_self->board.strides[0]) ) + __pyx_t_8 * __pyx_v_self->board.strides[1]) ))) == -1L) != 0);
-      if (__pyx_t_10) {
+      __pyx_t_14 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_11 * __pyx_v_self->board.strides[0]) ) + __pyx_t_12 * __pyx_v_self->board.strides[1]) ))) == -1L) != 0);
+      if (__pyx_t_14) {
 
-        /* "chess.pyx":138
- * 			for j in range(8):
+        /* "chess.pyx":142
+ * 			for j in range(n):
  * 				if self.board[i][j] == -1:
  * 					printf('x ')             # <<<<<<<<<<<<<<
  * 				elif self.board[i][j] == 1:
@@ -5713,9 +5835,9 @@ static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *
  */
         (void)(printf(((char const *)"x ")));
 
-        /* "chess.pyx":137
- * 		for i in range(8):
- * 			for j in range(8):
+        /* "chess.pyx":141
+ * 		for i in range(n):
+ * 			for j in range(n):
  * 				if self.board[i][j] == -1:             # <<<<<<<<<<<<<<
  * 					printf('x ')
  * 				elif self.board[i][j] == 1:
@@ -5723,33 +5845,33 @@ static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *
         goto __pyx_L7;
       }
 
-      /* "chess.pyx":139
+      /* "chess.pyx":143
  * 				if self.board[i][j] == -1:
  * 					printf('x ')
  * 				elif self.board[i][j] == 1:             # <<<<<<<<<<<<<<
  * 					printf('o ')
  * 				else:
  */
-      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 139, __pyx_L1_error)}
-      __pyx_t_11 = __pyx_v_i;
-      __pyx_t_12 = __pyx_v_j;
-      __pyx_t_9 = -1;
-      if (__pyx_t_11 < 0) {
-        __pyx_t_11 += __pyx_v_self->board.shape[0];
-        if (unlikely(__pyx_t_11 < 0)) __pyx_t_9 = 0;
-      } else if (unlikely(__pyx_t_11 >= __pyx_v_self->board.shape[0])) __pyx_t_9 = 0;
-      if (__pyx_t_12 < 0) {
-        __pyx_t_12 += __pyx_v_self->board.shape[1];
-        if (unlikely(__pyx_t_12 < 0)) __pyx_t_9 = 1;
-      } else if (unlikely(__pyx_t_12 >= __pyx_v_self->board.shape[1])) __pyx_t_9 = 1;
-      if (unlikely(__pyx_t_9 != -1)) {
-        __Pyx_RaiseBufferIndexError(__pyx_t_9);
-        __PYX_ERR(0, 139, __pyx_L1_error)
+      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 143, __pyx_L1_error)}
+      __pyx_t_15 = __pyx_v_i;
+      __pyx_t_16 = __pyx_v_j;
+      __pyx_t_13 = -1;
+      if (__pyx_t_15 < 0) {
+        __pyx_t_15 += __pyx_v_self->board.shape[0];
+        if (unlikely(__pyx_t_15 < 0)) __pyx_t_13 = 0;
+      } else if (unlikely(__pyx_t_15 >= __pyx_v_self->board.shape[0])) __pyx_t_13 = 0;
+      if (__pyx_t_16 < 0) {
+        __pyx_t_16 += __pyx_v_self->board.shape[1];
+        if (unlikely(__pyx_t_16 < 0)) __pyx_t_13 = 1;
+      } else if (unlikely(__pyx_t_16 >= __pyx_v_self->board.shape[1])) __pyx_t_13 = 1;
+      if (unlikely(__pyx_t_13 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_13);
+        __PYX_ERR(0, 143, __pyx_L1_error)
       }
-      __pyx_t_10 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_11 * __pyx_v_self->board.strides[0]) ) + __pyx_t_12 * __pyx_v_self->board.strides[1]) ))) == 1) != 0);
-      if (__pyx_t_10) {
+      __pyx_t_14 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_15 * __pyx_v_self->board.strides[0]) ) + __pyx_t_16 * __pyx_v_self->board.strides[1]) ))) == 1) != 0);
+      if (__pyx_t_14) {
 
-        /* "chess.pyx":140
+        /* "chess.pyx":144
  * 					printf('x ')
  * 				elif self.board[i][j] == 1:
  * 					printf('o ')             # <<<<<<<<<<<<<<
@@ -5758,7 +5880,7 @@ static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *
  */
         (void)(printf(((char const *)"o ")));
 
-        /* "chess.pyx":139
+        /* "chess.pyx":143
  * 				if self.board[i][j] == -1:
  * 					printf('x ')
  * 				elif self.board[i][j] == 1:             # <<<<<<<<<<<<<<
@@ -5768,7 +5890,7 @@ static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *
         goto __pyx_L7;
       }
 
-      /* "chess.pyx":142
+      /* "chess.pyx":146
  * 					printf('o ')
  * 				else:
  * 					printf('_ ')             # <<<<<<<<<<<<<<
@@ -5781,7 +5903,7 @@ static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *
       __pyx_L7:;
     }
 
-    /* "chess.pyx":143
+    /* "chess.pyx":147
  * 				else:
  * 					printf('_ ')
  * 			printf('\n')             # <<<<<<<<<<<<<<
@@ -5791,12 +5913,12 @@ static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *
     (void)(printf(((char const *)"\n")));
   }
 
-  /* "chess.pyx":133
+  /* "chess.pyx":137
  * 		return self.move_xy(x, y, player)
  * 
  * 	cpdef void out(self):             # <<<<<<<<<<<<<<
  * 		cpdef int i, j
- * 		for i in range(8):
+ * 		for i in range(n):
  */
 
   /* function exit code */
@@ -5812,25 +5934,25 @@ static void __pyx_f_5chess_10ChessBoard_out(struct __pyx_obj_5chess_ChessBoard *
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5chess_10ChessBoard_23out(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5chess_10ChessBoard_23out(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5chess_10ChessBoard_25out(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_25out(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("out (wrapper)", 0);
-  __pyx_r = __pyx_pf_5chess_10ChessBoard_22out(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5chess_10ChessBoard_24out(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5chess_10ChessBoard_22out(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self) {
+static PyObject *__pyx_pf_5chess_10ChessBoard_24out(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("out", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_void_to_None(__pyx_f_5chess_10ChessBoard_out(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_void_to_None(__pyx_f_5chess_10ChessBoard_out(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5847,15 +5969,15 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_22out(struct __pyx_obj_5chess_Ches
   return __pyx_r;
 }
 
-/* "chess.pyx":145
+/* "chess.pyx":149
  * 			printf('\n')
  * 
  * 	cpdef int have_space(self):             # <<<<<<<<<<<<<<
  * 		cdef int i, j
- * 		for i in range(self.n):
+ * 		for i in range(n):
  */
 
-static PyObject *__pyx_pw_5chess_10ChessBoard_25have_space(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_27have_space(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static int __pyx_f_5chess_10ChessBoard_have_space(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_skip_dispatch) {
   int __pyx_v_i;
   int __pyx_v_j;
@@ -5886,9 +6008,9 @@ static int __pyx_f_5chess_10ChessBoard_have_space(struct __pyx_obj_5chess_ChessB
     else {
       PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_have_space); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_have_space); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_25have_space)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_27have_space)) {
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -5902,10 +6024,10 @@ static int __pyx_f_5chess_10ChessBoard_have_space(struct __pyx_obj_5chess_ChessB
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 149, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 145, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 149, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_5;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -5924,38 +6046,38 @@ static int __pyx_f_5chess_10ChessBoard_have_space(struct __pyx_obj_5chess_ChessB
     #endif
   }
 
-  /* "chess.pyx":147
+  /* "chess.pyx":151
  * 	cpdef int have_space(self):
  * 		cdef int i, j
- * 		for i in range(self.n):             # <<<<<<<<<<<<<<
- * 			for j in range(self.n):
+ * 		for i in range(n):             # <<<<<<<<<<<<<<
+ * 			for j in range(n):
  * 				if self.board[i, j] == 0:
  */
-  __pyx_t_5 = __pyx_v_self->n;
+  __pyx_t_5 = __pyx_v_5chess_n;
   __pyx_t_6 = __pyx_t_5;
   for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
     __pyx_v_i = __pyx_t_7;
 
-    /* "chess.pyx":148
+    /* "chess.pyx":152
  * 		cdef int i, j
- * 		for i in range(self.n):
- * 			for j in range(self.n):             # <<<<<<<<<<<<<<
+ * 		for i in range(n):
+ * 			for j in range(n):             # <<<<<<<<<<<<<<
  * 				if self.board[i, j] == 0:
  * 					return 1
  */
-    __pyx_t_8 = __pyx_v_self->n;
+    __pyx_t_8 = __pyx_v_5chess_n;
     __pyx_t_9 = __pyx_t_8;
     for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
       __pyx_v_j = __pyx_t_10;
 
-      /* "chess.pyx":149
- * 		for i in range(self.n):
- * 			for j in range(self.n):
+      /* "chess.pyx":153
+ * 		for i in range(n):
+ * 			for j in range(n):
  * 				if self.board[i, j] == 0:             # <<<<<<<<<<<<<<
  * 					return 1
  * 		return 0
  */
-      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 149, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 153, __pyx_L1_error)}
       __pyx_t_11 = __pyx_v_i;
       __pyx_t_12 = __pyx_v_j;
       __pyx_t_13 = -1;
@@ -5969,13 +6091,13 @@ static int __pyx_f_5chess_10ChessBoard_have_space(struct __pyx_obj_5chess_ChessB
       } else if (unlikely(__pyx_t_12 >= __pyx_v_self->board.shape[1])) __pyx_t_13 = 1;
       if (unlikely(__pyx_t_13 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_13);
-        __PYX_ERR(0, 149, __pyx_L1_error)
+        __PYX_ERR(0, 153, __pyx_L1_error)
       }
       __pyx_t_14 = (((*((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->board.data + __pyx_t_11 * __pyx_v_self->board.strides[0]) ) + __pyx_t_12 * __pyx_v_self->board.strides[1]) ))) == 0) != 0);
       if (__pyx_t_14) {
 
-        /* "chess.pyx":150
- * 			for j in range(self.n):
+        /* "chess.pyx":154
+ * 			for j in range(n):
  * 				if self.board[i, j] == 0:
  * 					return 1             # <<<<<<<<<<<<<<
  * 		return 0
@@ -5984,9 +6106,9 @@ static int __pyx_f_5chess_10ChessBoard_have_space(struct __pyx_obj_5chess_ChessB
         __pyx_r = 1;
         goto __pyx_L0;
 
-        /* "chess.pyx":149
- * 		for i in range(self.n):
- * 			for j in range(self.n):
+        /* "chess.pyx":153
+ * 		for i in range(n):
+ * 			for j in range(n):
  * 				if self.board[i, j] == 0:             # <<<<<<<<<<<<<<
  * 					return 1
  * 		return 0
@@ -5995,22 +6117,22 @@ static int __pyx_f_5chess_10ChessBoard_have_space(struct __pyx_obj_5chess_ChessB
     }
   }
 
-  /* "chess.pyx":151
+  /* "chess.pyx":155
  * 				if self.board[i, j] == 0:
  * 					return 1
  * 		return 0             # <<<<<<<<<<<<<<
  * 
- * 
+ * 	cpdef ChessBoard clone(self):
  */
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "chess.pyx":145
+  /* "chess.pyx":149
  * 			printf('\n')
  * 
  * 	cpdef int have_space(self):             # <<<<<<<<<<<<<<
  * 		cdef int i, j
- * 		for i in range(self.n):
+ * 		for i in range(n):
  */
 
   /* function exit code */
@@ -6027,25 +6149,25 @@ static int __pyx_f_5chess_10ChessBoard_have_space(struct __pyx_obj_5chess_ChessB
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5chess_10ChessBoard_25have_space(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5chess_10ChessBoard_25have_space(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5chess_10ChessBoard_27have_space(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_27have_space(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("have_space (wrapper)", 0);
-  __pyx_r = __pyx_pf_5chess_10ChessBoard_24have_space(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5chess_10ChessBoard_26have_space(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5chess_10ChessBoard_24have_space(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self) {
+static PyObject *__pyx_pf_5chess_10ChessBoard_26have_space(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("have_space", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_have_space(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5chess_10ChessBoard_have_space(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6062,6 +6184,242 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_24have_space(struct __pyx_obj_5che
   return __pyx_r;
 }
 
+/* "chess.pyx":157
+ * 		return 0
+ * 
+ * 	cpdef ChessBoard clone(self):             # <<<<<<<<<<<<<<
+ * 		return ChessBoard(self.board)
+ * 
+ */
+
+static PyObject *__pyx_pw_5chess_10ChessBoard_29clone(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static struct __pyx_obj_5chess_ChessBoard *__pyx_f_5chess_10ChessBoard_clone(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, int __pyx_skip_dispatch) {
+  struct __pyx_obj_5chess_ChessBoard *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  __Pyx_RefNannySetupContext("clone", 0);
+  /* Check if called by wrapper */
+  if (unlikely(__pyx_skip_dispatch)) ;
+  /* Check if overridden in Python */
+  else if (unlikely((Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0) || (Py_TYPE(((PyObject *)__pyx_v_self))->tp_flags & (Py_TPFLAGS_IS_ABSTRACT | Py_TPFLAGS_HEAPTYPE)))) {
+    #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP
+    static PY_UINT64_T tp_dict_version = 0, obj_dict_version = 0;
+    if (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict && tp_dict_version == __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) && (!Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset || obj_dict_version == __PYX_GET_DICT_VERSION(_PyObject_GetDictPtr(((PyObject *)__pyx_v_self))))));
+    else {
+      PY_UINT64_T type_dict_guard = (likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict)) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
+      #endif
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_clone); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5chess_10ChessBoard_29clone)) {
+        __Pyx_XDECREF(((PyObject *)__pyx_r));
+        __Pyx_INCREF(__pyx_t_1);
+        __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
+        if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+          __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+          if (likely(__pyx_t_4)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+            __Pyx_INCREF(__pyx_t_4);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_3, function);
+          }
+        }
+        __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+        __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 157, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5chess_ChessBoard))))) __PYX_ERR(0, 157, __pyx_L1_error)
+        __pyx_r = ((struct __pyx_obj_5chess_ChessBoard *)__pyx_t_2);
+        __pyx_t_2 = 0;
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        goto __pyx_L0;
+      }
+      #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP
+      tp_dict_version = likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) ? __PYX_GET_DICT_VERSION(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dict) : 0;
+      obj_dict_version = likely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset) ? __PYX_GET_DICT_VERSION(_PyObject_GetDictPtr(((PyObject *)__pyx_v_self))) : 0;
+      if (unlikely(type_dict_guard != tp_dict_version)) {
+        tp_dict_version = obj_dict_version = 0;
+      }
+      #endif
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP
+    }
+    #endif
+  }
+
+  /* "chess.pyx":158
+ * 
+ * 	cpdef ChessBoard clone(self):
+ * 		return ChessBoard(self.board)             # <<<<<<<<<<<<<<
+ * 
+ * 	def board_array(self):
+ */
+  __Pyx_XDECREF(((PyObject *)__pyx_r));
+  if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 158, __pyx_L1_error)}
+  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_self->board, 2, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5chess_ChessBoard), __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = ((struct __pyx_obj_5chess_ChessBoard *)__pyx_t_2);
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "chess.pyx":157
+ * 		return 0
+ * 
+ * 	cpdef ChessBoard clone(self):             # <<<<<<<<<<<<<<
+ * 		return ChessBoard(self.board)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("chess.ChessBoard.clone", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF((PyObject *)__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5chess_10ChessBoard_29clone(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_29clone(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("clone (wrapper)", 0);
+  __pyx_r = __pyx_pf_5chess_10ChessBoard_28clone(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5chess_10ChessBoard_28clone(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("clone", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = ((PyObject *)__pyx_f_5chess_10ChessBoard_clone(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("chess.ChessBoard.clone", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "chess.pyx":160
+ * 		return ChessBoard(self.board)
+ * 
+ * 	def board_array(self):             # <<<<<<<<<<<<<<
+ * 		return np.array(self.board.copy())
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5chess_10ChessBoard_31board_array(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_31board_array(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("board_array (wrapper)", 0);
+  __pyx_r = __pyx_pf_5chess_10ChessBoard_30board_array(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5chess_10ChessBoard_30board_array(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  PyObject *__pyx_t_5 = NULL;
+  __Pyx_RefNannySetupContext("board_array", 0);
+
+  /* "chess.pyx":161
+ * 
+ * 	def board_array(self):
+ * 		return np.array(self.board.copy())             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 161, __pyx_L1_error)}
+  __pyx_t_4 = __pyx_memoryview_copy_slice_d_dc_int_c(__pyx_v_self->board); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_4, 2, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
+  __pyx_t_4.memview = NULL;
+  __pyx_t_4.data = NULL;
+  __pyx_t_5 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "chess.pyx":160
+ * 		return ChessBoard(self.board)
+ * 
+ * 	def board_array(self):             # <<<<<<<<<<<<<<
+ * 		return np.array(self.board.copy())
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_AddTraceback("chess.ChessBoard.board_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     cdef tuple state
@@ -6069,19 +6427,19 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_24have_space(struct __pyx_obj_5che
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5chess_10ChessBoard_27__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5chess_10ChessBoard_27__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5chess_10ChessBoard_33__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_33__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5chess_10ChessBoard_26__reduce_cython__(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5chess_10ChessBoard_32__reduce_cython__(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5chess_10ChessBoard_26__reduce_cython__(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self) {
+static PyObject *__pyx_pf_5chess_10ChessBoard_32__reduce_cython__(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self) {
   PyObject *__pyx_v_state = 0;
   PyObject *__pyx_v__dict = 0;
   int __pyx_v_use_setstate;
@@ -6089,70 +6447,51 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_26__reduce_cython__(struct __pyx_o
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_3;
+  int __pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
-  int __pyx_t_7;
   __Pyx_RefNannySetupContext("__reduce_cython__", 0);
 
   /* "(tree fragment)":5
  *     cdef object _dict
  *     cdef bint use_setstate
- *     state = (self.board, self.n, self.xx, self.yy)             # <<<<<<<<<<<<<<
+ *     state = (self.board,)             # <<<<<<<<<<<<<<
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:
  */
   if (unlikely(!__pyx_v_self->board.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(1, 5, __pyx_L1_error)}
   __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_self->board, 2, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->n); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely(!__pyx_v_self->xx.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(1, 5, __pyx_L1_error)}
-  __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_self->xx, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 5, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (unlikely(!__pyx_v_self->yy.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(1, 5, __pyx_L1_error)}
-  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->yy, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 5, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyTuple_New(4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 5, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_5, 2, __pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_5, 3, __pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
+  __pyx_v_state = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_3 = 0;
-  __pyx_t_4 = 0;
-  __pyx_v_state = ((PyObject*)__pyx_t_5);
-  __pyx_t_5 = 0;
 
   /* "(tree fragment)":6
  *     cdef bint use_setstate
- *     state = (self.board, self.n, self.xx, self.yy)
+ *     state = (self.board,)
  *     _dict = getattr(self, '__dict__', None)             # <<<<<<<<<<<<<<
  *     if _dict is not None:
  *         state += (_dict,)
  */
-  __pyx_t_5 = __Pyx_GetAttr3(((PyObject *)__pyx_v_self), __pyx_n_s_dict, Py_None); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 6, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_v__dict = __pyx_t_5;
-  __pyx_t_5 = 0;
+  __pyx_t_2 = __Pyx_GetAttr3(((PyObject *)__pyx_v_self), __pyx_n_s_dict, Py_None); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_v__dict = __pyx_t_2;
+  __pyx_t_2 = 0;
 
   /* "(tree fragment)":7
- *     state = (self.board, self.n, self.xx, self.yy)
+ *     state = (self.board,)
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:             # <<<<<<<<<<<<<<
  *         state += (_dict,)
  *         use_setstate = True
  */
-  __pyx_t_6 = (__pyx_v__dict != Py_None);
-  __pyx_t_7 = (__pyx_t_6 != 0);
-  if (__pyx_t_7) {
+  __pyx_t_3 = (__pyx_v__dict != Py_None);
+  __pyx_t_4 = (__pyx_t_3 != 0);
+  if (__pyx_t_4) {
 
     /* "(tree fragment)":8
  *     _dict = getattr(self, '__dict__', None)
@@ -6161,16 +6500,16 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_26__reduce_cython__(struct __pyx_o
  *         use_setstate = True
  *     else:
  */
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 8, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 8, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_v__dict);
     __Pyx_GIVEREF(__pyx_v__dict);
-    PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_v__dict);
-    __pyx_t_4 = PyNumber_InPlaceAdd(__pyx_v_state, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 8, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF_SET(__pyx_v_state, ((PyObject*)__pyx_t_4));
-    __pyx_t_4 = 0;
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v__dict);
+    __pyx_t_1 = PyNumber_InPlaceAdd(__pyx_v_state, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 8, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF_SET(__pyx_v_state, ((PyObject*)__pyx_t_1));
+    __pyx_t_1 = 0;
 
     /* "(tree fragment)":9
  *     if _dict is not None:
@@ -6182,7 +6521,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_26__reduce_cython__(struct __pyx_o
     __pyx_v_use_setstate = 1;
 
     /* "(tree fragment)":7
- *     state = (self.board, self.n, self.xx, self.yy)
+ *     state = (self.board,)
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:             # <<<<<<<<<<<<<<
  *         state += (_dict,)
@@ -6196,7 +6535,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_26__reduce_cython__(struct __pyx_o
  *     else:
  *         use_setstate = False             # <<<<<<<<<<<<<<
  *     if use_setstate:
- *         return __pyx_unpickle_ChessBoard, (type(self), 0x51d7e41, None), state
+ *         return __pyx_unpickle_ChessBoard, (type(self), 0x1145f26, None), state
  */
   /*else*/ {
     __pyx_v_use_setstate = 0;
@@ -6207,89 +6546,89 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_26__reduce_cython__(struct __pyx_o
  *     else:
  *         use_setstate = False
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_ChessBoard, (type(self), 0x51d7e41, None), state
+ *         return __pyx_unpickle_ChessBoard, (type(self), 0x1145f26, None), state
  *     else:
  */
-  __pyx_t_7 = (__pyx_v_use_setstate != 0);
-  if (__pyx_t_7) {
+  __pyx_t_4 = (__pyx_v_use_setstate != 0);
+  if (__pyx_t_4) {
 
     /* "(tree fragment)":13
  *         use_setstate = False
  *     if use_setstate:
- *         return __pyx_unpickle_ChessBoard, (type(self), 0x51d7e41, None), state             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_ChessBoard, (type(self), 0x1145f26, None), state             # <<<<<<<<<<<<<<
  *     else:
- *         return __pyx_unpickle_ChessBoard, (type(self), 0x51d7e41, state)
+ *         return __pyx_unpickle_ChessBoard, (type(self), 0x1145f26, state)
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_pyx_unpickle_ChessBoard); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 13, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 13, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_pyx_unpickle_ChessBoard); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    PyTuple_SET_ITEM(__pyx_t_5, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    __Pyx_INCREF(__pyx_int_85818945);
-    __Pyx_GIVEREF(__pyx_int_85818945);
-    PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_int_85818945);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    __Pyx_INCREF(__pyx_int_18112294);
+    __Pyx_GIVEREF(__pyx_int_18112294);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_int_18112294);
     __Pyx_INCREF(Py_None);
     __Pyx_GIVEREF(Py_None);
-    PyTuple_SET_ITEM(__pyx_t_5, 2, Py_None);
-    __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 13, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4);
-    __Pyx_GIVEREF(__pyx_t_5);
-    PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_2, 2, Py_None);
+    __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_t_2);
     __Pyx_INCREF(__pyx_v_state);
     __Pyx_GIVEREF(__pyx_v_state);
-    PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_v_state);
-    __pyx_t_4 = 0;
+    PyTuple_SET_ITEM(__pyx_t_5, 2, __pyx_v_state);
+    __pyx_t_1 = 0;
+    __pyx_t_2 = 0;
+    __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
-    __pyx_r = __pyx_t_3;
-    __pyx_t_3 = 0;
     goto __pyx_L0;
 
     /* "(tree fragment)":12
  *     else:
  *         use_setstate = False
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_ChessBoard, (type(self), 0x51d7e41, None), state
+ *         return __pyx_unpickle_ChessBoard, (type(self), 0x1145f26, None), state
  *     else:
  */
   }
 
   /* "(tree fragment)":15
- *         return __pyx_unpickle_ChessBoard, (type(self), 0x51d7e41, None), state
+ *         return __pyx_unpickle_ChessBoard, (type(self), 0x1145f26, None), state
  *     else:
- *         return __pyx_unpickle_ChessBoard, (type(self), 0x51d7e41, state)             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_ChessBoard, (type(self), 0x1145f26, state)             # <<<<<<<<<<<<<<
  * def __setstate_cython__(self, __pyx_state):
  *     __pyx_unpickle_ChessBoard__set_state(self, __pyx_state)
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_pyx_unpickle_ChessBoard); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 15, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 15, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_pyx_unpickle_ChessBoard); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 15, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 15, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    PyTuple_SET_ITEM(__pyx_t_5, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    __Pyx_INCREF(__pyx_int_85818945);
-    __Pyx_GIVEREF(__pyx_int_85818945);
-    PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_int_85818945);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    __Pyx_INCREF(__pyx_int_18112294);
+    __Pyx_GIVEREF(__pyx_int_18112294);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_int_18112294);
     __Pyx_INCREF(__pyx_v_state);
     __Pyx_GIVEREF(__pyx_v_state);
-    PyTuple_SET_ITEM(__pyx_t_5, 2, __pyx_v_state);
-    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 15, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_GIVEREF(__pyx_t_3);
-    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_v_state);
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 15, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_5);
-    PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_5);
-    __pyx_t_3 = 0;
+    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_5);
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_2);
     __pyx_t_5 = 0;
-    __pyx_r = __pyx_t_4;
-    __pyx_t_4 = 0;
+    __pyx_t_2 = 0;
+    __pyx_r = __pyx_t_1;
+    __pyx_t_1 = 0;
     goto __pyx_L0;
   }
 
@@ -6303,8 +6642,6 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_26__reduce_cython__(struct __pyx_o
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_AddTraceback("chess.ChessBoard.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
@@ -6318,32 +6655,32 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_26__reduce_cython__(struct __pyx_o
 
 /* "(tree fragment)":16
  *     else:
- *         return __pyx_unpickle_ChessBoard, (type(self), 0x51d7e41, state)
+ *         return __pyx_unpickle_ChessBoard, (type(self), 0x1145f26, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_ChessBoard__set_state(self, __pyx_state)
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5chess_10ChessBoard_29__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_5chess_10ChessBoard_29__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_5chess_10ChessBoard_35__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_5chess_10ChessBoard_35__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5chess_10ChessBoard_28__setstate_cython__(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_5chess_10ChessBoard_34__setstate_cython__(((struct __pyx_obj_5chess_ChessBoard *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5chess_10ChessBoard_28__setstate_cython__(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_5chess_10ChessBoard_34__setstate_cython__(struct __pyx_obj_5chess_ChessBoard *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__setstate_cython__", 0);
 
   /* "(tree fragment)":17
- *         return __pyx_unpickle_ChessBoard, (type(self), 0x51d7e41, state)
+ *         return __pyx_unpickle_ChessBoard, (type(self), 0x1145f26, state)
  * def __setstate_cython__(self, __pyx_state):
  *     __pyx_unpickle_ChessBoard__set_state(self, __pyx_state)             # <<<<<<<<<<<<<<
  */
@@ -6354,7 +6691,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_28__setstate_cython__(struct __pyx
 
   /* "(tree fragment)":16
  *     else:
- *         return __pyx_unpickle_ChessBoard, (type(self), 0x51d7e41, state)
+ *         return __pyx_unpickle_ChessBoard, (type(self), 0x1145f26, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_ChessBoard__set_state(self, __pyx_state)
  */
@@ -6372,7 +6709,7 @@ static PyObject *__pyx_pf_5chess_10ChessBoard_28__setstate_cython__(struct __pyx
   return __pyx_r;
 }
 
-/* "chess.pyx":154
+/* "chess.pyx":164
  * 
  * 
  * def main():             # <<<<<<<<<<<<<<
@@ -6411,19 +6748,19 @@ static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self) {
   PyObject *__pyx_t_11 = NULL;
   __Pyx_RefNannySetupContext("main", 0);
 
-  /* "chess.pyx":155
+  /* "chess.pyx":165
  * 
  * def main():
  * 	board = np.array([[0, 1, 1, -1, 0, 0, 0, 0],             # <<<<<<<<<<<<<<
  * 	                  [0, 0, 1, 1, -1, 0, 0, 0],
  * 	                  [0, 1, 1, 0, 0, 0, 0, 0],
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyList_New(8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -6450,14 +6787,14 @@ static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self) {
   __Pyx_GIVEREF(__pyx_int_0);
   PyList_SET_ITEM(__pyx_t_2, 7, __pyx_int_0);
 
-  /* "chess.pyx":156
+  /* "chess.pyx":166
  * def main():
  * 	board = np.array([[0, 1, 1, -1, 0, 0, 0, 0],
  * 	                  [0, 0, 1, 1, -1, 0, 0, 0],             # <<<<<<<<<<<<<<
  * 	                  [0, 1, 1, 0, 0, 0, 0, 0],
  * 	                  [0, 1, 0, 1, 1, 0, 0, 0],
  */
-  __pyx_t_4 = PyList_New(8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -6484,14 +6821,14 @@ static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self) {
   __Pyx_GIVEREF(__pyx_int_0);
   PyList_SET_ITEM(__pyx_t_4, 7, __pyx_int_0);
 
-  /* "chess.pyx":157
+  /* "chess.pyx":167
  * 	board = np.array([[0, 1, 1, -1, 0, 0, 0, 0],
  * 	                  [0, 0, 1, 1, -1, 0, 0, 0],
  * 	                  [0, 1, 1, 0, 0, 0, 0, 0],             # <<<<<<<<<<<<<<
  * 	                  [0, 1, 0, 1, 1, 0, 0, 0],
  * 	                  [0, 1, 0, 1, -1, 0, 0, 0],
  */
-  __pyx_t_5 = PyList_New(8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_t_5 = PyList_New(8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 167, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -6518,14 +6855,14 @@ static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self) {
   __Pyx_GIVEREF(__pyx_int_0);
   PyList_SET_ITEM(__pyx_t_5, 7, __pyx_int_0);
 
-  /* "chess.pyx":158
+  /* "chess.pyx":168
  * 	                  [0, 0, 1, 1, -1, 0, 0, 0],
  * 	                  [0, 1, 1, 0, 0, 0, 0, 0],
  * 	                  [0, 1, 0, 1, 1, 0, 0, 0],             # <<<<<<<<<<<<<<
  * 	                  [0, 1, 0, 1, -1, 0, 0, 0],
  * 	                  [0, -1, 0, 0, 0, 0, 0, 0],
  */
-  __pyx_t_6 = PyList_New(8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -6552,14 +6889,14 @@ static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self) {
   __Pyx_GIVEREF(__pyx_int_0);
   PyList_SET_ITEM(__pyx_t_6, 7, __pyx_int_0);
 
-  /* "chess.pyx":159
+  /* "chess.pyx":169
  * 	                  [0, 1, 1, 0, 0, 0, 0, 0],
  * 	                  [0, 1, 0, 1, 1, 0, 0, 0],
  * 	                  [0, 1, 0, 1, -1, 0, 0, 0],             # <<<<<<<<<<<<<<
  * 	                  [0, -1, 0, 0, 0, 0, 0, 0],
  * 	                  [0, 0, 0, 0, 0, 0, 0, 0],
  */
-  __pyx_t_7 = PyList_New(8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_7 = PyList_New(8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 169, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -6586,14 +6923,14 @@ static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self) {
   __Pyx_GIVEREF(__pyx_int_0);
   PyList_SET_ITEM(__pyx_t_7, 7, __pyx_int_0);
 
-  /* "chess.pyx":160
+  /* "chess.pyx":170
  * 	                  [0, 1, 0, 1, 1, 0, 0, 0],
  * 	                  [0, 1, 0, 1, -1, 0, 0, 0],
  * 	                  [0, -1, 0, 0, 0, 0, 0, 0],             # <<<<<<<<<<<<<<
  * 	                  [0, 0, 0, 0, 0, 0, 0, 0],
  * 	                  [0, 0, 0, 0, 0, 0, 0, 0]])
  */
-  __pyx_t_8 = PyList_New(8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 160, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 170, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -6620,14 +6957,14 @@ static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self) {
   __Pyx_GIVEREF(__pyx_int_0);
   PyList_SET_ITEM(__pyx_t_8, 7, __pyx_int_0);
 
-  /* "chess.pyx":161
+  /* "chess.pyx":171
  * 	                  [0, 1, 0, 1, -1, 0, 0, 0],
  * 	                  [0, -1, 0, 0, 0, 0, 0, 0],
  * 	                  [0, 0, 0, 0, 0, 0, 0, 0],             # <<<<<<<<<<<<<<
  * 	                  [0, 0, 0, 0, 0, 0, 0, 0]])
  * 	board = ChessBoard(board)
  */
-  __pyx_t_9 = PyList_New(8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_9 = PyList_New(8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -6654,14 +6991,14 @@ static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self) {
   __Pyx_GIVEREF(__pyx_int_0);
   PyList_SET_ITEM(__pyx_t_9, 7, __pyx_int_0);
 
-  /* "chess.pyx":162
+  /* "chess.pyx":172
  * 	                  [0, -1, 0, 0, 0, 0, 0, 0],
  * 	                  [0, 0, 0, 0, 0, 0, 0, 0],
  * 	                  [0, 0, 0, 0, 0, 0, 0, 0]])             # <<<<<<<<<<<<<<
  * 	board = ChessBoard(board)
  * 	board.out()
  */
-  __pyx_t_10 = PyList_New(8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_10 = PyList_New(8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 172, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -6688,14 +7025,14 @@ static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self) {
   __Pyx_GIVEREF(__pyx_int_0);
   PyList_SET_ITEM(__pyx_t_10, 7, __pyx_int_0);
 
-  /* "chess.pyx":155
+  /* "chess.pyx":165
  * 
  * def main():
  * 	board = np.array([[0, 1, 1, -1, 0, 0, 0, 0],             # <<<<<<<<<<<<<<
  * 	                  [0, 0, 1, 1, -1, 0, 0, 0],
  * 	                  [0, 1, 1, 0, 0, 0, 0, 0],
  */
-  __pyx_t_11 = PyList_New(8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_11 = PyList_New(8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __Pyx_GIVEREF(__pyx_t_2);
   PyList_SET_ITEM(__pyx_t_11, 0, __pyx_t_2);
@@ -6734,32 +7071,32 @@ static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self) {
   __pyx_t_1 = (__pyx_t_10) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_10, __pyx_t_11) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_11);
   __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_board = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "chess.pyx":163
+  /* "chess.pyx":173
  * 	                  [0, 0, 0, 0, 0, 0, 0, 0],
  * 	                  [0, 0, 0, 0, 0, 0, 0, 0]])
  * 	board = ChessBoard(board)             # <<<<<<<<<<<<<<
  * 	board.out()
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5chess_ChessBoard), __pyx_v_board); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5chess_ChessBoard), __pyx_v_board); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF_SET(__pyx_v_board, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "chess.pyx":164
+  /* "chess.pyx":174
  * 	                  [0, 0, 0, 0, 0, 0, 0, 0]])
  * 	board = ChessBoard(board)
  * 	board.out()             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_board, __pyx_n_s_out); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_board, __pyx_n_s_out); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_11 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -6773,12 +7110,12 @@ static PyObject *__pyx_pf_5chess_main(CYTHON_UNUSED PyObject *__pyx_self) {
   }
   __pyx_t_1 = (__pyx_t_11) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_11) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "chess.pyx":154
+  /* "chess.pyx":164
  * 
  * 
  * def main():             # <<<<<<<<<<<<<<
@@ -6905,18 +7242,18 @@ static PyObject *__pyx_pf_5chess_2__pyx_unpickle_ChessBoard(CYTHON_UNUSED PyObje
   /* "(tree fragment)":4
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
- *     if __pyx_checksum != 0x51d7e41:             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x1145f26:             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x51d7e41 = (board, n, xx, yy))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x1145f26 = (board))" % __pyx_checksum)
  */
-  __pyx_t_1 = ((__pyx_v___pyx_checksum != 0x51d7e41) != 0);
+  __pyx_t_1 = ((__pyx_v___pyx_checksum != 0x1145f26) != 0);
   if (__pyx_t_1) {
 
     /* "(tree fragment)":5
  *     cdef object __pyx_result
- *     if __pyx_checksum != 0x51d7e41:
+ *     if __pyx_checksum != 0x1145f26:
  *         from pickle import PickleError as __pyx_PickleError             # <<<<<<<<<<<<<<
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x51d7e41 = (board, n, xx, yy))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x1145f26 = (board))" % __pyx_checksum)
  *     __pyx_result = ChessBoard.__new__(__pyx_type)
  */
     __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error)
@@ -6935,15 +7272,15 @@ static PyObject *__pyx_pf_5chess_2__pyx_unpickle_ChessBoard(CYTHON_UNUSED PyObje
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "(tree fragment)":6
- *     if __pyx_checksum != 0x51d7e41:
+ *     if __pyx_checksum != 0x1145f26:
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x51d7e41 = (board, n, xx, yy))" % __pyx_checksum)             # <<<<<<<<<<<<<<
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x1145f26 = (board))" % __pyx_checksum)             # <<<<<<<<<<<<<<
  *     __pyx_result = ChessBoard.__new__(__pyx_type)
  *     if __pyx_state is not None:
  */
     __pyx_t_2 = __Pyx_PyInt_From_long(__pyx_v___pyx_checksum); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 6, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Incompatible_checksums_s_vs_0x51, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 6, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Incompatible_checksums_s_vs_0x11, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 6, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_INCREF(__pyx_v___pyx_PickleError);
@@ -6970,15 +7307,15 @@ static PyObject *__pyx_pf_5chess_2__pyx_unpickle_ChessBoard(CYTHON_UNUSED PyObje
     /* "(tree fragment)":4
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
- *     if __pyx_checksum != 0x51d7e41:             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x1145f26:             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x51d7e41 = (board, n, xx, yy))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x1145f26 = (board))" % __pyx_checksum)
  */
   }
 
   /* "(tree fragment)":7
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x51d7e41 = (board, n, xx, yy))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x1145f26 = (board))" % __pyx_checksum)
  *     __pyx_result = ChessBoard.__new__(__pyx_type)             # <<<<<<<<<<<<<<
  *     if __pyx_state is not None:
  *         __pyx_unpickle_ChessBoard__set_state(<ChessBoard> __pyx_result, __pyx_state)
@@ -7004,7 +7341,7 @@ static PyObject *__pyx_pf_5chess_2__pyx_unpickle_ChessBoard(CYTHON_UNUSED PyObje
   __pyx_t_3 = 0;
 
   /* "(tree fragment)":8
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x51d7e41 = (board, n, xx, yy))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x1145f26 = (board))" % __pyx_checksum)
  *     __pyx_result = ChessBoard.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
  *         __pyx_unpickle_ChessBoard__set_state(<ChessBoard> __pyx_result, __pyx_state)
@@ -7027,7 +7364,7 @@ static PyObject *__pyx_pf_5chess_2__pyx_unpickle_ChessBoard(CYTHON_UNUSED PyObje
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "(tree fragment)":8
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x51d7e41 = (board, n, xx, yy))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x1145f26 = (board))" % __pyx_checksum)
  *     __pyx_result = ChessBoard.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
  *         __pyx_unpickle_ChessBoard__set_state(<ChessBoard> __pyx_result, __pyx_state)
@@ -7040,7 +7377,7 @@ static PyObject *__pyx_pf_5chess_2__pyx_unpickle_ChessBoard(CYTHON_UNUSED PyObje
  *         __pyx_unpickle_ChessBoard__set_state(<ChessBoard> __pyx_result, __pyx_state)
  *     return __pyx_result             # <<<<<<<<<<<<<<
  * cdef __pyx_unpickle_ChessBoard__set_state(ChessBoard __pyx_result, tuple __pyx_state):
- *     __pyx_result.board = __pyx_state[0]; __pyx_result.n = __pyx_state[1]; __pyx_result.xx = __pyx_state[2]; __pyx_result.yy = __pyx_state[3]
+ *     __pyx_result.board = __pyx_state[0]
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v___pyx_result);
@@ -7073,8 +7410,8 @@ static PyObject *__pyx_pf_5chess_2__pyx_unpickle_ChessBoard(CYTHON_UNUSED PyObje
  *         __pyx_unpickle_ChessBoard__set_state(<ChessBoard> __pyx_result, __pyx_state)
  *     return __pyx_result
  * cdef __pyx_unpickle_ChessBoard__set_state(ChessBoard __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_result.board = __pyx_state[0]; __pyx_result.n = __pyx_state[1]; __pyx_result.xx = __pyx_state[2]; __pyx_result.yy = __pyx_state[3]
- *     if len(__pyx_state) > 4 and hasattr(__pyx_result, '__dict__'):
+ *     __pyx_result.board = __pyx_state[0]
+ *     if len(__pyx_state) > 1 and hasattr(__pyx_result, '__dict__'):
  */
 
 static PyObject *__pyx_f_5chess___pyx_unpickle_ChessBoard__set_state(struct __pyx_obj_5chess_ChessBoard *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
@@ -7083,22 +7420,20 @@ static PyObject *__pyx_f_5chess___pyx_unpickle_ChessBoard__set_state(struct __py
   PyObject *__pyx_t_1 = NULL;
   __Pyx_memviewslice __pyx_t_2 = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_t_3;
-  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  Py_ssize_t __pyx_t_4;
   int __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  int __pyx_t_7;
-  int __pyx_t_8;
+  int __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
   PyObject *__pyx_t_9 = NULL;
-  PyObject *__pyx_t_10 = NULL;
-  PyObject *__pyx_t_11 = NULL;
   __Pyx_RefNannySetupContext("__pyx_unpickle_ChessBoard__set_state", 0);
 
   /* "(tree fragment)":12
  *     return __pyx_result
  * cdef __pyx_unpickle_ChessBoard__set_state(ChessBoard __pyx_result, tuple __pyx_state):
- *     __pyx_result.board = __pyx_state[0]; __pyx_result.n = __pyx_state[1]; __pyx_result.xx = __pyx_state[2]; __pyx_result.yy = __pyx_state[3]             # <<<<<<<<<<<<<<
- *     if len(__pyx_state) > 4 and hasattr(__pyx_result, '__dict__'):
- *         __pyx_result.__dict__.update(__pyx_state[4])
+ *     __pyx_result.board = __pyx_state[0]             # <<<<<<<<<<<<<<
+ *     if len(__pyx_state) > 1 and hasattr(__pyx_result, '__dict__'):
+ *         __pyx_result.__dict__.update(__pyx_state[1])
  */
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
@@ -7112,102 +7447,69 @@ static PyObject *__pyx_f_5chess___pyx_unpickle_ChessBoard__set_state(struct __py
   __pyx_v___pyx_result->board = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-  if (unlikely(__pyx_v___pyx_state == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(1, 12, __pyx_L1_error)
-  }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->n = __pyx_t_3;
-  if (unlikely(__pyx_v___pyx_state == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(1, 12, __pyx_L1_error)
-  }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(1, 12, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_XDEC_MEMVIEW(&__pyx_v___pyx_result->xx, 0);
-  __pyx_v___pyx_result->xx = __pyx_t_4;
-  __pyx_t_4.memview = NULL;
-  __pyx_t_4.data = NULL;
-  if (unlikely(__pyx_v___pyx_state == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(1, 12, __pyx_L1_error)
-  }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(1, 12, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_XDEC_MEMVIEW(&__pyx_v___pyx_result->yy, 0);
-  __pyx_v___pyx_result->yy = __pyx_t_4;
-  __pyx_t_4.memview = NULL;
-  __pyx_t_4.data = NULL;
 
   /* "(tree fragment)":13
  * cdef __pyx_unpickle_ChessBoard__set_state(ChessBoard __pyx_result, tuple __pyx_state):
- *     __pyx_result.board = __pyx_state[0]; __pyx_result.n = __pyx_state[1]; __pyx_result.xx = __pyx_state[2]; __pyx_result.yy = __pyx_state[3]
- *     if len(__pyx_state) > 4 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
- *         __pyx_result.__dict__.update(__pyx_state[4])
+ *     __pyx_result.board = __pyx_state[0]
+ *     if len(__pyx_state) > 1 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         __pyx_result.__dict__.update(__pyx_state[1])
  */
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(1, 13, __pyx_L1_error)
   }
-  __pyx_t_6 = PyTuple_GET_SIZE(__pyx_v___pyx_state); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
-  __pyx_t_7 = ((__pyx_t_6 > 4) != 0);
-  if (__pyx_t_7) {
+  __pyx_t_4 = PyTuple_GET_SIZE(__pyx_v___pyx_state); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
+  __pyx_t_5 = ((__pyx_t_4 > 1) != 0);
+  if (__pyx_t_5) {
   } else {
-    __pyx_t_5 = __pyx_t_7;
+    __pyx_t_3 = __pyx_t_5;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_7 = __Pyx_HasAttr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
-  __pyx_t_8 = (__pyx_t_7 != 0);
-  __pyx_t_5 = __pyx_t_8;
+  __pyx_t_5 = __Pyx_HasAttr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
+  __pyx_t_6 = (__pyx_t_5 != 0);
+  __pyx_t_3 = __pyx_t_6;
   __pyx_L4_bool_binop_done:;
-  if (__pyx_t_5) {
+  if (__pyx_t_3) {
 
     /* "(tree fragment)":14
- *     __pyx_result.board = __pyx_state[0]; __pyx_result.n = __pyx_state[1]; __pyx_result.xx = __pyx_state[2]; __pyx_result.yy = __pyx_state[3]
- *     if len(__pyx_state) > 4 and hasattr(__pyx_result, '__dict__'):
- *         __pyx_result.__dict__.update(__pyx_state[4])             # <<<<<<<<<<<<<<
+ *     __pyx_result.board = __pyx_state[0]
+ *     if len(__pyx_state) > 1 and hasattr(__pyx_result, '__dict__'):
+ *         __pyx_result.__dict__.update(__pyx_state[1])             # <<<<<<<<<<<<<<
  */
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 14, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_update); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 14, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_10);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 14, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_update); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 14, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     if (unlikely(__pyx_v___pyx_state == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(1, 14, __pyx_L1_error)
     }
-    __pyx_t_9 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 14, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_11 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_10))) {
-      __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_10);
-      if (likely(__pyx_t_11)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_10);
-        __Pyx_INCREF(__pyx_t_11);
+    __pyx_t_7 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 14, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_9 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
+      __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_8);
+      if (likely(__pyx_t_9)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+        __Pyx_INCREF(__pyx_t_9);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_10, function);
+        __Pyx_DECREF_SET(__pyx_t_8, function);
       }
     }
-    __pyx_t_1 = (__pyx_t_11) ? __Pyx_PyObject_Call2Args(__pyx_t_10, __pyx_t_11, __pyx_t_9) : __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_9);
-    __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __pyx_t_1 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_9, __pyx_t_7) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_7);
+    __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 14, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
     /* "(tree fragment)":13
  * cdef __pyx_unpickle_ChessBoard__set_state(ChessBoard __pyx_result, tuple __pyx_state):
- *     __pyx_result.board = __pyx_state[0]; __pyx_result.n = __pyx_state[1]; __pyx_result.xx = __pyx_state[2]; __pyx_result.yy = __pyx_state[3]
- *     if len(__pyx_state) > 4 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
- *         __pyx_result.__dict__.update(__pyx_state[4])
+ *     __pyx_result.board = __pyx_state[0]
+ *     if len(__pyx_state) > 1 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         __pyx_result.__dict__.update(__pyx_state[1])
  */
   }
 
@@ -7215,8 +7517,8 @@ static PyObject *__pyx_f_5chess___pyx_unpickle_ChessBoard__set_state(struct __py
  *         __pyx_unpickle_ChessBoard__set_state(<ChessBoard> __pyx_result, __pyx_state)
  *     return __pyx_result
  * cdef __pyx_unpickle_ChessBoard__set_state(ChessBoard __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_result.board = __pyx_state[0]; __pyx_result.n = __pyx_state[1]; __pyx_result.xx = __pyx_state[2]; __pyx_result.yy = __pyx_state[3]
- *     if len(__pyx_state) > 4 and hasattr(__pyx_result, '__dict__'):
+ *     __pyx_result.board = __pyx_state[0]
+ *     if len(__pyx_state) > 1 and hasattr(__pyx_result, '__dict__'):
  */
 
   /* function exit code */
@@ -7225,10 +7527,9 @@ static PyObject *__pyx_f_5chess___pyx_unpickle_ChessBoard__set_state(struct __py
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_XDECREF(__pyx_t_11);
   __Pyx_AddTraceback("chess.__pyx_unpickle_ChessBoard__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
@@ -20023,10 +20324,6 @@ static PyObject *__pyx_tp_new_5chess_ChessBoard(PyTypeObject *t, CYTHON_UNUSED P
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_5chess_ChessBoard *)o);
   p->__pyx_vtab = __pyx_vtabptr_5chess_ChessBoard;
-  p->xx.data = NULL;
-  p->xx.memview = NULL;
-  p->yy.data = NULL;
-  p->yy.memview = NULL;
   p->board.data = NULL;
   p->board.memview = NULL;
   return o;
@@ -20039,8 +20336,6 @@ static void __pyx_tp_dealloc_5chess_ChessBoard(PyObject *o) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
   }
   #endif
-  __PYX_XDEC_MEMVIEW(&p->xx, 1);
-  __PYX_XDEC_MEMVIEW(&p->yy, 1);
   __PYX_XDEC_MEMVIEW(&p->board, 1);
   (*Py_TYPE(o)->tp_free)(o);
 }
@@ -20052,14 +20347,17 @@ static PyMethodDef __pyx_methods_5chess_ChessBoard[] = {
   {"check_reverse", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5chess_10ChessBoard_9check_reverse, METH_VARARGS|METH_KEYWORDS, 0},
   {"could_drop_xy", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5chess_10ChessBoard_11could_drop_xy, METH_VARARGS|METH_KEYWORDS, 0},
   {"could_drop", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5chess_10ChessBoard_13could_drop, METH_VARARGS|METH_KEYWORDS, 0},
-  {"drop_list", (PyCFunction)__pyx_pw_5chess_10ChessBoard_15drop_list, METH_O, 0},
-  {"drop_list_xy", (PyCFunction)__pyx_pw_5chess_10ChessBoard_17drop_list_xy, METH_O, 0},
-  {"move_xy", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5chess_10ChessBoard_19move_xy, METH_VARARGS|METH_KEYWORDS, 0},
-  {"move", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5chess_10ChessBoard_21move, METH_VARARGS|METH_KEYWORDS, 0},
-  {"out", (PyCFunction)__pyx_pw_5chess_10ChessBoard_23out, METH_NOARGS, 0},
-  {"have_space", (PyCFunction)__pyx_pw_5chess_10ChessBoard_25have_space, METH_NOARGS, 0},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_5chess_10ChessBoard_27__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_5chess_10ChessBoard_29__setstate_cython__, METH_O, 0},
+  {"could_drop_by", (PyCFunction)__pyx_pw_5chess_10ChessBoard_15could_drop_by, METH_O, 0},
+  {"drop_list", (PyCFunction)__pyx_pw_5chess_10ChessBoard_17drop_list, METH_O, 0},
+  {"drop_list_xy", (PyCFunction)__pyx_pw_5chess_10ChessBoard_19drop_list_xy, METH_O, 0},
+  {"move_xy", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5chess_10ChessBoard_21move_xy, METH_VARARGS|METH_KEYWORDS, 0},
+  {"move", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5chess_10ChessBoard_23move, METH_VARARGS|METH_KEYWORDS, 0},
+  {"out", (PyCFunction)__pyx_pw_5chess_10ChessBoard_25out, METH_NOARGS, 0},
+  {"have_space", (PyCFunction)__pyx_pw_5chess_10ChessBoard_27have_space, METH_NOARGS, 0},
+  {"clone", (PyCFunction)__pyx_pw_5chess_10ChessBoard_29clone, METH_NOARGS, 0},
+  {"board_array", (PyCFunction)__pyx_pw_5chess_10ChessBoard_31board_array, METH_NOARGS, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_5chess_10ChessBoard_33__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_5chess_10ChessBoard_35__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
@@ -20847,7 +21145,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_ChessBoard, __pyx_k_ChessBoard, sizeof(__pyx_k_ChessBoard), 0, 0, 1, 1},
   {&__pyx_n_s_Ellipsis, __pyx_k_Ellipsis, sizeof(__pyx_k_Ellipsis), 0, 0, 1, 1},
   {&__pyx_kp_s_Empty_shape_tuple_for_cython_arr, __pyx_k_Empty_shape_tuple_for_cython_arr, sizeof(__pyx_k_Empty_shape_tuple_for_cython_arr), 0, 0, 1, 0},
-  {&__pyx_kp_s_Incompatible_checksums_s_vs_0x51, __pyx_k_Incompatible_checksums_s_vs_0x51, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x51), 0, 0, 1, 0},
+  {&__pyx_kp_s_Incompatible_checksums_s_vs_0x11, __pyx_k_Incompatible_checksums_s_vs_0x11, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x11), 0, 0, 1, 0},
   {&__pyx_kp_s_Incompatible_checksums_s_vs_0xb0, __pyx_k_Incompatible_checksums_s_vs_0xb0, sizeof(__pyx_k_Incompatible_checksums_s_vs_0xb0), 0, 0, 1, 0},
   {&__pyx_n_s_IndexError, __pyx_k_IndexError, sizeof(__pyx_k_IndexError), 0, 0, 1, 1},
   {&__pyx_kp_s_Indirect_dimensions_not_supporte, __pyx_k_Indirect_dimensions_not_supporte, sizeof(__pyx_k_Indirect_dimensions_not_supporte), 0, 0, 1, 0},
@@ -20875,9 +21173,11 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_chess_pyx, __pyx_k_chess_pyx, sizeof(__pyx_k_chess_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_class, __pyx_k_class, sizeof(__pyx_k_class), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
+  {&__pyx_n_s_clone, __pyx_k_clone, sizeof(__pyx_k_clone), 0, 0, 1, 1},
   {&__pyx_kp_s_contiguous_and_direct, __pyx_k_contiguous_and_direct, sizeof(__pyx_k_contiguous_and_direct), 0, 0, 1, 0},
   {&__pyx_kp_s_contiguous_and_indirect, __pyx_k_contiguous_and_indirect, sizeof(__pyx_k_contiguous_and_indirect), 0, 0, 1, 0},
   {&__pyx_n_s_could_drop, __pyx_k_could_drop, sizeof(__pyx_k_could_drop), 0, 0, 1, 1},
+  {&__pyx_n_s_could_drop_by, __pyx_k_could_drop_by, sizeof(__pyx_k_could_drop_by), 0, 0, 1, 1},
   {&__pyx_n_s_could_drop_xy, __pyx_k_could_drop_xy, sizeof(__pyx_k_could_drop_xy), 0, 0, 1, 1},
   {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
   {&__pyx_n_s_directx, __pyx_k_directx, sizeof(__pyx_k_directx), 0, 0, 1, 1},
@@ -20957,7 +21257,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 31, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 133, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(1, 148, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(1, 151, __pyx_L1_error)
@@ -21166,17 +21466,17 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
 
-  /* "chess.pyx":154
+  /* "chess.pyx":164
  * 
  * 
  * def main():             # <<<<<<<<<<<<<<
  * 	board = np.array([[0, 1, 1, -1, 0, 0, 0, 0],
  * 	                  [0, 0, 1, 1, -1, 0, 0, 0],
  */
-  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_n_s_board_2); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 154, __pyx_L1_error)
+  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_n_s_board_2); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 164, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_chess_pyx, __pyx_n_s_main_2, 154, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 154, __pyx_L1_error)
+  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_chess_pyx, __pyx_n_s_main_2, 164, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 164, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_ChessBoard(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
@@ -21265,7 +21565,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_8 = PyInt_FromLong(8); if (unlikely(!__pyx_int_8)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_85818945 = PyInt_FromLong(85818945L); if (unlikely(!__pyx_int_85818945)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_18112294 = PyInt_FromLong(18112294L); if (unlikely(!__pyx_int_18112294)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_184977713 = PyInt_FromLong(184977713L); if (unlikely(!__pyx_int_184977713)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_neg_1 = PyInt_FromLong(-1); if (unlikely(!__pyx_int_neg_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
@@ -21321,18 +21621,20 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_vtable_5chess_ChessBoard.check_reverse = (int (*)(struct __pyx_obj_5chess_ChessBoard *, int, int, int, int, int, int __pyx_skip_dispatch))__pyx_f_5chess_10ChessBoard_check_reverse;
   __pyx_vtable_5chess_ChessBoard.could_drop_xy = (int (*)(struct __pyx_obj_5chess_ChessBoard *, int, int, int, int __pyx_skip_dispatch))__pyx_f_5chess_10ChessBoard_could_drop_xy;
   __pyx_vtable_5chess_ChessBoard.could_drop = (int (*)(struct __pyx_obj_5chess_ChessBoard *, int, int, int __pyx_skip_dispatch))__pyx_f_5chess_10ChessBoard_could_drop;
+  __pyx_vtable_5chess_ChessBoard.could_drop_by = (int (*)(struct __pyx_obj_5chess_ChessBoard *, int, int __pyx_skip_dispatch))__pyx_f_5chess_10ChessBoard_could_drop_by;
   __pyx_vtable_5chess_ChessBoard.move_xy = (int (*)(struct __pyx_obj_5chess_ChessBoard *, int, int, int, int __pyx_skip_dispatch))__pyx_f_5chess_10ChessBoard_move_xy;
   __pyx_vtable_5chess_ChessBoard.move = (int (*)(struct __pyx_obj_5chess_ChessBoard *, int, int, int __pyx_skip_dispatch))__pyx_f_5chess_10ChessBoard_move;
   __pyx_vtable_5chess_ChessBoard.out = (void (*)(struct __pyx_obj_5chess_ChessBoard *, int __pyx_skip_dispatch))__pyx_f_5chess_10ChessBoard_out;
   __pyx_vtable_5chess_ChessBoard.have_space = (int (*)(struct __pyx_obj_5chess_ChessBoard *, int __pyx_skip_dispatch))__pyx_f_5chess_10ChessBoard_have_space;
-  if (PyType_Ready(&__pyx_type_5chess_ChessBoard) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_vtable_5chess_ChessBoard.clone = (struct __pyx_obj_5chess_ChessBoard *(*)(struct __pyx_obj_5chess_ChessBoard *, int __pyx_skip_dispatch))__pyx_f_5chess_10ChessBoard_clone;
+  if (PyType_Ready(&__pyx_type_5chess_ChessBoard) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
   __pyx_type_5chess_ChessBoard.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5chess_ChessBoard.tp_dictoffset && __pyx_type_5chess_ChessBoard.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5chess_ChessBoard.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5chess_ChessBoard.tp_dict, __pyx_vtabptr_5chess_ChessBoard) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ChessBoard, (PyObject *)&__pyx_type_5chess_ChessBoard) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5chess_ChessBoard) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5chess_ChessBoard.tp_dict, __pyx_vtabptr_5chess_ChessBoard) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ChessBoard, (PyObject *)&__pyx_type_5chess_ChessBoard) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5chess_ChessBoard) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
   __pyx_ptype_5chess_ChessBoard = &__pyx_type_5chess_ChessBoard;
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
@@ -21514,8 +21816,9 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_chess(PyObject *__pyx_pyinit_modul
   Py_ssize_t __pyx_t_12;
   Py_ssize_t __pyx_t_13;
   Py_ssize_t __pyx_t_14;
-  int __pyx_t_15;
-  static PyThread_type_lock __pyx_t_16[8];
+  __Pyx_memviewslice __pyx_t_15 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_t_16;
+  static PyThread_type_lock __pyx_t_17[8];
   __Pyx_RefNannyDeclarations
   #if CYTHON_PEP489_MULTI_PHASE_INIT
   if (__pyx_m) {
@@ -21751,7 +22054,7 @@ if (!__Pyx_RefNanny) {
  * init_board[3, 4] = -1
  * init_board[4, 3] = -1             # <<<<<<<<<<<<<<
  * 
- * 
+ * cdef int n = 8
  */
   if (unlikely(!__pyx_v_5chess_init_board.memview)) { __Pyx_RaiseUnboundLocalError("init_board"); __PYX_ERR(0, 10, __pyx_L1_error) }
   __pyx_t_13 = 4;
@@ -21771,56 +22074,181 @@ if (!__Pyx_RefNanny) {
   }
   *((int *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_5chess_init_board.data + __pyx_t_13 * __pyx_v_5chess_init_board.strides[0]) ) + __pyx_t_14 * __pyx_v_5chess_init_board.strides[1]) )) = -1;
 
-  /* "chess.pyx":23
- * 	cdef int[:] xx, yy
+  /* "chess.pyx":12
+ * init_board[4, 3] = -1
+ * 
+ * cdef int n = 8             # <<<<<<<<<<<<<<
+ * cdef int[:] xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)
+ * cdef int[:] yy = np.array([-1, -1, 0, 1, 1, 1, 0, -1], dtype=int)
+ */
+  __pyx_v_5chess_n = 8;
+
+  /* "chess.pyx":13
+ * 
+ * cdef int n = 8
+ * cdef int[:] xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)             # <<<<<<<<<<<<<<
+ * cdef int[:] yy = np.array([-1, -1, 0, 1, 1, 1, 0, -1], dtype=int)
+ * 
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_4 = PyList_New(8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_INCREF(__pyx_int_0);
+  __Pyx_GIVEREF(__pyx_int_0);
+  PyList_SET_ITEM(__pyx_t_4, 0, __pyx_int_0);
+  __Pyx_INCREF(__pyx_int_1);
+  __Pyx_GIVEREF(__pyx_int_1);
+  PyList_SET_ITEM(__pyx_t_4, 1, __pyx_int_1);
+  __Pyx_INCREF(__pyx_int_1);
+  __Pyx_GIVEREF(__pyx_int_1);
+  PyList_SET_ITEM(__pyx_t_4, 2, __pyx_int_1);
+  __Pyx_INCREF(__pyx_int_1);
+  __Pyx_GIVEREF(__pyx_int_1);
+  PyList_SET_ITEM(__pyx_t_4, 3, __pyx_int_1);
+  __Pyx_INCREF(__pyx_int_0);
+  __Pyx_GIVEREF(__pyx_int_0);
+  PyList_SET_ITEM(__pyx_t_4, 4, __pyx_int_0);
+  __Pyx_INCREF(__pyx_int_neg_1);
+  __Pyx_GIVEREF(__pyx_int_neg_1);
+  PyList_SET_ITEM(__pyx_t_4, 5, __pyx_int_neg_1);
+  __Pyx_INCREF(__pyx_int_neg_1);
+  __Pyx_GIVEREF(__pyx_int_neg_1);
+  PyList_SET_ITEM(__pyx_t_4, 6, __pyx_int_neg_1);
+  __Pyx_INCREF(__pyx_int_neg_1);
+  __Pyx_GIVEREF(__pyx_int_neg_1);
+  PyList_SET_ITEM(__pyx_t_4, 7, __pyx_int_neg_1);
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4);
+  __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, ((PyObject *)(&PyInt_Type))) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_15 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_15.memview)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_5chess_xx, 1);
+  __pyx_v_5chess_xx = __pyx_t_15;
+  __pyx_t_15.memview = NULL;
+  __pyx_t_15.data = NULL;
+
+  /* "chess.pyx":14
+ * cdef int n = 8
+ * cdef int[:] xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)
+ * cdef int[:] yy = np.array([-1, -1, 0, 1, 1, 1, 0, -1], dtype=int)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyList_New(8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_int_neg_1);
+  __Pyx_GIVEREF(__pyx_int_neg_1);
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_int_neg_1);
+  __Pyx_INCREF(__pyx_int_neg_1);
+  __Pyx_GIVEREF(__pyx_int_neg_1);
+  PyList_SET_ITEM(__pyx_t_2, 1, __pyx_int_neg_1);
+  __Pyx_INCREF(__pyx_int_0);
+  __Pyx_GIVEREF(__pyx_int_0);
+  PyList_SET_ITEM(__pyx_t_2, 2, __pyx_int_0);
+  __Pyx_INCREF(__pyx_int_1);
+  __Pyx_GIVEREF(__pyx_int_1);
+  PyList_SET_ITEM(__pyx_t_2, 3, __pyx_int_1);
+  __Pyx_INCREF(__pyx_int_1);
+  __Pyx_GIVEREF(__pyx_int_1);
+  PyList_SET_ITEM(__pyx_t_2, 4, __pyx_int_1);
+  __Pyx_INCREF(__pyx_int_1);
+  __Pyx_GIVEREF(__pyx_int_1);
+  PyList_SET_ITEM(__pyx_t_2, 5, __pyx_int_1);
+  __Pyx_INCREF(__pyx_int_0);
+  __Pyx_GIVEREF(__pyx_int_0);
+  PyList_SET_ITEM(__pyx_t_2, 6, __pyx_int_0);
+  __Pyx_INCREF(__pyx_int_neg_1);
+  __Pyx_GIVEREF(__pyx_int_neg_1);
+  PyList_SET_ITEM(__pyx_t_2, 7, __pyx_int_neg_1);
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, ((PyObject *)(&PyInt_Type))) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_15 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_15.memview)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_5chess_yy, 1);
+  __pyx_v_5chess_yy = __pyx_t_15;
+  __pyx_t_15.memview = NULL;
+  __pyx_t_15.data = NULL;
+
+  /* "chess.pyx":25
+ * cdef class ChessBoard:
  * 	cdef int[:, :] board
  * 	def __init__(self, int[:, :] _board=init_board):             # <<<<<<<<<<<<<<
- * 		self.n = 8
- * 		self.xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)
+ * 		self.board = np.array(_board.copy(), dtype=int)
+ * 
  */
-  if (unlikely(!__pyx_v_5chess_init_board.memview)) { __Pyx_RaiseUnboundLocalError("init_board"); __PYX_ERR(0, 23, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_5chess_init_board.memview)) { __Pyx_RaiseUnboundLocalError("init_board"); __PYX_ERR(0, 25, __pyx_L1_error) }
   __pyx_k_ = __pyx_v_5chess_init_board;
 
-  /* "chess.pyx":154
+  /* "chess.pyx":164
  * 
  * 
  * def main():             # <<<<<<<<<<<<<<
  * 	board = np.array([[0, 1, 1, -1, 0, 0, 0, 0],
  * 	                  [0, 0, 1, 1, -1, 0, 0, 0],
  */
-  __pyx_t_4 = PyCFunction_NewEx(&__pyx_mdef_5chess_1main, NULL, __pyx_n_s_chess); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 154, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_main_2, __pyx_t_4) < 0) __PYX_ERR(0, 154, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_5chess_1main, NULL, __pyx_n_s_chess); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_main_2, __pyx_t_1) < 0) __PYX_ERR(0, 164, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "chess.pyx":167
+  /* "chess.pyx":177
  * 
  * 
  * if __name__ == '__main__':             # <<<<<<<<<<<<<<
  * 	main()
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_name_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 167, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_15 = (__Pyx_PyString_Equals(__pyx_t_4, __pyx_n_s_main, Py_EQ)); if (unlikely(__pyx_t_15 < 0)) __PYX_ERR(0, 167, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__pyx_t_15) {
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_name_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 177, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_16 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_n_s_main, Py_EQ)); if (unlikely(__pyx_t_16 < 0)) __PYX_ERR(0, 177, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_16) {
 
-    /* "chess.pyx":168
+    /* "chess.pyx":178
  * 
  * if __name__ == '__main__':
  * 	main()             # <<<<<<<<<<<<<<
  * 
  * # https://www.jianshu.com/p/713f0bd8de7b?from=timeline
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_main_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 168, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_main_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 178, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "chess.pyx":167
+    /* "chess.pyx":177
  * 
  * 
  * if __name__ == '__main__':             # <<<<<<<<<<<<<<
@@ -21834,20 +22262,20 @@ if (!__Pyx_RefNanny) {
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_5chess_3__pyx_unpickle_ChessBoard, NULL, __pyx_n_s_chess); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_ChessBoard, __pyx_t_1) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5chess_3__pyx_unpickle_ChessBoard, NULL, __pyx_n_s_chess); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_ChessBoard, __pyx_t_2) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "chess.pyx":1
  * import numpy as np             # <<<<<<<<<<<<<<
  * 
  * cdef extern from 'stdio.h':
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "View.MemoryView":209
  *         info.obj = self
@@ -21856,10 +22284,10 @@ if (!__Pyx_RefNanny) {
  * 
  *     def __dealloc__(array self):
  */
-  __pyx_t_1 = __pyx_capsule_create(((void *)(&__pyx_array_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 209, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_array_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_1) < 0) __PYX_ERR(1, 209, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __pyx_capsule_create(((void *)(&__pyx_array_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 209, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem((PyObject *)__pyx_array_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_2) < 0) __PYX_ERR(1, 209, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_array_type);
 
   /* "View.MemoryView":286
@@ -21869,12 +22297,12 @@ if (!__Pyx_RefNanny) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 286, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 286, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_XGOTREF(generic);
-  __Pyx_DECREF_SET(generic, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_DECREF_SET(generic, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
 
   /* "View.MemoryView":287
  * 
@@ -21883,12 +22311,12 @@ if (!__Pyx_RefNanny) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 287, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 287, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_XGOTREF(strided);
-  __Pyx_DECREF_SET(strided, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_DECREF_SET(strided, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
 
   /* "View.MemoryView":288
  * cdef generic = Enum("<strided and direct or indirect>")
@@ -21897,12 +22325,12 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__26, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 288, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__26, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 288, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_XGOTREF(indirect);
-  __Pyx_DECREF_SET(indirect, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_DECREF_SET(indirect, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
 
   /* "View.MemoryView":291
  * 
@@ -21911,12 +22339,12 @@ if (!__Pyx_RefNanny) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__27, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 291, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__27, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 291, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_XGOTREF(contiguous);
-  __Pyx_DECREF_SET(contiguous, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_DECREF_SET(contiguous, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
 
   /* "View.MemoryView":292
  * 
@@ -21925,12 +22353,12 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__28, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 292, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__28, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 292, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_XGOTREF(indirect_contiguous);
-  __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
 
   /* "View.MemoryView":316
  * 
@@ -21948,15 +22376,15 @@ if (!__Pyx_RefNanny) {
  *     PyThread_allocate_lock(),
  *     PyThread_allocate_lock(),
  */
-  __pyx_t_16[0] = PyThread_allocate_lock();
-  __pyx_t_16[1] = PyThread_allocate_lock();
-  __pyx_t_16[2] = PyThread_allocate_lock();
-  __pyx_t_16[3] = PyThread_allocate_lock();
-  __pyx_t_16[4] = PyThread_allocate_lock();
-  __pyx_t_16[5] = PyThread_allocate_lock();
-  __pyx_t_16[6] = PyThread_allocate_lock();
-  __pyx_t_16[7] = PyThread_allocate_lock();
-  memcpy(&(__pyx_memoryview_thread_locks[0]), __pyx_t_16, sizeof(__pyx_memoryview_thread_locks[0]) * (8));
+  __pyx_t_17[0] = PyThread_allocate_lock();
+  __pyx_t_17[1] = PyThread_allocate_lock();
+  __pyx_t_17[2] = PyThread_allocate_lock();
+  __pyx_t_17[3] = PyThread_allocate_lock();
+  __pyx_t_17[4] = PyThread_allocate_lock();
+  __pyx_t_17[5] = PyThread_allocate_lock();
+  __pyx_t_17[6] = PyThread_allocate_lock();
+  __pyx_t_17[7] = PyThread_allocate_lock();
+  memcpy(&(__pyx_memoryview_thread_locks[0]), __pyx_t_17, sizeof(__pyx_memoryview_thread_locks[0]) * (8));
 
   /* "View.MemoryView":545
  *         info.obj = self
@@ -21965,10 +22393,10 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_1 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 545, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_memoryview_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_1) < 0) __PYX_ERR(1, 545, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 545, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem((PyObject *)__pyx_memoryview_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_2) < 0) __PYX_ERR(1, 545, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_memoryview_type);
 
   /* "View.MemoryView":991
@@ -21978,10 +22406,10 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_1 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 991, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem((PyObject *)__pyx_memoryviewslice_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_1) < 0) __PYX_ERR(1, 991, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 991, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem((PyObject *)__pyx_memoryviewslice_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_2) < 0) __PYX_ERR(1, 991, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_memoryviewslice_type);
 
   /* "(tree fragment)":1
@@ -21989,10 +22417,10 @@ if (!__Pyx_RefNanny) {
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_15View_dot_MemoryView_1__pyx_unpickle_Enum, NULL, __pyx_n_s_View_MemoryView); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_Enum, __pyx_t_1) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_15View_dot_MemoryView_1__pyx_unpickle_Enum, NULL, __pyx_n_s_View_MemoryView); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_Enum, __pyx_t_2) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "(tree fragment)":11
  *         __pyx_unpickle_Enum__set_state(<Enum> __pyx_result, __pyx_state)
@@ -22011,6 +22439,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __PYX_XDEC_MEMVIEW(&__pyx_t_5, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_15, 1);
   if (__pyx_m) {
     if (__pyx_d) {
       __Pyx_AddTraceback("init chess", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -22737,6 +23166,26 @@ static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
 }
 
 /* None */
+static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname) {
+    PyErr_Format(PyExc_UnboundLocalError, "local variable '%s' referenced before assignment", varname);
+}
+
+/* None */
+static CYTHON_INLINE int __Pyx_div_int(int a, int b) {
+    int q = a / b;
+    int r = a - q*b;
+    q -= ((r != 0) & ((r ^ b) < 0));
+    return q;
+}
+
+/* None */
+static CYTHON_INLINE int __Pyx_mod_int(int a, int b) {
+    int r = a % b;
+    r += ((r != 0) & ((r ^ b) < 0)) * b;
+    return r;
+}
+
+/* None */
 static CYTHON_INLINE long __Pyx_div_long(long a, long b) {
     long q = a / b;
     long r = a - q*b;
@@ -22749,6 +23198,19 @@ static CYTHON_INLINE long __Pyx_mod_long(long a, long b) {
     long r = a % b;
     r += ((r != 0) & ((r ^ b) < 0)) * b;
     return r;
+}
+
+/* ExtTypeTest */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
+    }
+    if (likely(__Pyx_TypeCheck(obj, type)))
+        return 1;
+    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
+                 Py_TYPE(obj)->tp_name, type->tp_name);
+    return 0;
 }
 
 /* PyErrExceptionMatches */
@@ -23405,19 +23867,6 @@ static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
 }
 
-/* ExtTypeTest */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    if (likely(__Pyx_TypeCheck(obj, type)))
-        return 1;
-    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
-                 Py_TYPE(obj)->tp_name, type->tp_name);
-    return 0;
-}
-
 /* GetTopmostException */
 #if CYTHON_USE_EXC_INFO_STACK
 static _PyErr_StackItem *
@@ -23804,11 +24253,6 @@ static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED
     return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
 }
 #endif
-
-/* None */
-static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname) {
-    PyErr_Format(PyExc_UnboundLocalError, "local variable '%s' referenced before assignment", varname);
-}
 
 /* PyObject_GenericGetAttrNoDict */
 #if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
@@ -25078,56 +25522,6 @@ __pyx_fail:
     return result;
 }
 
-/* ObjectToMemviewSlice */
-  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyObject *obj, int writable_flag) {
-    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
-    __Pyx_BufFmt_StackElem stack[1];
-    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
-    int retcode;
-    if (obj == Py_None) {
-        result.memview = (struct __pyx_memoryview_obj *) Py_None;
-        return result;
-    }
-    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
-                                                 PyBUF_RECORDS_RO | writable_flag, 1,
-                                                 &__Pyx_TypeInfo_int, stack,
-                                                 &result, obj);
-    if (unlikely(retcode == -1))
-        goto __pyx_fail;
-    return result;
-__pyx_fail:
-    result.memview = NULL;
-    result.data = NULL;
-    return result;
-}
-
-/* None */
-  static CYTHON_INLINE long __Pyx_pow_long(long b, long e) {
-    long t = b;
-    switch (e) {
-        case 3:
-            t *= b;
-        CYTHON_FALLTHROUGH;
-        case 2:
-            t *= b;
-        CYTHON_FALLTHROUGH;
-        case 1:
-            return t;
-        case 0:
-            return 1;
-    }
-    #if 1
-    if (unlikely(e<0)) return 0;
-    #endif
-    t = 1;
-    while (likely(e)) {
-        t *= (b * (e&1)) | ((~e)&1);
-        b *= b;
-        e >>= 1;
-    }
-    return t;
-}
-
 /* CIntToPy */
   static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
     const long neg_one = (long) ((long) 0 - (long) 1), const_zero = (long) 0;
@@ -25830,6 +26224,29 @@ __pyx_fail:
         return PyErr_WarnEx(NULL, message, 1);
     }
     return 0;
+}
+
+/* ObjectToMemviewSlice */
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyObject *obj, int writable_flag) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
+    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
+                                                 PyBUF_RECORDS_RO | writable_flag, 1,
+                                                 &__Pyx_TypeInfo_int, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
 }
 
 /* InitStrings */

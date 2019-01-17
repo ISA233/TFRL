@@ -9,6 +9,10 @@ init_board[4, 4] = 1
 init_board[3, 4] = -1
 init_board[4, 3] = -1
 
+cdef int n = 8
+cdef int[:] xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)
+cdef int[:] yy = np.array([-1, -1, 0, 1, 1, 1, 0, -1], dtype=int)
+
 
 cdef inline int out_board(int x, int y):
 	if x >= 8 or x < 0 or y >= 8 or y < 0:
@@ -17,20 +21,15 @@ cdef inline int out_board(int x, int y):
 
 
 cdef class ChessBoard:
-	cdef int n
-	cdef int[:] xx, yy
 	cdef int[:, :] board
 	def __init__(self, int[:, :] _board=init_board):
-		self.n = 8
-		self.xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)
-		self.yy = np.array([-1, -1, 0, 1, 1, 1, 0, -1], dtype=int)
-		self.board = np.array(_board, dtype=int)
+		self.board = np.array(_board.copy(), dtype=int)
 
 	cpdef int[:, :, :] to_network_input(self, int player):
-		cdef int[:, :, :] network_input = np.zeros([8, 8, 3], dtype=int)
+		cdef int[:, :, :] network_input = np.zeros([n, n, 3], dtype=int)
 		cdef int x, y
-		for x in range(self.n):
-			for y in range(self.n):
+		for x in range(n):
+			for y in range(n):
 				network_input[x, y, 0] = self.board[x, y]
 				network_input[x, y, 1] = self.could_drop_xy(x, y, player)
 				network_input[x, y, 2] = player
@@ -40,8 +39,8 @@ cdef class ChessBoard:
 		cdef int v0 = 0
 		cdef int v1 = 0
 		cdef int i, j
-		for i in range(self.n):
-			for j in range(self.n):
+		for i in range(n):
+			for j in range(n):
 				if self.board[i, j] == -1:
 					v0 += 1
 				if self.board[i, j] == 1:
@@ -51,10 +50,8 @@ cdef class ChessBoard:
 	cpdef int is_finish(self):
 		if not self.have_space():
 			return 1
-		cdef int p
-		for p in range(self.n ** 2):
-			if self.could_drop(p, -1) or self.could_drop(p, 1):
-				return 0
+		if self.could_drop_by(1) or self.could_drop_by(-1):
+			return 0
 		return 1
 
 	cpdef int check_reverse(self, int x, int y, int directx, int directy, int player):
@@ -79,20 +76,27 @@ cdef class ChessBoard:
 		cdef int i
 		cdef int directx, directy
 		for i in range(8):
-			directx, directy = self.xx[i], self.yy[i]
+			directx, directy = xx[i], yy[i]
 			if self.check_reverse(x, y, directx, directy, player):
 				return 1
 		return 0
 
 	cpdef int could_drop(self, int p, int player):
 		cdef int x, y
-		x, y = p // 8, p % 8
+		x, y = p // n, p % n
 		return self.could_drop_xy(x, y, player)
+
+	cpdef int could_drop_by(self, int player):
+		cdef int p
+		for p in range(n * n):
+			if self.could_drop(p, player):
+				return 1
+		return 0
 
 	def drop_list(self, int player):
 		dlist = []
 		cdef int p
-		for p in range(64):
+		for p in range(n * n):
 			if self.could_drop(p, player):
 				dlist.append(p)
 		return dlist
@@ -102,7 +106,7 @@ cdef class ChessBoard:
 		dlist_xy = []
 		cdef int p
 		for p in dlist:
-			dlist_xy.append((p // 8, p % 8))
+			dlist_xy.append((p // n, p % n))
 		return dlist_xy
 
 	cpdef int move_xy(self, int x, int y, int player):
@@ -114,7 +118,7 @@ cdef class ChessBoard:
 		original_x, original_y = x, y
 		cdef int i
 		for i in range(8):
-			directx, directy = self.xx[i], self.yy[i]
+			directx, directy = xx[i], yy[i]
 			x, y = original_x, original_y
 			if self.check_reverse(x, y, directx, directy, player):
 				while True:
@@ -132,8 +136,8 @@ cdef class ChessBoard:
 
 	cpdef void out(self):
 		cpdef int i, j
-		for i in range(8):
-			for j in range(8):
+		for i in range(n):
+			for j in range(n):
 				if self.board[i][j] == -1:
 					printf('x ')
 				elif self.board[i][j] == 1:
@@ -144,11 +148,17 @@ cdef class ChessBoard:
 
 	cpdef int have_space(self):
 		cdef int i, j
-		for i in range(self.n):
-			for j in range(self.n):
+		for i in range(n):
+			for j in range(n):
 				if self.board[i, j] == 0:
 					return 1
 		return 0
+
+	cpdef ChessBoard clone(self):
+		return ChessBoard(self.board)
+
+	def board_array(self):
+		return np.array(self.board.copy())
 
 
 def main():

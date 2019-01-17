@@ -22,8 +22,8 @@ def learning(max_epoch=parameter.max_epoch):
 		cnt = 0
 		while True:
 			cnt += 1
-			# if cnt >= 500:
-			# 	break
+			if cnt >= 5000:
+				break
 			opponent = random.choice(net_pool)
 			xo = (random.randint(0, 1) * 2) - 1
 			if xo == -1:
@@ -36,11 +36,11 @@ def learning(max_epoch=parameter.max_epoch):
 			history = history[1:] + [result]
 			p = history.count(1) / 250
 			print(cnt, ':', p)
-			if p > 0.65:
-				break
+			# if p > 0.65:
+			# 	break
 		net_pool = net_pool[1:] + [new_player]
 		new_player.save()
-		# break
+		break
 	print('learning end.')
 
 

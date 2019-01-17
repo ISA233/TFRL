@@ -25,7 +25,7 @@ def conv2d(MA, MB):
 
 class NetStructure:
 	def __init__(self, learning_rate=parameter.learning_rate):
-		self.name = 'RL_zys'
+		self.name = 'RL_zys_p'
 		self.state = tf.placeholder('float', [None, 8, 8, 3])
 		with tf.name_scope(self.name):
 			W_conv1 = weight_variable([3, 3, 3, 32])
@@ -41,12 +41,12 @@ class NetStructure:
 			W_conv6 = weight_variable([1, 1, 128, 1])
 			b_conv6 = bias_variable([1])
 
-		h_conv1 = tf.nn.relu(conv2d(self.state, W_conv1) + b_conv1)
-		h_conv2 = tf.nn.relu(conv2d(h_conv1, W_conv2) + b_conv2)
-		h_conv3 = tf.nn.relu(conv2d(h_conv2, W_conv3) + b_conv3)
-		h_conv4 = tf.nn.relu(conv2d(h_conv3, W_conv4) + b_conv4)
-		h_conv5 = tf.nn.relu(conv2d(h_conv4, W_conv5) + b_conv5)
-		h_conv6 = tf.nn.relu(conv2d(h_conv5, W_conv6) + b_conv6)
+		h_conv1 = tf.nn.leaky_relu(conv2d(self.state, W_conv1) + b_conv1)
+		h_conv2 = tf.nn.leaky_relu(conv2d(h_conv1, W_conv2) + b_conv2)
+		h_conv3 = tf.nn.leaky_relu(conv2d(h_conv2, W_conv3) + b_conv3)
+		h_conv4 = tf.nn.leaky_relu(conv2d(h_conv3, W_conv4) + b_conv4)
+		h_conv5 = tf.nn.leaky_relu(conv2d(h_conv4, W_conv5) + b_conv5)
+		h_conv6 = tf.nn.leaky_relu(conv2d(h_conv5, W_conv6) + b_conv6)
 
 		feature = tf.reshape(h_conv6, [-1, 64])
 

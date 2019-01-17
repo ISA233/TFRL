@@ -7,31 +7,29 @@ from chess.chess import ChessBoard
 import numpy as np
 import tensorflow as tf
 import parameter
-from network_structure import net
+from net_struct_p import net
 from tools import to_vector
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
 def arg_max(board, probability, player):
-	dlist = board.drop_list(player)
-	for i in range(64):
-		if i not in dlist:
-			probability[i] = -1
+	for p in range(64):
+		if not board.could_drop(p, player):
+			probability[p] = -1
 	return np.argmax(probability)
 
 
 def choice(board, probability, player):
-	dlist = board.drop_list(player)
-	for i in range(64):
-		if i not in dlist:
-			probability[i] = 0
+	for p in range(64):
+		if not board.could_drop(p, player):
+			probability[p] = 0
 	sum_p = np.sum(probability)
 	# print(sum_p)
-	if sum_p < 1e-8:
-		return np.random.choice(dlist)
-	for i in range(64):
-		probability[i] /= sum_p
+	if sum_p < 1e-9:
+		return np.random.choice(board.drop_list(player))
+	for p in range(64):
+		probability[p] /= sum_p
 	return np.random.choice(range(64), p=probability)
 
 
@@ -76,6 +74,10 @@ class Network:
 	def get_probability(self, chessboard, player):
 		return self.sess.run(net.probability, feed_dict={net.state: [chessboard.to_network_input(player)]})
 
+	def get_probabilities(self, chessboards, player):
+		return self.sess.run(net.probability,
+		                     feed_dict={net.state: [chessboard.to_network_input(player) for chessboard in chessboards]})
+
 	def get_probability_out(self, chessboard, player):
 		probability = self.get_probability(chessboard, player)[0]
 		probability = probability.reshape([8, 8])
@@ -88,6 +90,11 @@ class Network:
 	def play(self, chessboard, player):
 		probability = self.get_probability(chessboard, player)
 		return choice(chessboard, probability[0], player)
+
+	def plays(self, chessboards, player):
+		probabilities = self.get_probabilities(chessboards, player)
+		print(probabilities)
+		return [choice(chessboard, probability, player) for chessboard, probability in zip(chessboards, probabilities)]
 
 	def play_max(self, chessboard, player):
 		probability = self.get_probability(chessboard, player)
@@ -113,8 +120,11 @@ def main():
 	                  [0, 0, 0, 0, 0, 0, 0, 0]])
 	board = ChessBoard(board)
 	net0 = Network()
-	net0.get_probability_out(board, -1)
-	# print(net0.play(board, -1))
+	# net0.get_probability_out(board, -1)
+	print(net0.plays([board, board, board], 1))
+
+
+# print(net0.play(board, -1))
 
 
 if __name__ == '__main__':
