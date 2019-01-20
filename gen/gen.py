@@ -1,3 +1,8 @@
+import os
+
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 from network import Network
 from chess.chess import ChessBoard
 import pickle
@@ -40,7 +45,7 @@ def gen(player0, player1, data_size=10000):
 			print('GENing: ', i)
 		status += gen_one(player0, player1)
 	# print(status)
-	with open('train.pkl', 'wb') as f:
+	with open('test.pkl', 'wb') as f:
 		pickle.dump(status, f)
 
 
@@ -50,7 +55,7 @@ def main():
 	net1 = Network()
 	net0.restore('../model_save/cnn_fc_net0/cnn_fc_net0')
 	net1.restore('../model_save/cnn_fc_net0/cnn_fc_net0')
-	gen(net0, net1, 10000)
+	gen(net0, net1, 100)
 
 
 if __name__ == '__main__':
