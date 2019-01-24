@@ -60,6 +60,7 @@ class ChessBoard:
 	def board_array(self):
 		pass
 
+
 def main():
 	print(init_board)
 	A = ChessBoard()

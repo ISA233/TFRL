@@ -26,13 +26,12 @@ cdef class ChessBoard:
 		self.board = np.array(_board.copy(), dtype=int)
 
 	cpdef int[:, :, :] to_network_input(self, int player):
-		cdef int[:, :, :] network_input = np.zeros([n, n, 3], dtype=int)
+		cdef int[:, :, :] network_input = np.zeros([n, n, 2], dtype=int)
 		cdef int x, y
 		for x in range(n):
 			for y in range(n):
 				network_input[x, y, 0] = self.board[x, y]
-				network_input[x, y, 1] = self.could_drop_xy(x, y, player)
-				network_input[x, y, 2] = player
+				network_input[x, y, 1] = player
 		return network_input
 
 	cpdef int evaluate(self):

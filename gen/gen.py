@@ -21,17 +21,17 @@ def gen_one(player0, player1):
 			move = player0.play(board, current_player)
 		else:
 			move = player1.play(board, current_player)
-		states.append([board.board_array(), current_player, move, 0.5])
+		states.append([board.board_array(), current_player, move, 0.0])
 		board.move(move, current_player)
 		if board.is_finish():
-			states.append([board.board_array(), current_player, -1, 0.5])
+			states.append([board.board_array(), current_player, -1, 0.0])
 			value = board.evaluate()
 			for state in states:
 				# state[0].out()
 				if value > 0:
-					state[3] = 1.0 if state[1] == 1 else 0.0
+					state[3] = 1.0 if state[1] == 1 else -1.0
 				if value < 0:
-					state[3] = 0.0 if state[1] == 1 else 1.0
+					state[3] = -1.0 if state[1] == 1 else 1.0
 			# print(state[1:])
 			# print(value)
 			break

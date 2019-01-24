@@ -8,7 +8,7 @@ import numpy as np
 import tensorflow as tf
 import parameter
 from net_struct_p import net
-from tools import to_vector
+from tools import vector
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -43,7 +43,7 @@ def pretreatment(moves, iam, value, delay):  # single learn
 			continue
 		if current_player == iam:
 			boards.append(board.to_network_input(current_player))
-			actions.append(to_vector(move))
+			actions.append(vector(move))
 			if not values:
 				values.append(value)
 			else:

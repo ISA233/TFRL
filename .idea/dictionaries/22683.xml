@@ -1,12 +1,17 @@
 <component name="ProjectDictionaryState">
   <dictionary name="22683">
     <words>
+      <w>cuda</w>
       <w>dlist</w>
       <w>flase</w>
       <w>getv</w>
       <w>isfinish</w>
       <w>netsx</w>
+      <w>phead</w>
       <w>regularizer</w>
+      <w>relu</w>
+      <w>tensorflow</w>
+      <w>vhead</w>
       <w>vnet</w>
     </words>
   </dictionary>
