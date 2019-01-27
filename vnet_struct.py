@@ -60,7 +60,7 @@ class NetStructure:
 	def build_body(self):
 		conv_layer_shape = [3, 3, 2, 128]
 		residual_layer_shape = [3, 3, 128, 128]
-		residual_layer_number = 3
+		residual_layer_number = 5
 		body = self.build_conv_layer(self.state, conv_layer_shape, self.bn_training)
 		for i in range(residual_layer_number):
 			body = self.build_residual_layer(body, residual_layer_shape, self.bn_training)

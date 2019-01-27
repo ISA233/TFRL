@@ -3,11 +3,14 @@
     <words>
       <w>cuda</w>
       <w>dlist</w>
+      <w>epslion</w>
       <w>flase</w>
       <w>getv</w>
       <w>isfinish</w>
+      <w>mcts</w>
       <w>netsx</w>
       <w>phead</w>
+      <w>pred</w>
       <w>regularizer</w>
       <w>relu</w>
       <w>tensorflow</w>

@@ -53,7 +53,7 @@ def test2(net):
 def main():
 	net = Network('cnn_vnet', bn_training=False, use_GPU=False)
 	net.restore(name='cnn_vnet', version=version_str(193))
-	test2(net)
+	test(net)
 
 
 # cost(net)

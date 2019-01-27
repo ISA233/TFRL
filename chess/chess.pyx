@@ -46,6 +46,14 @@ cdef class ChessBoard:
 					v1 += 1
 		return v1 - v0
 
+	cpdef int win(self, player):
+		v = self.evaluate()
+		if v * player > 0:
+			return 1
+		if v * player < 0:
+			return -1
+		return 0
+
 	cpdef int is_finish(self):
 		if not self.have_space():
 			return 1
@@ -100,13 +108,13 @@ cdef class ChessBoard:
 				dlist.append(p)
 		return dlist
 
-	def drop_list_xy(self, int player):
-		dlist = self.drop_list(player)
-		dlist_xy = []
-		cdef int p
-		for p in dlist:
-			dlist_xy.append((p // n, p % n))
-		return dlist_xy
+	# def drop_list_xy(self, int player):
+	# 	dlist = self.drop_list(player)
+	# 	dlist_xy = []
+	# 	cdef int p
+	# 	for p in dlist:
+	# 		dlist_xy.append((p // n, p % n))
+	# 	return dlist_xy
 
 	cpdef int move_xy(self, int x, int y, int player):
 		if not self.could_drop_xy(x, y, player):

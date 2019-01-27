@@ -112,3 +112,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+*.index
+*.meta
+*.data-00000-of-00001

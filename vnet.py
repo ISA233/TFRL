@@ -25,11 +25,16 @@ class Network:
 	def vhead(self, chessboard, player):
 		return self.sess.run(self.net.vhead, feed_dict={self.net.state: [chessboard.to_network_input(player)]})[0]
 
-	def phead(self, chessboard, player):
-		return self.sess.run(self.net.phead, feed_dict={self.net.state: [chessboard.to_network_input(player)]})[0]
+	# def phead(self, chessboard, player):
+	# 	return self.sess.run(self.net.phead, feed_dict={self.net.state: [chessboard.to_network_input(player)]})[0]
 
 	def dist(self, chessboard, player):
 		return self.sess.run(self.net.dist, feed_dict={self.net.state: [chessboard.to_network_input(player)]})[0]
+
+	def pred(self, chessboard, player):
+		vhead, dist = self.sess.run([self.net.vhead, self.net.dist],
+		                     feed_dict={self.net.state: [chessboard.to_network_input(player)]})
+		return vhead[0, 0], dist[0]
 
 	def dist_out(self, chessboard, player):
 		dist = self.dist(chessboard, player)
