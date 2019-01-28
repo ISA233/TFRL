@@ -16,13 +16,14 @@ class Node:
 		self.V += v
 		self.Q = self.V / self.N
 
-	def expand(self, drop_list, dist):
-		print('expand:')
-		if not drop_list:
-			drop_list = [64]
-		for p in drop_list:
-			print('%d %d: %.4f' % (p // 8, p % 8, dist[p]))
-			self.edges.append([p, dist[p], None])
+	def expand(self, board, player, dist):
+		# print('expand:')
+		for p in range(64):
+			if board.could_drop(p, player):
+				# print('%d %d: %.4f' % (p // 8, p % 8, dist[p]))
+				self.edges.append([p, dist[p], None])
+		if not self.edges:
+			self.edges.append([64, dist[64], None])
 
 
 class MCT:
@@ -37,28 +38,28 @@ class MCT:
 		currentNode = self.root
 		board, player = self.init_board.clone(), self.init_player
 		while not board.is_finish():
-			print('move_to_leaf:')
-			board.out()
+			# print('move_to_leaf:')
+			# board.out()
 			MaxQU = sim_edge = None
-			# if currentNode == self.root:
-			# 	eps = 0.5
-			# 	nu = np.random.dirichlet([0.3] * len(currentNode.edges))
-			# else:
-			# 	eps = 0
-			# 	nu = [0] * len(currentNode.edges)
+			if currentNode == self.root:
+				eps = 0.25
+				nu = np.random.dirichlet([0.03] * len(currentNode.edges))
+			else:
+				eps = 0
+				nu = [0] * len(currentNode.edges)
 			N = currentNode.N
 			for i, edge in enumerate(currentNode.edges):
 				action, P, son = edge
 				ni = 0 if son is None else son.N
-				# U = ((1 - eps) * P + eps * nu[i]) * np.sqrt(N) / (1 + ni)
-				U = P * np.sqrt(N) / (1 + ni)
+				U = ((1 - eps) * P + eps * nu[i]) * np.sqrt(N) / (1 + ni)
+				# U = P * np.sqrt(N) / (1 + ni)
 				Q = 0 if son is None else -son.Q
 				if MaxQU is None or Q + U > MaxQU:
 					MaxQU = Q + U
 					sim_edge = edge
-				print('action: %d %d, Q: %.3f, U: %.3f, Q+U: %.3f' % (action // 8, action % 8, Q, U, Q + U))
-			if sim_edge[0] == 64:
-				print('wooooooooooooooooow')
+				# print('action: %d %d, Q: %.3f, U: %.3f, Q+U: %.3f' % (action // 8, action % 8, Q, U, Q + U))
+			# if sim_edge[0] == 64:
+			# 	print('-------wow-------')
 			board.move(sim_edge[0], player)
 			player = -player
 			if sim_edge[2] is None:
@@ -67,46 +68,32 @@ class MCT:
 			currentNode = sim_edge[2]
 		return currentNode, board, player
 
-	@staticmethod
-	def back_up(node, v):
-		while node is not None:
-			node.update(v)
-			node = node.father
-			v = -v
+	def pi(self, temperature=1):
+		pi = np.zeros(65)
+		if temperature:
+			N = self.root.N - 1
+			for action, _, son in self.root.edges:
+				ni = 0 if son is None else son.N
+				pi[action] = ni / N
+		else:
+			select_edge = None
+			select_edge_N = 0
+			for edge in self.root.edges:
+				if edge[2] is not None and edge[2].N > select_edge_N:
+					select_edge = edge
+					select_edge_N = edge[2].N
+			pi[select_edge[0]] = 1
+		return pi
 
-	# def simulate(self):
-	# 	leaf, board, player = self.reach_leaf()
-	# 	board.out()
-	# 	if board.is_finish():
-	# 		v = board.win(player)
-	# 	else:
-	# 		v, dist = self.net.pred(board, player)
-	# 		leaf.expand(board.drop_list(player), dist)
-	# 	print('evaluate: ', v, player)
-	# 	self.back_up(leaf, v)
+
+def back_up(node, v):
+	while node is not None:
+		node.update(v)
+		node = node.father
+		v = -v
 
 
 def main():
-	# net = Network('cnn_vnet', bn_training=False, use_GPU=False)
-	# net.restore(version=version_str(193))
-	# _, x, o = 0, -1, 1
-	# # board = np.array([[o, x, x, x, x, x, _, o],
-	# #                   [_, x, o, o, x, _, o, o],
-	# #                   [x, x, o, o, x, o, o, x],
-	# #                   [x, o, o, o, x, o, o, o],
-	# #                   [x, x, _, o, x, _, o, o],
-	# #                   [x, x, x, o, x, o, _, o],
-	# #                   [x, x, x, x, x, o, o, _],
-	# #                   [o, o, o, o, _, x, x, o]])
-	# # board = ChessBoard(board)
-	# board = ChessBoard()
-	# mcts = MCT(net, board, 1)
-	# for i in range(50):
-	# 	mcts.simulate()
-	# 	print('====================================')
-	# for action, _, son in mcts.root.edges:
-	# 	if son is not None:
-	# 		print(action, son.N, -son.Q)
 	pass
 
 

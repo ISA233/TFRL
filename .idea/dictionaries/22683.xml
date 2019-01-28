@@ -2,6 +2,7 @@
   <dictionary name="22683">
     <words>
       <w>cuda</w>
+      <w>dataset</w>
       <w>dlist</w>
       <w>epslion</w>
       <w>flase</w>
@@ -13,8 +14,10 @@
       <w>pred</w>
       <w>regularizer</w>
       <w>relu</w>
+      <w>sqrt</w>
       <w>tensorflow</w>
       <w>vhead</w>
+      <w>vheads</w>
       <w>vnet</w>
     </words>
   </dictionary>
