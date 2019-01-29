@@ -10,6 +10,7 @@
       <w>isfinish</w>
       <w>mcts</w>
       <w>netsx</w>
+      <w>ning</w>
       <w>phead</w>
       <w>pred</w>
       <w>regularizer</w>
@@ -19,6 +20,7 @@
       <w>vhead</w>
       <w>vheads</w>
       <w>vnet</w>
+      <w>vploss</w>
     </words>
   </dictionary>
 </component>

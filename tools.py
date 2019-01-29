@@ -8,8 +8,8 @@ def get_time():
 	return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
 
 
-def version_str(ver):
-	return str(ver).zfill(5)
+def version_str(ver, zfill=5):
+	return str(ver).zfill(zfill)
 
 
 def unzip(data):
@@ -21,9 +21,9 @@ def unzip(data):
 
 def load_data(path='gen/train.pkl'):
 	__data = pickle.load(open(path, 'rb'))
-	data = []
+	data = []  # (net_input, v, pi)
 	for _data in __data:
-		data.append((ChessBoard(_data[0]).to_network_input(_data[1]), [_data[3] * 2 - 1], vector(_data[2])))
+		data.append((ChessBoard(_data[0]).to_network_input(_data[1]), [_data[2]], _data[3]))
 	return data
 
 

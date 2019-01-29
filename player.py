@@ -2,6 +2,7 @@ from MCTS import MCT, back_up
 from chess.chess import ChessBoard
 from vnet import Network
 from tools import version_str
+import parameter
 
 
 class Player:
@@ -10,7 +11,7 @@ class Player:
 
 	def simulate(self, mct):
 		leaf, board, player = mct.reach_leaf()
-		board.out()
+		# board.out()
 		if board.is_finish():
 			v = board.win(player)
 		else:
@@ -37,14 +38,14 @@ class Player:
 				leaf.expand(board, player, dist)
 				back_up(leaf, v)
 
-	def mcts(self, board, player):
+	def mcts(self, board, player, simulate_number=parameter.match_simulate_cnt):
 		mct = MCT(board, player)
-		for i in range(50):
+		for i in range(simulate_number):
 			self.simulate(mct)
-			# print('====================================')
-		for action, _, son in mct.root.edges:
-			if son is not None:
-				print(action, son.N, -son.Q)
+		# for action, _, son in mct.root.edges:
+		# 	if son is not None:
+		# 		print('%d %d: %.3f %d' % (action // 8, action % 8, -son.Q, son.N))
+		return mct
 
 
 def main():

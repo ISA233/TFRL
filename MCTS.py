@@ -1,8 +1,5 @@
 from chess.chess import ChessBoard
 import numpy as np
-from vnet import Network
-from tools import version_str, log
-import profile
 
 
 class Node:
@@ -17,10 +14,8 @@ class Node:
 		self.Q = self.V / self.N
 
 	def expand(self, board, player, dist):
-		# print('expand:')
 		for p in range(64):
 			if board.could_drop(p, player):
-				# print('%d %d: %.4f' % (p // 8, p % 8, dist[p]))
 				self.edges.append([p, dist[p], None])
 		if not self.edges:
 			self.edges.append([64, dist[64], None])
@@ -58,8 +53,6 @@ class MCT:
 					MaxQU = Q + U
 					sim_edge = edge
 				# print('action: %d %d, Q: %.3f, U: %.3f, Q+U: %.3f' % (action // 8, action % 8, Q, U, Q + U))
-			# if sim_edge[0] == 64:
-			# 	print('-------wow-------')
 			board.move(sim_edge[0], player)
 			player = -player
 			if sim_edge[2] is None:

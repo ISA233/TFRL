@@ -11,10 +11,12 @@ class Network:
 		if not use_GPU:
 			os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 			os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+		config = tf.ConfigProto()
+		config.gpu_options.allow_growth = True
 		self.bn_training = bn_training
 		self.net = net_train if bn_training else net_test
 		self.name = name
-		self.sess = tf.Session(graph=train_graph if bn_training else test_graph)
+		self.sess = tf.Session(graph=train_graph if bn_training else test_graph, config=config)
 		self.sess.run(self.net.initializer)
 		self.saver = tf.train.Saver(self.net.vars, max_to_keep=0)
 
@@ -24,9 +26,6 @@ class Network:
 
 	def vhead(self, chessboard, player):
 		return self.sess.run(self.net.vhead, feed_dict={self.net.state: [chessboard.to_network_input(player)]})[0]
-
-	# def phead(self, chessboard, player):
-	# 	return self.sess.run(self.net.phead, feed_dict={self.net.state: [chessboard.to_network_input(player)]})[0]
 
 	def dist(self, chessboard, player):
 		return self.sess.run(self.net.dist, feed_dict={self.net.state: [chessboard.to_network_input(player)]})[0]
@@ -57,7 +56,7 @@ class Network:
 
 
 def main():
-	net = Network('cnn_vnet', use_GPU=False)
+	net = Network('cnn_vnet', use_GPU=True)
 	board = ChessBoard()
 	net.dist_out(board, -1)
 

@@ -6,7 +6,7 @@ from tools import version_str, load_data, unzip
 
 
 def cost(net):
-	test_data = load_data('gen/test.pkl')
+	test_data = load_data('gen/train2.pkl')
 	test_X, test_Y, test_P = unzip(test_data)
 	print(net.sess.run([net.net.v_loss, net.net.p_loss],
 	                   feed_dict={net.net.state: test_X, net.net.v: test_Y, net.net.p: test_P}))
@@ -14,16 +14,26 @@ def cost(net):
 
 def test(net):
 	print('test.')
-	data = load_data('gen/test.pkl')
+	data = load_data('gen/train2.pkl')
 	data = sample(data, 40)
-	Xs, Vs, _ = unzip(data)
-	for X, V in zip(Xs, Vs):
+	Xs, Vs, Ps = unzip(data)
+	for X, V, P in zip(Xs, Vs, Ps):
 		board = ChessBoard(X[:, :, 0])
 		player = X[0, 0, 1]
 		board.out()
 		print('o' if player == 1 else 'x')
 		print(V, net.vhead(board, player))
 		net.dist_out(board, player)
+		print()
+		P_pass = P[64]
+		P = P[:-1].reshape([8, 8])
+		for i in range(8):
+			for j in range(8):
+				print('%.2f' % (P[i, j] * 100), end='\t')
+			print()
+		print('pass: %.2f' % (P_pass * 100))
+		print('--------------------------------')
+
 
 
 def test2(net):
