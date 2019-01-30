@@ -3,7 +3,7 @@ from chess.chess import ChessBoard
 
 
 def main():
-	data = load_data('train2.pkl')
+	data = load_data('lalala.pkl')
 	Xs, Vs, Ps = unzip(data)
 	for X, V, P in zip(Xs, Vs, Ps):
 		board = ChessBoard(X[:, :, 0])
@@ -19,7 +19,6 @@ def main():
 			print()
 		print('pass: %.0f' % (P_pass * 100))
 		print('--------------------------------')
-
 
 
 if __name__ == '__main__':

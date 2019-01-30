@@ -1,7 +1,7 @@
 from vnet import Network
 from tools import log, get_time, load_data, unzip
 import numpy as np
-import parameter
+from config import config
 
 
 def test(net, X, V, P, save_cnt):
@@ -17,14 +17,14 @@ def train(net, trainPath='gen/train.pkl', testPath='gen/test.pkl', mini_batch_si
 	log('\n###  start  ###')
 	log('# ' + get_time())
 	# net.restore(version=version_str(187))
-	learning_rate = parameter.learning_rate
+	learning_rate = config.learning_rate
 	net.change_learning_rate(learning_rate)
 	INF = 9999
 	min_loss = min_vploss = INF
 	bad_net = 0
 
 	print('load data.')
-	train_data = load_data(trainPath)
+	train_data = load_data(trainPath)[:(2000 * 60)]
 	train_data_size = len(train_data)
 	test_data = load_data(testPath)
 	test_X, test_V, test_P = unzip(test_data)
@@ -41,18 +41,18 @@ def train(net, trainPath='gen/train.pkl', testPath='gen/test.pkl', mini_batch_si
 			X, V, P = unzip(mini_batch_data)
 			_, v_loss, p_loss = net.sess.run([net.net.train, net.net.v_loss, net.net.p_loss],
 			                                 feed_dict={net.net.state: X, net.net.v: V, net.net.p: P})
-			print('loss:', v_loss, p_loss)
+			print('loss: %.6f %.6f' % (v_loss, p_loss))
 			if i % save_interval == 0:
 				print('save:', save_cnt)
 				loss, v_loss, p_loss = test(net, test_X, test_V, test_P, save_cnt)
 				vploss = v_loss + p_loss
 				if loss > min_loss and vploss > min_vploss:
 					bad_net += 1
-					if bad_net >= 5:
-						if learning_rate == parameter.learning_rate2:
+					if bad_net >= config.bad_net_limit:
+						if learning_rate == config.learning_rate2:
 							return
 						else:
-							learning_rate = parameter.learning_rate2
+							learning_rate = config.learning_rate2
 							net.change_learning_rate(learning_rate)
 							min_loss = INF
 							bad_net = 0
@@ -68,8 +68,8 @@ def train(net, trainPath='gen/train.pkl', testPath='gen/test.pkl', mini_batch_si
 
 def train_vnet():
 	net = Network('train')
-	trainPath = 'gen/train001.pkl'
-	testPath = 'gen/test001.pkl'
+	trainPath = 'gen/train_new.pkl'
+	testPath = 'gen/test_new.pkl'
 	train(net, trainPath, testPath)
 
 

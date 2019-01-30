@@ -1,5 +1,5 @@
 import os
-import parameter
+from config import config
 from chess.chess import ChessBoard
 import tensorflow as tf
 from vnet_struct import net_train, net_test, train_graph, test_graph
@@ -11,16 +11,16 @@ class Network:
 		if not use_GPU:
 			os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 			os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-		config = tf.ConfigProto()
-		config.gpu_options.allow_growth = True
+		tf_config = tf.ConfigProto()
+		tf_config.gpu_options.allow_growth = True
 		self.bn_training = bn_training
 		self.net = net_train if bn_training else net_test
 		self.name = name
-		self.sess = tf.Session(graph=train_graph if bn_training else test_graph, config=config)
+		self.sess = tf.Session(graph=train_graph if bn_training else test_graph, config=tf_config)
 		self.sess.run(self.net.initializer)
 		self.saver = tf.train.Saver(self.net.vars, max_to_keep=0)
 
-	def change_learning_rate(self, learning_rate=parameter.learning_rate):
+	def change_learning_rate(self, learning_rate=config.learning_rate):
 		self.sess.run(tf.assign(self.net.learning_rate, learning_rate))
 		log('### Change learning rate to: ' + str(learning_rate))
 
@@ -32,8 +32,11 @@ class Network:
 
 	def pred(self, chessboard, player):
 		vhead, dist = self.sess.run([self.net.vhead, self.net.dist],
-		                     feed_dict={self.net.state: [chessboard.to_network_input(player)]})
+		                            feed_dict={self.net.state: [chessboard.to_network_input(player)]})
 		return vhead[0, 0], dist[0]
+
+	def preds(self, net_inputs):
+		return self.sess.run([self.net.vhead, self.net.dist], feed_dict={self.net.state: net_inputs})
 
 	def dist_out(self, chessboard, player):
 		dist = self.dist(chessboard, player)

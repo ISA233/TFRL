@@ -1,13 +1,14 @@
-from player import Player
+from agent import Agent
 from vnet import Network
-from gen.gen import gen
+from gen import gen
 from tools import version_str
 from vnet_train import train
 from match import contest
 from tools import log, get_time
+from config import config
 
-bestVersion = 0
-startVersion = 1
+bestVersion = 2
+startVersion = 3
 
 
 def init():
@@ -16,28 +17,30 @@ def init():
 		_Net.save()
 
 
-def better(currentVersion):
+def reinforce(currentVersion):
 	global bestVersion
 	log('\n**************************')
-	log('better: %d %d' % (bestVersion, currentVersion))
+	log('reinforce: %d %d' % (bestVersion, currentVersion))
 	log(get_time())
 
 	bestNet = Network('vnet' + version_str(bestVersion, 3), bn_training=False)
 	bestNet.restore()
-	bestPlayer = Player(bestNet)
+	bestAgent = Agent(bestNet)
+
+	config.reload()
 
 	trainPath = 'gen/train' + version_str(currentVersion, 3) + '.pkl'
 	testPath = 'gen/test' + version_str(currentVersion, 3) + '.pkl'
-	gen(bestPlayer, bestPlayer, 2048, trainPath)
-	gen(bestPlayer, bestPlayer, 128, testPath)
+	gen(bestAgent, bestAgent, config.train_games_size, trainPath)
+	gen(bestAgent, bestAgent, config.test_games_size, testPath)
 	log('gen over.' + '   ' + get_time())
 
 	currentNet = Network('vnet' + version_str(currentVersion, 3), bn_training=True)
 	train(currentNet, trainPath, testPath)
-	currentPlayer = Player(currentNet)
+	currentAgent = Agent(currentNet)
 	log('train over.' + '   ' + get_time())
 
-	pro = contest(currentPlayer, bestPlayer, 200)
+	pro = contest(currentAgent, bestAgent, 100)
 	log('contest: %f' % pro)
 	log(get_time())
 	if pro > 0.5:
@@ -46,8 +49,8 @@ def better(currentVersion):
 
 def main():
 	init()
-	for currentPlayer in range(startVersion, 1000000):
-		better(currentPlayer)
+	for currentVersion in range(startVersion, 1000000):
+		reinforce(currentVersion)
 
 
 if __name__ == '__main__':

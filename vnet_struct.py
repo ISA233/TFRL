@@ -1,13 +1,9 @@
 import tensorflow as tf
 from chess.chess import ChessBoard
-import parameter
-import os
-
-# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+from config import config
 
 
-def weight_variable(shape, alpha=parameter.l2_regularizer_alpha):
+def weight_variable(shape, alpha=config.l2_regularizer_alpha):
 	initial = tf.truncated_normal(shape, mean=0, stddev=0.3)
 	var = tf.Variable(initial)
 	tf.add_to_collection('losses', tf.contrib.layers.l2_regularizer(alpha)(var))
@@ -87,7 +83,7 @@ class NetStructure:
 			phead = self.build_dense_layer(phead, shape)
 		return phead
 
-	def __init__(self, learning_rate=parameter.learning_rate, bn_training=True):
+	def __init__(self, learning_rate=config.learning_rate, bn_training=True):
 		self.name = 'RL_zys'
 		self.bn_training = bn_training
 		self.cnt = -1
@@ -105,7 +101,7 @@ class NetStructure:
 		self.p_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.phead, labels=self.p))
 		self.l2_loss = tf.add_n(tf.get_collection('losses'))
 		self.loss = self.v_loss + self.p_loss + self.l2_loss
-		self.optimizer = tf.train.MomentumOptimizer(self.learning_rate, parameter.momentum)
+		self.optimizer = tf.train.MomentumOptimizer(self.learning_rate, config.momentum)
 		update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 		with tf.control_dependencies(update_ops):
 			self.train = self.optimizer.minimize(self.loss)

@@ -52,7 +52,7 @@ class MCT:
 				if MaxQU is None or Q + U > MaxQU:
 					MaxQU = Q + U
 					sim_edge = edge
-				# print('action: %d %d, Q: %.3f, U: %.3f, Q+U: %.3f' % (action // 8, action % 8, Q, U, Q + U))
+			# print('action: %d %d, Q: %.3f, U: %.3f, Q+U: %.3f' % (action // 8, action % 8, Q, U, Q + U))
 			board.move(sim_edge[0], player)
 			player = -player
 			if sim_edge[2] is None:
@@ -86,6 +86,10 @@ def back_up(node, v):
 		v = -v
 
 
+def _reach_leaf(mct):
+	return mct.reach_leaf()
+
+
 def main():
 	pass
 
@@ -93,42 +97,3 @@ def main():
 if __name__ == '__main__':
 	main()
 # profile.run('main()', sort=1)
-'''
-action: 2 6, Q: 0.290, U: 0.147, Q+U: 0.437
-action: 3 5, Q: 0.218, U: 0.209, Q+U: 0.427
-action: 4 2, Q: 0.000, U: 0.000, Q+U: 0.000
-action: 5 3, Q: 0.000, U: 0.000, Q+U: 0.000
-move_to_leaf:
-_ _ _ _ _ _ _ _ 
-_ _ _ _ _ _ _ _ 
-_ _ _ _ o o o _ 
-_ _ _ o x _ _ _ 
-_ _ _ x o _ _ _ 
-_ _ _ _ _ _ _ _ 
-_ _ _ _ _ _ _ _ 
-_ _ _ _ _ _ _ _ 
-action: 1 4, Q: -0.273, U: 0.155, Q+U: -0.119
-action: 1 6, Q: -0.259, U: 0.284, Q+U: 0.025
-action: 2 3, Q: 0.000, U: 0.159, Q+U: 0.159
-action: 3 2, Q: -0.289, U: 0.229, Q+U: -0.060
-action: 4 5, Q: 0.000, U: 0.001, Q+U: 0.001
-action: 5 4, Q: -0.309, U: 0.269, Q+U: -0.040
-_ _ _ _ _ _ _ _ 
-_ _ _ _ _ _ _ _ 
-_ _ _ x o o o _ 
-_ _ _ x x _ _ _ 
-_ _ _ x o _ _ _ 
-_ _ _ _ _ _ _ _ 
-_ _ _ _ _ _ _ _ 
-_ _ _ _ _ _ _ _ 
-expand:
-2 2: 0.7785
-4 2: 0.0003
-5 2: 0.0694
-evaluate:  0.2608558 1
-====================================
-20 24 0.24721371056511998
-29 25 0.183956900537014
-
-Process finished with exit code 0
-'''

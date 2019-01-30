@@ -1,22 +1,23 @@
 from chess.chess import ChessBoard
 from vnet import Network
-from player import Player
+from agent import Agent
 from MCTS import MCT
 from tools import version_str, vector, log
-import parameter
+from config import config
 import numpy as np
 import pickle
+import os
 import profile
 
 
-def move(currentPlayer, chessboards, player, temperature, _dataset):
+def move(agent, chessboards, player, temperature, _dataset):
 	MCTs = []
 	for board in chessboards:
 		if not board.is_finish():
 			MCTs.append(MCT(board, player))
-	for simulate_cnt in range(parameter.gen_simulate_cnt):
+	for simulate_cnt in range(config.gen_simulate_cnt):
 		# print('simulate:', simulate_cnt)
-		currentPlayer.simulates(MCTs)
+		agent.simulates(MCTs)
 	cnt = 0
 	for i, board in enumerate(chessboards):
 		if not board.is_finish():
@@ -28,17 +29,7 @@ def move(currentPlayer, chessboards, player, temperature, _dataset):
 			board.move(action, player)
 
 
-def gen(Player0, Player1, number=2048, path='train.pkl'):
-	print('GENing:', path)
-	_dataset, dataset = [], []
-	chessboards = [ChessBoard() for i in range(number)]
-	player = -1
-	for move_cnt in range(64):
-		print('gen move_cnt:', move_cnt)
-		currentPlayer = Player0 if player == -1 else Player1
-		temperature = 1 if move_cnt < 12 else 0
-		move(currentPlayer, chessboards, player, temperature, _dataset)
-		player = -player
+def make(dataset, _dataset, chessboards):
 	mp = dict()
 	for i, board in enumerate(chessboards):
 		v = board.evaluate()
@@ -49,20 +40,45 @@ def gen(Player0, Player1, number=2048, path='train.pkl'):
 	for i, board, player, pi in _dataset:
 		v = -mp[i] if player == -1 else mp[i]
 		dataset.append((board.board_array(), player, v, pi))
+
+
+def gen_batch(agent0, agent1, number, path):
+	log('GEN_batch: ' + path + ' ' + str(number))
+	_dataset, dataset = [], []
+	chessboards = [ChessBoard() for i in range(number)]
+	player = -1
+	for move_cnt in range(64):
+		print('gen move_cnt:', move_cnt)
+		currentAgent = agent0 if player == -1 else agent1
+		temperature = 1 if move_cnt < 12 else 0
+		move(currentAgent, chessboards, player, temperature, _dataset)
+		player = -player
+
+	make(dataset, _dataset, chessboards)
+	if os.path.exists(path):
+		dataset.extend(pickle.load(open(path, 'rb')))
 	with open(path, 'wb') as f:
 		pickle.dump(dataset, f)
 
 
+def gen(agent0, agent1, number, path):
+	log('GEN: ' + path + ' ' + str(number))
+	while number:
+		gen_batch_number = min(number, config.gen_batch_size)
+		gen_batch(agent0, agent1, gen_batch_number, path)
+		number -= gen_batch_number
+
+
 def main():
 	net = Network('cnn_vnet', bn_training=False)
-	net.restore('../vnet_save', version=version_str(193))
-	Player0 = Player1 = Player(net)
-	gen(Player0, Player1, 5000)
+	net.restore(version=version_str(193))
+	agent0 = agent1 = Agent(net)
+	gen(agent0, agent1, 1, 'gen/lalala.pkl')
 
 
 if __name__ == '__main__':
 	main()
-	# profile.run('main()', sort=1)
+# profile.run('main()', sort=1)
 
 '''
 32 128

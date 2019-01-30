@@ -6,7 +6,7 @@ from tools import version_str, load_data, unzip
 
 
 def cost(net):
-	test_data = load_data('gen/train2.pkl')
+	test_data = load_data('gen/test002.pkl')
 	test_X, test_Y, test_P = unzip(test_data)
 	print(net.sess.run([net.net.v_loss, net.net.p_loss],
 	                   feed_dict={net.net.state: test_X, net.net.v: test_Y, net.net.p: test_P}))
@@ -14,7 +14,7 @@ def cost(net):
 
 def test(net):
 	print('test.')
-	data = load_data('gen/train2.pkl')
+	data = load_data('gen/test001.pkl')
 	data = sample(data, 40)
 	Xs, Vs, Ps = unzip(data)
 	for X, V, P in zip(Xs, Vs, Ps):
@@ -33,7 +33,6 @@ def test(net):
 			print()
 		print('pass: %.2f' % (P_pass * 100))
 		print('--------------------------------')
-
 
 
 def test2(net):
@@ -61,8 +60,8 @@ def test2(net):
 
 
 def main():
-	net = Network('cnn_vnet', bn_training=False, use_GPU=False)
-	net.restore(name='cnn_vnet', version=version_str(193))
+	net = Network('vnet001', bn_training=False, use_GPU=False)
+	net.restore(name='vnet001')
 	test(net)
 
 

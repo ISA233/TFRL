@@ -21,6 +21,9 @@ class ChessBoard:
 	def evaluate(self):
 		pass
 
+	def win(self, player):
+		pass
+
 	def is_finish(self):
 		pass
 
