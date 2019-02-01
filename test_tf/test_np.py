@@ -3,10 +3,11 @@ import random
 
 ALPHA = 0.8
 
-dist = np.random.dirichlet([ALPHA] * 5)
+dist = [1, 2, 3]
+x = np.mean(dist)
 
 print(dist)
-print(np.sum(dist))
+print(type(x))
 
 # def choice():
 # 	dlist = []

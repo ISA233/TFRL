@@ -17,33 +17,48 @@ def init():
 		_Net.save()
 
 
+def rgen(trainPath, testPath):
+	bestNet = Network('vnet' + version_str(bestVersion, 3), bn_training=False)
+	bestNet.restore()
+	bestAgent = Agent(bestNet)
+	gen(bestAgent, bestAgent, config.train_games_size, trainPath)
+	gen(bestAgent, bestAgent, config.test_games_size, testPath)
+
+
+def rtrain(currentVersion, trainPath, testPath):
+	currentNet = Network('vnet' + version_str(currentVersion, 3), bn_training=True)
+	train(currentNet, trainPath, testPath)
+
+
+def rcontest(currentVersion):
+	currentNet = Network('vnet' + version_str(currentVersion, 3), bn_training=False)
+	bestNet = Network('vnet' + version_str(bestVersion, 3), bn_training=False)
+	currentNet.restore()
+	bestNet.restore()
+	currentAgent = Agent(currentNet)
+	bestAgent = Agent(bestNet)
+	return contest(currentAgent, bestAgent, 100)
+
+
 def reinforce(currentVersion):
 	global bestVersion
 	log('\n**************************')
 	log('reinforce: %d %d' % (bestVersion, currentVersion))
 	log(get_time())
-
-	bestNet = Network('vnet' + version_str(bestVersion, 3), bn_training=False)
-	bestNet.restore()
-	bestAgent = Agent(bestNet)
-
 	config.reload()
 
 	trainPath = 'gen/train' + version_str(currentVersion, 3) + '.pkl'
 	testPath = 'gen/test' + version_str(currentVersion, 3) + '.pkl'
-	gen(bestAgent, bestAgent, config.train_games_size, trainPath)
-	gen(bestAgent, bestAgent, config.test_games_size, testPath)
+	rgen(trainPath, testPath)
 	log('gen over.' + '   ' + get_time())
 
-	currentNet = Network('vnet' + version_str(currentVersion, 3), bn_training=True)
-	train(currentNet, trainPath, testPath)
-	currentAgent = Agent(currentNet)
+	rtrain(currentVersion, trainPath, testPath)
 	log('train over.' + '   ' + get_time())
 
-	pro = contest(currentAgent, bestAgent, 100)
-	log('contest: %f' % pro)
+	prob = rcontest(currentVersion)
+	log('contest: %f' % prob)
 	log(get_time())
-	if pro > 0.5:
+	if prob > 0.5:
 		bestVersion = currentVersion
 
 

@@ -1,15 +1,15 @@
 
 momentum = 0.9
 
-learning_rate = 0.04
+learning_rate = 0.08
 
-learning_rate2 = 0.002
+learning_rate2 = 0.001
 
 save_interval = 250
 
-l2_regularizer_alpha = 0.0001
+l2_regularizer_alpha = 0.001
 
-simulate_cnt = 256
+simulate_cnt = 64
 
 gen_simulate_cnt = 64
 

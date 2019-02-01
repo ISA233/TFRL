@@ -4,7 +4,7 @@ from config import config
 
 
 def weight_variable(shape, alpha=config.l2_regularizer_alpha):
-	initial = tf.truncated_normal(shape, mean=0, stddev=0.3)
+	initial = tf.truncated_normal(shape, mean=0, stddev=0.03)
 	var = tf.Variable(initial)
 	tf.add_to_collection('losses', tf.contrib.layers.l2_regularizer(alpha)(var))
 	return var

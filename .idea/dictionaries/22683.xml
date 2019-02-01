@@ -15,8 +15,11 @@
       <w>phead</w>
       <w>pred</w>
       <w>preds</w>
+      <w>rcontest</w>
       <w>regularizer</w>
       <w>relu</w>
+      <w>rgen</w>
+      <w>rtrain</w>
       <w>sqrt</w>
       <w>tensorflow</w>
       <w>vhead</w>

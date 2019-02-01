@@ -1,12 +1,12 @@
 import tensorflow as tf
 import os
-from chess.chess import ChessBoard
-from vnet import Network
-from tools import version_str, load_data, unzip
-import profile
+# from chess.chess import ChessBoard
+# from vnet import Network
+# from tools import version_str, load_data, unzip
+# import profile
 
 
-# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 #
 # sess1 = tf.Session()
 # sess2 = tf.Session()
@@ -18,24 +18,32 @@ import profile
 #
 
 
-def pred():
-	net = Network('cnn_vnet', bn_training=False, use_GPU=True)
-	net.restore(path='../vnet_save', version=version_str(193))
-	board = ChessBoard()
-	# for i in range(10000):
-	# 	ret = net.sess.run([net.net.vhead, net.net.phead], feed_dict={net.net.state: [board.to_network_input(-1)]})
-	# 	print(ret)
-	for i in range(50):
-		ret = net.sess.run([net.net.vhead, net.net.phead], feed_dict={net.net.state: [board.to_network_input(-1)] * 200})
-		print(ret)
+# def pred():
+# 	net = Network('cnn_vnet', bn_training=False, use_GPU=True)
+# 	net.restore(path='../vnet_save', version=version_str(193))
+# 	board = ChessBoard()
+# 	# for i in range(10000):
+# 	# 	ret = net.sess.run([net.net.vhead, net.net.phead], feed_dict={net.net.state: [board.to_network_input(-1)]})
+# 	# 	print(ret)
+# 	for i in range(50):
+# 		ret = net.sess.run([net.net.vhead, net.net.phead], feed_dict={net.net.state: [board.to_network_input(-1)] * 200})
+# 		print(ret)
+
+sess = tf.Session()
+
+a = tf.Variable(tf.constant(5, shape=[10]))
+b = tf.Variable(tf.constant(3, shape=[10]))
+c = tf.pow(a, b)
+sess.run(tf.global_variables_initializer())
+
+print(sess.run(c))
+
+# def main():
+# 	profile.run('pred()')
 
 
-def main():
-	profile.run('pred()')
-
-
-if __name__ == '__main__':
-	main()
+# if __name__ == '__main__':
+# 	main()
 
 # def bias_variable(shape, name=''):
 # 	initial = tf.random_uniform(shape=shape, minval=-0.3, maxval=0.3)

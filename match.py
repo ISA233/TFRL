@@ -27,10 +27,13 @@ def match(agent0, agent1, stdout=False):
 
 def contest(agent0, agent1, match_number=100):
 	win_cnt = 0
+	_agent0, _agent1 = agent0, agent1
 	for cnt in range(match_number):
-		_agent0, _agent1 = agent0, agent1
-		if random() < 0.5:
-			_agent0, _agent1 = agent1, agent0
+		_agent0, _agent1 = _agent1, _agent0
+		if _agent0 == agent0:
+			print('x')
+		else:
+			print('o')
 		board = match(_agent0, _agent1)
 		v = board.evaluate()
 		winner = None if not v else _agent0 if v < 0 else _agent1
@@ -41,14 +44,14 @@ def contest(agent0, agent1, match_number=100):
 
 
 def main():
-	net0 = Network('vnet' + version_str(1, 3), use_GPU=False)
+	net0 = Network('train', bn_training=False, use_GPU=False)
 	net0.restore()
-	net1 = Network('vnet' + version_str(2, 3), use_GPU=False)
+	net1 = Network('vnet' + version_str(3, 3), bn_training=False, use_GPU=False)
 	net1.restore()
 	agent0 = Agent(net0)
 	agent1 = Agent(net1)
-	match(agent0, agent1, stdout=True)
-
+	# match(agent0, agent1, stdout=True)
+	contest(agent0, agent1)
 
 if __name__ == '__main__':
 	main()

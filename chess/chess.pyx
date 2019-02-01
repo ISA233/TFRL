@@ -1,3 +1,6 @@
+# cython: boundscheck=False, wraparound=False, initializedcheck=False
+
+cimport cython
 import numpy as np
 
 cdef extern from 'stdio.h':
@@ -46,8 +49,8 @@ cdef class ChessBoard:
 					v1 += 1
 		return v1 - v0
 
-	cpdef int win(self, player):
-		v = self.evaluate()
+	cpdef int win(self, int player):
+		cdef int v = self.evaluate()
 		if v * player > 0:
 			return 1
 		if v * player < 0:
@@ -108,14 +111,6 @@ cdef class ChessBoard:
 				dlist.append(p)
 		return dlist
 
-	# def drop_list_xy(self, int player):
-	# 	dlist = self.drop_list(player)
-	# 	dlist_xy = []
-	# 	cdef int p
-	# 	for p in dlist:
-	# 		dlist_xy.append((p // n, p % n))
-	# 	return dlist_xy
-
 	cpdef int move_xy(self, int x, int y, int player):
 		if not self.could_drop_xy(x, y, player):
 			return 0
@@ -166,7 +161,6 @@ cdef class ChessBoard:
 
 	def board_array(self):
 		return np.array(self.board.copy())
-
 
 def main():
 	board = np.array([[0, 1, 1, -1, 0, 0, 0, 0],
