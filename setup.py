@@ -7,8 +7,8 @@ from match import contest
 from tools import log, get_time
 from config import config
 
-bestVersion = 2
-startVersion = 3
+bestVersion = 3
+startVersion = 4
 
 
 def init():
@@ -58,7 +58,7 @@ def reinforce(currentVersion):
 	prob = rcontest(currentVersion)
 	log('contest: %f' % prob)
 	log(get_time())
-	if prob > 0.5:
+	if prob >= 0.5:
 		bestVersion = currentVersion
 
 

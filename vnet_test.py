@@ -14,7 +14,7 @@ def cost(net):
 
 def test(net):
 	print('test.')
-	data = load_data('gen/test004.pkl')
+	data = load_data('gen/test005.pkl')
 	data = sample(data, 40)
 	Xs, Vs, Ps = unzip(data)
 	for X, V, P in zip(Xs, Vs, Ps):
@@ -37,32 +37,32 @@ def test(net):
 
 def test2(net):
 	_, x, o = 0, -1, 1
-	# board = np.array([[o, _, _, _, _, _, _, x],
-	#                   [_, _, _, _, _, _, _, _],
-	#                   [_, _, _, _, _, _, _, _],
-	#                   [_, _, _, o, x, _, _, _],
-	#                   [_, _, _, x, o, _, _, _],
-	#                   [_, _, _, _, _, _, _, _],
-	#                   [_, _, _, _, _, _, _, _],
-	#                   [x, _, _, _, _, _, _, x]])
-	# board = np.array([[x, x, o, o, o, o, x, x],
+	board = np.array([[_, _, _, _, _, _, _, _],
+	                  [_, _, _, _, _, _, _, _],
+	                  [_, _, _, _, _, _, _, _],
+	                  [_, _, _, x, x, _, _, _],
+	                  [_, _, _, x, x, _, _, _],
+	                  [_, _, _, _, _, _, _, _],
+	                  [_, _, _, _, _, _, _, _],
+	                  [_, _, _, _, _, _, _, _]])
+	# board = np.array([[x, x, x, x, x, x, x, x],
 	#                   [x, o, o, o, o, o, o, x],
 	#                   [x, o, o, o, o, o, o, x],
-	#                   [o, o, o, o, o, o, o, o],
-	#                   [o, o, o, o, o, o, o, o],
 	#                   [x, o, o, o, o, o, o, x],
 	#                   [x, o, o, o, o, o, o, x],
-	#                   [x, x, o, o, o, o, x, x]])
-	# board = ChessBoard(board)
-	board = ChessBoard()
+	#                   [x, o, o, o, o, o, o, x],
+	#                   [x, o, o, o, o, o, o, x],
+	#                   [x, x, x, x, x, x, x, x]])
+	board = ChessBoard(board)
+	# board = ChessBoard()
 	net.dist_out(board, -1)
 	print(net.vhead(board, -1))
 
 
 def main():
-	net = Network('train', bn_training=False, use_GPU=False)
+	net = Network('vnet005', bn_training=False, use_GPU=False)
 	net.restore()
-	test(net)
+	test2(net)
 
 
 # cost(net)

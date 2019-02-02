@@ -55,11 +55,22 @@ class Agent:
 
 
 def main():
-	board = ChessBoard()
-	net = Network('cnn_vnet', bn_training=False, use_GPU=False)
-	net.restore(version=version_str(193))
+	_, x, o = 0, -1, 1
+	board = np.array([[_, _, _, _, _, _, _, _],
+	                  [_, _, _, _, _, _, _, _],
+	                  [_, _, _, _, x, _, _, _],
+	                  [_, _, _, o, x, o, _, _],
+	                  [_, _, _, x, x, _, _, _],
+	                  [_, _, _, _, x, _, _, _],
+	                  [_, _, _, _, _, _, _, _],
+	                  [_, _, _, _, _, _, _, _]])
+	board = ChessBoard(board)
+	net = Network('vnet005', bn_training=False, use_GPU=False)
+	net.restore()
 	agent = Agent(net)
-	agent.mcts(board, 1)
+	mct = agent.mcts(board, 1, 100)
+	for action, P, son in mct.root.edges:
+		print('%d %d: %d' % (action // 8, action % 8, son.N * son.N))
 
 
 if __name__ == '__main__':

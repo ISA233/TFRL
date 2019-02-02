@@ -2,8 +2,39 @@ from chess.chess import ChessBoard
 from vnet import Network
 from agent import Agent
 from tools import version_str
-from random import random
 import profile
+
+
+def match_with_human(agent, human_player=-1):
+	board = ChessBoard()
+	board.out()
+	print('---------------')
+	current_player = -1
+	while not board.is_finish():
+		print('Player: ' + ('x' if current_player == -1 else 'o'))
+		print(agent.net.vhead(board, current_player))
+		if not board.could_drop_by(current_player):
+			current_player = -current_player
+			continue
+		if current_player == human_player:
+			print('Your turn: ', end='')
+			try:
+				x, y = map(int, input().split())
+			except ValueError:
+				print('* Input format ERROR.')
+				continue
+			if not board.could_drop_xy(x, y, current_player):
+				print('* Can\'t move here.')
+				continue
+			board.move_xy(x, y, current_player)
+		else:
+			action = agent.play(board, current_player)
+			board.move(action, current_player)
+		board.out()
+		current_player = -current_player
+		print('---------------')
+	v = board.evaluate()
+	print('Result:', v)
 
 
 def match(agent0, agent1, stdout=False):
@@ -44,14 +75,18 @@ def contest(agent0, agent1, match_number=100):
 
 
 def main():
-	net0 = Network('train', bn_training=False, use_GPU=False)
+	net0 = Network('vnet' + version_str(5, 3), bn_training=False, use_GPU=False)
 	net0.restore()
-	net1 = Network('vnet' + version_str(3, 3), bn_training=False, use_GPU=False)
+	net1 = Network('vnet' + version_str(4, 3), bn_training=False, use_GPU=False)
 	net1.restore()
 	agent0 = Agent(net0)
 	agent1 = Agent(net1)
 	# match(agent0, agent1, stdout=True)
-	contest(agent0, agent1)
+	match_with_human(agent0, 1)
+
+
+# contest(agent0, agent1)
+
 
 if __name__ == '__main__':
 	main()

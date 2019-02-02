@@ -50,7 +50,7 @@ def gen_batch(agent0, agent1, number, path):
 	for move_cnt in range(64):
 		print('gen move_cnt:', move_cnt)
 		currentAgent = agent0 if player == -1 else agent1
-		temperature = 1 if move_cnt < 12 else 0
+		temperature = 1 if move_cnt < 10 else 0
 		move(currentAgent, chessboards, player, temperature, _dataset)
 		player = -player
 

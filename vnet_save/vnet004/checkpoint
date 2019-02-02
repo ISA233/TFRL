@@ -1,0 +1,2 @@
+model_checkpoint_path: "vnet004"
+all_model_checkpoint_paths: "vnet004"

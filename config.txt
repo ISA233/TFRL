@@ -9,14 +9,14 @@ save_interval = 250
 
 l2_regularizer_alpha = 0.001
 
-simulate_cnt = 64
+simulate_cnt = 84
 
-gen_simulate_cnt = 64
+gen_simulate_cnt = 84
 
 bad_net_limit = 5
 
 test_games_size = 256
 
-train_games_size = 8192
+train_games_size = 12288
 
 gen_batch_size = 4096

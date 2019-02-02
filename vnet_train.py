@@ -72,8 +72,6 @@ def train(net, trainPath='gen/train.pkl', testPath='gen/test.pkl', mini_batch_si
 	log('# ' + get_time())
 	learning_rate = config.learning_rate
 	net.change_learning_rate(learning_rate)
-
-	print('load data.')
 	test_data = load_data(testPath)
 
 	print('training.')

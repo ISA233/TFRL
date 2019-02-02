@@ -1,0 +1,653 @@
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ o x _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.1607675]
+Your turn: 2 3
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x _ _ _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.11418418]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.20553282]
+Your turn: 3 5
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ x x x _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.0826412]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x o _ o _ 
+_ _ _ x x o _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.18644357]
+Your turn: 4 6
+* Can't move here.
+Player: x
+[-0.18644357]
+Your turn: 4 5
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x o _ o _ 
+_ _ _ x x o _ _ 
+_ _ _ x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.10660243]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ o o o _ o _ 
+_ _ _ x x o _ _ 
+_ _ _ x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.17578578]
+Your turn: 2 5
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ o o o x o _ 
+_ _ _ x x x _ _ 
+_ _ _ x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.10095478]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ o o o x o _ 
+_ _ _ o x x _ _ 
+_ _ o x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.17205873]
+Your turn: 3 2
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ o o o x o _ 
+_ _ x x x x _ _ 
+_ _ o x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.04376309]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ o o o x o _ 
+_ _ x o x x _ _ 
+_ _ o x o x _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.13493642]
+Your turn: 5 4
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ o o o x o _ 
+_ _ x o x x _ _ 
+_ _ o x x x _ _ 
+_ _ _ _ x o _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[-0.01389928]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ o o o x o _ 
+_ _ x o o o o _ 
+_ _ o x x x _ _ 
+_ _ _ _ x o _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.16338962]
+Your turn: 3 7
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ o o o x o _ 
+_ _ x x x x x x 
+_ _ o x x x _ _ 
+_ _ _ _ x o _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.07471965]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ o o o x o _ 
+_ _ x x o x x x 
+_ _ o x x o _ _ 
+_ _ _ _ x o o _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.20362382]
+Your turn: 5 2
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ o o o x o _ 
+_ _ x x o x x x 
+_ _ x x x o _ _ 
+_ _ x _ x o o _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.01568694]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ o o o x o o 
+_ _ x x o x o x 
+_ _ x x x o _ _ 
+_ _ x _ x o o _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.13455862]
+Your turn: 1 7
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ x 
+_ _ o o o x x x 
+_ _ x x o x o x 
+_ _ x x x o _ _ 
+_ _ x _ x o o _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.11137217]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ x 
+_ _ o o o x x x 
+_ _ x x o o o x 
+_ _ x x x o o _ 
+_ _ x _ x o o _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.25847355]
+Your turn: 4 7
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ x 
+_ _ o o o x x x 
+_ _ x x o o x x 
+_ _ x x x x x x 
+_ _ x _ x o o _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.28252804]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ x 
+_ _ o o o x x x 
+_ _ x x o o x x 
+_ _ x x x x o x 
+_ _ x _ x o o o 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.3333112]
+Your turn: 6 7
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ x 
+_ _ o o o x x x 
+_ _ x x o o x x 
+_ _ x x x x o x 
+_ _ x _ x o x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.2842803]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ o _ x 
+_ _ o o o o x x 
+_ _ x x o o x x 
+_ _ x x x x o x 
+_ _ x _ x o x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.16550305]
+Your turn: 0 5
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ x _ x 
+_ _ o o o x x x 
+_ _ x x o x x x 
+_ _ x x x x o x 
+_ _ x _ x o x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.25484207]
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ x _ x 
+_ _ o o o x x x 
+_ o o o o x x x 
+_ _ x x x x o x 
+_ _ x _ x o x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.20319141]
+Your turn: 3 0
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ x _ x 
+_ _ o o o x x x 
+x x x x x x x x 
+_ _ x x x x o x 
+_ _ x _ x o x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.29057562]
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ x _ x 
+_ _ o o o x x x 
+x x x o x x x x 
+_ _ x o x x o x 
+_ _ x o o o x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.2889996]
+Your turn: 2 1
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ x _ x 
+_ x x x x x x x 
+x x x o x x x x 
+_ _ x o x x o x 
+_ _ x o o o x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.6060754]
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ x _ x 
+_ x x x x x x x 
+x x x o x x x x 
+_ o o o x x o x 
+_ _ x o o o x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.6797479]
+Your turn: 4 0
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ x _ x 
+_ x x x x x x x 
+x x x o x x x x 
+x x x x x x o x 
+_ _ x o o o x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.5940032]
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ x _ x 
+_ x x x x x x x 
+x x x o x x x x 
+x x o x x x o x 
+_ o o o o o x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.73851764]
+Your turn: 5 0
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ x _ x 
+_ x x x x x x x 
+x x x o x x x x 
+x x o x x x o x 
+x x x x x x x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.8592775]
+_ _ _ _ _ x _ _ 
+_ _ o _ _ x _ x 
+_ x o x x x x x 
+x x o o x x x x 
+x x o x x x o x 
+x x x x x x x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.88014555]
+Your turn: 0 2
+_ _ x _ _ x _ _ 
+_ _ x _ _ x _ x 
+_ x x x x x x x 
+x x x o x x x x 
+x x x x x x o x 
+x x x x x x x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.8517387]
+_ _ x _ _ x _ _ 
+_ _ x o _ x _ x 
+_ x x o o x x x 
+x x x o x o x x 
+x x x x x x o x 
+x x x x x x x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.9346251]
+Your turn: 0 3
+_ _ x x _ x _ _ 
+_ _ x x _ x _ x 
+_ x x x o x x x 
+x x x x x o x x 
+x x x x x x o x 
+x x x x x x x x 
+_ _ _ _ _ _ _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.8944592]
+_ _ x x _ x _ _ 
+_ _ x x _ x _ x 
+_ x x x o x x x 
+x x x x x o x x 
+x x x x x o o x 
+x x x x x o x x 
+_ _ _ _ _ o _ x 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.92692786]
+Your turn: 7 5
+_ _ x x _ x _ _ 
+_ _ x x _ x _ x 
+_ x x x o x x x 
+x x x x x x x x 
+x x x x x x o x 
+x x x x x x x x 
+_ _ _ _ _ x _ x 
+_ _ _ _ _ x _ _ 
+---------------
+Player: o
+[0.8813648]
+_ _ x x _ x _ _ 
+_ _ x x _ x _ x 
+_ x x x o x x x 
+x x x x o x x x 
+x x x x o x o x 
+x x x x o o x x 
+_ _ _ _ o x _ x 
+_ _ _ _ _ x _ _ 
+---------------
+Player: x
+[-0.9515627]
+Your turn: 6 3
+_ _ x x _ x _ _ 
+_ _ x x _ x _ x 
+_ x x x o x x x 
+x x x x o x x x 
+x x x x o x o x 
+x x x x x o x x 
+_ _ _ x x x _ x 
+_ _ _ _ _ x _ _ 
+---------------
+Player: o
+[0.95188063]
+_ _ x x _ x _ _ 
+_ _ x x _ x _ x 
+_ x x x o x x x 
+x x x x o x x x 
+x x x x o x o x 
+x x x o x o x x 
+_ _ o x x x _ x 
+_ _ _ _ _ x _ _ 
+---------------
+Player: x
+[-0.9362527]
+Your turn: 7 2
+_ _ x x _ x _ _ 
+_ _ x x _ x _ x 
+_ x x x o x x x 
+x x x x o x x x 
+x x x x o x o x 
+x x x o x o x x 
+_ _ x x x x _ x 
+_ _ x _ _ x _ _ 
+---------------
+Player: o
+[0.9604212]
+_ _ x x _ x _ _ 
+_ _ x x _ x _ x 
+_ x x x o x x x 
+x x x x o x x x 
+x x x o o x o x 
+x x o o x o x x 
+_ o x x x x _ x 
+_ _ x _ _ x _ _ 
+---------------
+Player: x
+[-0.92812455]
+Your turn: 7 0
+_ _ x x _ x _ _ 
+_ _ x x _ x _ x 
+_ x x x o x x x 
+x x x x x x x x 
+x x x x o x o x 
+x x x o x o x x 
+_ x x x x x _ x 
+x _ x _ _ x _ _ 
+---------------
+Player: o
+[0.9788426]
+_ _ x x _ x _ _ 
+_ o x x _ x _ x 
+_ x o x o x x x 
+x x x o x x x x 
+x x x x o x o x 
+x x x o x o x x 
+_ x x x x x _ x 
+x _ x _ _ x _ _ 
+---------------
+Player: x
+[-0.96944994]
+Your turn: 0 1
+_ x x x _ x _ _ 
+_ x x x _ x _ x 
+_ x o x o x x x 
+x x x o x x x x 
+x x x x o x o x 
+x x x o x o x x 
+_ x x x x x _ x 
+x _ x _ _ x _ _ 
+---------------
+Player: o
+[0.9917348]
+o x x x _ x _ _ 
+_ o x x _ x _ x 
+_ x o x o x x x 
+x x x o x x x x 
+x x x x o x o x 
+x x x o x o x x 
+_ x x x x x _ x 
+x _ x _ _ x _ _ 
+---------------
+Player: x
+[-0.978125]
+Your turn: 1 4
+o x x x _ x _ _ 
+_ o x x x x _ x 
+_ x o x x x x x 
+x x x o x x x x 
+x x x x o x o x 
+x x x o x o x x 
+_ x x x x x _ x 
+x _ x _ _ x _ _ 
+---------------
+Player: o
+[0.98284376]
+o o o o o x _ _ 
+_ o x o o x _ x 
+_ x o x o x x x 
+x x x o o x x x 
+x x x x o x o x 
+x x x o x o x x 
+_ x x x x x _ x 
+x _ x _ _ x _ _ 
+---------------
+Player: x
+[-0.9933182]
+Your turn: 1 0
+o o o o o x _ _ 
+x x x o o x _ x 
+_ x o x o x x x 
+x x x o o x x x 
+x x x x o x o x 
+x x x o x o x x 
+_ x x x x x _ x 
+x _ x _ _ x _ _ 
+---------------
+Player: o
+[0.99875766]
+o o o o o x _ _ 
+o o x o o x _ x 
+o o o x o x x x 
+x o x o o x x x 
+x x o x o x o x 
+x x x o x o x x 
+_ x x x x x _ x 
+x _ x _ _ x _ _ 
+---------------
+Player: x
+[-0.9968562]
+Player: o
+[0.9992051]
+o o o o o x _ _ 
+o o x o o x _ x 
+o o o x o x x x 
+o o x o o x x x 
+o x o x o x o x 
+o o x o x o x x 
+o x x x x x _ x 
+x _ x _ _ x _ _ 
+---------------
+Player: x
+[-0.9988311]
+Player: o
+[0.99869674]
+o o o o o x _ _ 
+o o x o o x _ x 
+o o o x o x x x 
+o o x o o x x x 
+o x o x o x o x 
+o o x o x o x x 
+o o o x x x _ x 
+x o x _ _ x _ _ 
+---------------
+Player: x
+[-0.9967518]
+Player: o
+[0.99849665]
+o o o o o x _ _ 
+o o x o o x _ x 
+o o o x o x x x 
+o o x o o x x x 
+o x o x o x o x 
+o o x o x o x x 
+o o o o o x _ x 
+x o o o _ x _ _ 
+---------------
+Player: x
+[-0.98401284]
+Your turn: 7 4
+o o o o o x _ _ 
+o o x o o x _ x 
+o o o x o x x x 
+o o x o o x x x 
+o x o x o x o x 
+o o x o x o x x 
+o o o x x x _ x 
+x x x x x x _ _ 
+---------------
+Player: o
+[0.9925697]
+o o o o o o o _ 
+o o x o o o _ x 
+o o o x o x x x 
+o o x o o x x x 
+o x o x o x o x 
+o o x o x o x x 
+o o o x x x _ x 
+x x x x x x _ _ 
+---------------
+Player: x
+[-0.9777333]
+Your turn: 
