@@ -1,0 +1,526 @@
+C:\Users\22683\AppData\Local\Programs\Python\Python36\python.exe C:/Users/22683/Desktop/TFRL/match.py
+===============
+### CONFIG:
+momentum: 0.9
+learning_rate: 0.08
+learning_rate2: 0.001
+save_interval: 250
+l2_regularizer_alpha: 0.001
+simulate_cnt: 5000
+gen_simulate_cnt: 128
+bad_net_limit: 5
+test_games_size: 256
+train_games_size: 12288
+gen_batch_size: 4096
+===============
+2019-02-04 00:11:15.994977: E tensorflow/stream_executor/cuda/cuda_driver.cc:300] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2019-02-04 00:11:16.000590: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:163] retrieving CUDA diagnostic information for host: DESKTOP-9FCUUUB
+2019-02-04 00:11:16.001034: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:170] hostname: DESKTOP-9FCUUUB
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ o x _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.10200987]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ o x _ _ _ 
+_ _ _ x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.20180376]
+Your turn: 5 3
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ o x _ _ _ 
+_ _ _ o x x _ _ 
+_ _ _ o _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.09819465]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ o x _ _ _ 
+_ _ x x x x _ _ 
+_ _ _ o _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.17028385]
+Your turn: 3 5
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ o o o _ _ 
+_ _ x x o x _ _ 
+_ _ _ o _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.06070749]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ _ x o o _ _ 
+_ _ x x o x _ _ 
+_ _ _ o _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.17540322]
+Your turn: 5 2
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ _ x o o _ _ 
+_ _ x o o x _ _ 
+_ _ o o _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.05182302]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ x x o _ _ 
+_ _ x o o x _ _ 
+_ _ o o _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.11518433]
+Your turn: 2 5
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x o _ _ 
+_ _ _ x o o _ _ 
+_ _ x o o x _ _ 
+_ _ o o _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.11333114]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x o _ _ 
+_ _ _ x x o _ _ 
+_ _ x o x x _ _ 
+_ _ o o x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.12566376]
+Your turn: 5 5
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x o _ _ 
+_ _ _ x x o _ _ 
+_ _ x o x o _ _ 
+_ _ o o o o _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.13405374]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x o _ _ 
+_ _ _ x x x x _ 
+_ _ x o x o _ _ 
+_ _ o o o o _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.06154635]
+Your turn: 2 6
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x o o _ 
+_ _ _ x x o x _ 
+_ _ x o o o _ _ 
+_ _ o o o o _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.21415791]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ _ x x x o _ 
+_ _ _ x x o x _ 
+_ _ x o o o _ _ 
+_ _ o o o o _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.03658973]
+Your turn: 2 7
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ _ x x x o o 
+_ _ _ x x o o _ 
+_ _ x o o o _ _ 
+_ _ o o o o _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.07107589]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ _ x x x o o 
+_ _ _ x x o o _ 
+_ _ x o o o _ _ 
+_ _ x o o o _ _ 
+_ _ x _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.06790996]
+Your turn: 1 5
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x o _ _ 
+_ _ _ x x o o o 
+_ _ _ x x o o _ 
+_ _ x o o o _ _ 
+_ _ x o o o _ _ 
+_ _ x _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.15128198]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x o _ _ 
+_ _ _ x x o o o 
+_ _ _ x x o o _ 
+_ _ x x o o _ _ 
+_ _ x x o o _ _ 
+_ _ x x _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.08724185]
+Your turn: 3 2
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x o _ _ 
+_ _ _ x x o o o 
+_ _ o o o o o _ 
+_ _ x o o o _ _ 
+_ _ x x o o _ _ 
+_ _ x x _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.12739646]
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x o _ _ 
+_ _ _ x x o o o 
+_ _ x o o o o _ 
+_ x x o o o _ _ 
+_ _ x x o o _ _ 
+_ _ x x _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.10002788]
+Your turn: 0 4
+_ _ _ _ o _ _ _ 
+_ _ _ _ o o _ _ 
+_ _ _ x o o o o 
+_ _ x o o o o _ 
+_ x x o o o _ _ 
+_ _ x x o o _ _ 
+_ _ x x _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: x
+[-0.13028543]
+_ _ _ _ o _ _ _ 
+_ _ _ _ o o _ _ 
+_ _ _ x o o o o 
+_ _ x o o o o _ 
+_ x x x o o _ _ 
+_ _ x x x o _ _ 
+_ _ x x _ x _ _ 
+_ _ _ _ _ _ _ _ 
+---------------
+Player: o
+[0.2597802]
+Your turn: 7 5
+_ _ _ _ o _ _ _ 
+_ _ _ _ o o _ _ 
+_ _ _ x o o o o 
+_ _ x o o o o _ 
+_ x x x o o _ _ 
+_ _ x x x o _ _ 
+_ _ x x _ o _ _ 
+_ _ _ _ _ o _ _ 
+---------------
+Player: x
+[-0.17790566]
+_ _ _ _ o _ _ _ 
+_ _ _ _ o o _ _ 
+_ _ _ x o o o o 
+_ _ x o x o o _ 
+_ x x x o x _ _ 
+_ _ x x x x x _ 
+_ _ x x _ o _ _ 
+_ _ _ _ _ o _ _ 
+---------------
+Player: o
+[0.22082888]
+Your turn: 4 7
+_ _ _ _ o _ _ _ 
+_ _ _ _ o o _ _ 
+_ _ _ x o o o o 
+_ _ x o x o o _ 
+_ x x x o x _ o 
+_ _ x x x x o _ 
+_ _ x x _ o _ _ 
+_ _ _ _ _ o _ _ 
+---------------
+Player: x
+[-0.278763]
+_ _ _ _ o _ _ _ 
+_ _ _ _ o o _ _ 
+_ _ _ x o o o o 
+_ _ x o x x x x 
+_ x x x o x _ o 
+_ _ x x x x o _ 
+_ _ x x _ o _ _ 
+_ _ _ _ _ o _ _ 
+---------------
+Player: o
+[0.2545456]
+Your turn: 4 6
+_ _ _ _ o _ _ _ 
+_ _ _ _ o o _ _ 
+_ _ _ x o o o o 
+_ _ x o x o o x 
+_ x x x o o o o 
+_ _ x x x x o _ 
+_ _ x x _ o _ _ 
+_ _ _ _ _ o _ _ 
+---------------
+Player: x
+[-0.32242566]
+_ _ _ _ o _ _ _ 
+_ _ _ _ o o _ _ 
+_ _ x x o o o o 
+_ _ x x x o o x 
+_ x x x x o o o 
+_ _ x x x x o _ 
+_ _ x x _ o _ _ 
+_ _ _ _ _ o _ _ 
+---------------
+Player: o
+[-0.05008738]
+Your turn: 6 4
+_ _ _ _ o _ _ _ 
+_ _ _ _ o o _ _ 
+_ _ x x o o o o 
+_ _ x x o o o x 
+_ x x x o o o o 
+_ _ x x o o o _ 
+_ _ x x o o _ _ 
+_ _ _ _ _ o _ _ 
+---------------
+Player: x
+[-0.13603847]
+_ _ _ _ o _ _ _ 
+_ _ _ _ o o x _ 
+_ _ x x o x o o 
+_ _ x x x o o x 
+_ x x x o o o o 
+_ _ x x o o o _ 
+_ _ x x o o _ _ 
+_ _ _ _ _ o _ _ 
+---------------
+Player: o
+[0.07055639]
+Your turn: 7 2
+_ _ _ _ o _ _ _ 
+_ _ _ _ o o x _ 
+_ _ x x o x o o 
+_ _ x x x o o x 
+_ x x x o o o o 
+_ _ x x o o o _ 
+_ _ x o o o _ _ 
+_ _ o _ _ o _ _ 
+---------------
+Player: x
+[-0.25464207]
+_ _ _ _ o _ x _ 
+_ _ _ _ o x x _ 
+_ _ x x x x o o 
+_ _ x x x o o x 
+_ x x x o o o o 
+_ _ x x o o o _ 
+_ _ x o o o _ _ 
+_ _ o _ _ o _ _ 
+---------------
+Player: o
+[-0.03393868]
+Your turn: 7 1
+_ _ _ _ o _ x _ 
+_ _ _ _ o x x _ 
+_ _ x x x x o o 
+_ _ x x x o o x 
+_ x x x o o o o 
+_ _ x o o o o _ 
+_ _ o o o o _ _ 
+_ o o _ _ o _ _ 
+---------------
+Player: x
+[-0.15278673]
+_ _ _ _ o _ x _ 
+_ _ _ x x x x _ 
+_ _ x x x x o o 
+_ _ x x x o o x 
+_ x x x o o o o 
+_ _ x o o o o _ 
+_ _ o o o o _ _ 
+_ o o _ _ o _ _ 
+---------------
+Player: o
+[-0.15405495]
+Your turn: 5 1
+_ _ _ _ o _ x _ 
+_ _ _ x x x x _ 
+_ _ x x x x o o 
+_ _ x x x o o x 
+_ x x x o o o o 
+_ o o o o o o _ 
+_ _ o o o o _ _ 
+_ o o _ _ o _ _ 
+---------------
+Player: x
+[-0.3527468]
+_ _ _ _ o _ x _ 
+_ _ _ x x x x _ 
+_ _ x x x x o o 
+_ _ x x x x o x 
+_ x x x o o x x 
+_ o o o o o o x 
+_ _ o o o o _ _ 
+_ o o _ _ o _ _ 
+---------------
+Player: o
+[0.03551503]
+Your turn: 6 7
+_ _ _ _ o _ x _ 
+_ _ _ x x x x _ 
+_ _ x x x x o o 
+_ _ x x x x o o 
+_ x x x o o x o 
+_ o o o o o o o 
+_ _ o o o o _ o 
+_ o o _ _ o _ _ 
+---------------
+Player: x
+[-0.42511576]
+_ _ _ _ o _ x _ 
+_ _ _ x x x x _ 
+_ _ x x x x o o 
+_ _ x x x x o o 
+_ x x x o o x o 
+_ x o o o o o o 
+x _ o o o o _ o 
+_ o o _ _ o _ _ 
+---------------
+Player: o
+[0.27874216]
+Your turn: 3 1
+_ _ _ _ o _ x _ 
+_ _ _ o x x x _ 
+_ _ o x x x o o 
+_ o o o o o o o 
+_ x o x o o x o 
+_ x o o o o o o 
+x _ o o o o _ o 
+_ o o _ _ o _ _ 
+---------------
+Player: x
+[-0.19793434]
+_ _ _ x o _ x _ 
+_ _ _ x x x x _ 
+_ _ o x x x o o 
+_ o o o o o o o 
+_ x o x o o x o 
+_ x o o o o o o 
+x _ o o o o _ o 
+_ o o _ _ o _ _ 
+---------------
+Player: o
+[-0.16149352]
+Your turn: 0 2
+_ _ o o o _ x _ 
+_ _ _ o x x x _ 
+_ _ o x o x o o 
+_ o o o o o o o 
+_ x o x o o x o 
+_ x o o o o o o 
+x _ o o o o _ o 
+_ o o _ _ o _ _ 
+---------------
+Player: x
+[-0.35608935]
+_ _ o o o _ x _ 
+_ _ x x x x x _ 
+_ _ o x o x o o 
+_ o o o o o o o 
+_ x o x o o x o 
+_ x o o o o o o 
+x _ o o o o _ o 
+_ o o _ _ o _ _ 
+---------------
+Player: o
+[-0.16537915]
+Your turn: 6 1
+_ _ o o o _ x _ 
+_ _ x x x x x _ 
+_ _ o x o x o o 
+_ o o o o o o o 
+_ o o x o o x o 
+_ o o o o o o o 
+x o o o o o _ o 
+_ o o _ _ o _ _ 
+---------------
+Player: x
+[0.5141512]
+_ _ o o o _ x _ 
+_ _ x x x x x _ 
+_ _ o x o x o o 
+_ o x o o o o o 
+_ x o x o o x o 
+x o o o o o o o 
+x o o o o o _ o 
+_ o o _ _ o _ _ 
+---------------
+Player: o
+[-0.51138836]
+
+这局最后那步白棋我搞错了，就没接着弄。
+和botzone上打了两局，我执黑，都输了，但总的来说局面还是挺胶着的，考虑到该模型还有很大的提升空间，所以效果还算可以。vhead表现不错，对局面的评估挺到位，我一开始还没想到效果会这么好，这在第二局有很好的体现。第一局vhead有一些bug，对方有一步妙招，我的模型没有看出，对方先让我占了一个角，随后对方必定也会占一个角，且对方的角有更大的利用价值，所以vhead判断出错，于是输了。而第二局我方预测胜率基本平稳下跌XD

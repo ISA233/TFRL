@@ -2,11 +2,13 @@ from chess.chess import ChessBoard
 from vnet import Network
 from agent import Agent
 from tools import version_str
+from MCTS import Node
 import profile
 
 
 def match_with_human(agent, human_player=-1):
 	board = ChessBoard()
+	root = Node()
 	board.out()
 	print('---------------')
 	current_player = -1
@@ -14,6 +16,7 @@ def match_with_human(agent, human_player=-1):
 		print('Player: ' + ('x' if current_player == -1 else 'o'))
 		print(agent.net.vhead(board, current_player))
 		if not board.could_drop_by(current_player):
+			root = root.son(64)
 			current_player = -current_player
 			continue
 		if current_player == human_player:
@@ -27,9 +30,11 @@ def match_with_human(agent, human_player=-1):
 				print('* Can\'t move here.')
 				continue
 			board.move_xy(x, y, current_player)
+			root = root.son(x * 8 + y)
 		else:
-			action = agent.play(board, current_player)
+			action = agent.play(board, current_player, root=root)
 			board.move(action, current_player)
+			root = root.son(action)
 		board.out()
 		current_player = -current_player
 		print('---------------')
@@ -39,16 +44,19 @@ def match_with_human(agent, human_player=-1):
 
 def match(agent0, agent1, stdout=False):
 	board = ChessBoard()
+	root0, root1 = Node(), Node()
 	current_player = 1
 	while not board.is_finish():
 		current_player = -current_player
-		if not board.could_drop_by(current_player):
-			continue
 		agent = agent0 if current_player == -1 else agent1
+		root = root0 if current_player == -1 else root1
 		if stdout:
 			agent.analysis(board, current_player)
-		action = agent.play(board, current_player)
+		print('root:', root.N)
+		action = agent.play(board, current_player, root=root)
 		board.move(action, current_player)
+		root0 = root0.son(action)
+		root1 = root1.son(action)
 		if stdout:
 			print('x' if current_player == -1 else 'o')
 			board.out()
@@ -75,13 +83,14 @@ def contest(agent0, agent1, match_number=100):
 
 
 def main():
-	net0 = Network('vnet' + version_str(5, 3), bn_training=False, use_GPU=False)
+	net0 = Network('train', bn_training=False, use_GPU=True)
 	net0.restore()
-	net1 = Network('vnet' + version_str(4, 3), bn_training=False, use_GPU=False)
+	net1 = Network('vnet' + version_str(6, 3), bn_training=False, use_GPU=False)
 	net1.restore()
 	agent0 = Agent(net0)
 	agent1 = Agent(net1)
-	# match(agent0, agent1, stdout=True)
+	# contest(agent0, agent0)
+	# match(agent0, agent0, stdout=True)
 	match_with_human(agent0, 1)
 
 

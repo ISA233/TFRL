@@ -1,9 +1,12 @@
 from tools import unzip, load_data
 from chess.chess import ChessBoard
+import numpy as np
 
 
 def main():
 	data = load_data('lalala.pkl')
+	# np.random.shuffle(data)
+	# data = data[:100]
 	Xs, Vs, Ps = unzip(data)
 	for X, V, P in zip(Xs, Vs, Ps):
 		board = ChessBoard(X[:, :, 0])

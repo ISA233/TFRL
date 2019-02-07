@@ -26,10 +26,10 @@ def save(net, loss, vploss, args):
 	if loss > args[1] and vploss > args[2]:
 		args[3] += 1
 		if args[3] >= config.bad_net_limit:
-			if args[4] == config.learning_rate2:
+			if args[4] == config.learning_rate3:
 				return False
 			else:
-				args[4] = config.learning_rate2
+				args[4] = config.learning_rate2 if args[4] == config.learning_rate else config.learning_rate3
 				net.change_learning_rate(args[4])
 				args[1] = 9999
 				args[3] = 0
@@ -65,9 +65,7 @@ def train_epoch(net, train_data, test_data, args, mini_batch_size):
 	return True
 
 
-def train(net, trainPath='gen/train.pkl', testPath='gen/test.pkl', mini_batch_size=256):
-	if not net.bn_training:
-		raise Exception('bn_training is Flase. should not train.')
+def train(net, trainPath, testPath, mini_batch_size=256):
 	log('\n###  start  ###')
 	log('# ' + get_time())
 	learning_rate = config.learning_rate
@@ -87,9 +85,10 @@ def train(net, trainPath='gen/train.pkl', testPath='gen/test.pkl', mini_batch_si
 
 
 def train_vnet():
-	net = Network('train')
-	trainPath = 'gen/train003.pkl'
-	testPath = 'gen/test003.pkl'
+	net = Network('train100')
+	# net.restore()
+	trainPath = 'gen/train007.pkl'
+	testPath = 'gen/test007.pkl'
 	train(net, trainPath, testPath)
 
 

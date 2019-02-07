@@ -17,7 +17,7 @@ cdef int[:] xx = np.array([0, 1, 1, 1, 0, -1, -1, -1], dtype=int)
 cdef int[:] yy = np.array([-1, -1, 0, 1, 1, 1, 0, -1], dtype=int)
 
 
-cdef inline int out_board(int x, int y):
+cpdef inline int out_board(int x, int y):
 	if x >= 8 or x < 0 or y >= 8 or y < 0:
 		return 1
 	return 0

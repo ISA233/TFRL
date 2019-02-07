@@ -1,7 +1,6 @@
 from MCTS import MCT, back_up
 from chess.chess import ChessBoard
 from vnet import Network
-from tools import version_str
 import numpy as np
 from config import config
 
@@ -35,8 +34,8 @@ class Agent:
 				leaf.expand(board, player, dist)
 				back_up(leaf, v)
 
-	def mcts(self, board, player, simulate_number=config.simulate_cnt):
-		mct = MCT(board, player)
+	def mcts(self, board, player, simulate_number=config.simulate_cnt, root=None):
+		mct = MCT(board, player, root)
 		for i in range(simulate_number):
 			self.simulate(mct)
 		# for action, _, son in mct.root.edges:
@@ -44,8 +43,8 @@ class Agent:
 		# 		print('%d %d: %.3f %d' % (action // 8, action % 8, -son.Q, son.N))
 		return mct
 
-	def play(self, board, player, temperature=0):
-		mct = self.mcts(board, player, config.simulate_cnt)
+	def play(self, board, player, temperature=0, root=None):
+		mct = self.mcts(board, player, config.simulate_cnt, root)
 		pi = mct.pi(temperature)
 		return np.random.choice(range(65), p=pi)
 

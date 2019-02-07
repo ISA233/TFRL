@@ -7,8 +7,8 @@ from match import contest
 from tools import log, get_time
 from config import config
 
-bestVersion = 3
-startVersion = 4
+bestVersion = 6
+startVersion = 7
 
 
 def init():
@@ -21,8 +21,8 @@ def rgen(trainPath, testPath):
 	bestNet = Network('vnet' + version_str(bestVersion, 3), bn_training=False)
 	bestNet.restore()
 	bestAgent = Agent(bestNet)
-	gen(bestAgent, bestAgent, config.train_games_size, trainPath)
-	gen(bestAgent, bestAgent, config.test_games_size, testPath)
+	gen(bestAgent, config.train_games_size, trainPath)
+	gen(bestAgent, config.test_games_size, testPath)
 
 
 def rtrain(currentVersion, trainPath, testPath):

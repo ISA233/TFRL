@@ -1,20 +1,21 @@
 from chess.chess import ChessBoard
 from vnet import Network
 from agent import Agent
-from MCTS import MCT
+from MCTS import MCT, Node
 from tools import version_str, vector, log
 from config import config
 import numpy as np
 import pickle
 import os
-import profile
 
 
-def move(agent, chessboards, player, temperature, _dataset):
+def move(agent, chessboards, roots, player, temperature, _dataset):
 	MCTs = []
-	for board in chessboards:
+	for board, root in zip(chessboards, roots):
 		if not board.is_finish():
-			MCTs.append(MCT(board, player))
+			MCTs.append(MCT(board, player, root))
+	if not MCTs:
+		return False
 	for simulate_cnt in range(config.gen_simulate_cnt):
 		# print('simulate:', simulate_cnt)
 		agent.simulates(MCTs)
@@ -27,6 +28,8 @@ def move(agent, chessboards, player, temperature, _dataset):
 			_dataset.append((i, board.clone(), player, pi))
 			action = np.random.choice(range(65), p=pi)
 			board.move(action, player)
+			roots[i] = roots[i].son(action)
+	return True
 
 
 def make(dataset, _dataset, chessboards):
@@ -42,16 +45,17 @@ def make(dataset, _dataset, chessboards):
 		dataset.append((board.board_array(), player, v, pi))
 
 
-def gen_batch(agent0, agent1, number, path):
+def gen_batch(agent, number, path):
 	log('GEN_batch: ' + path + ' ' + str(number))
 	_dataset, dataset = [], []
 	chessboards = [ChessBoard() for i in range(number)]
+	roots = [Node() for i in range(number)]
 	player = -1
-	for move_cnt in range(64):
+	for move_cnt in range(120):
 		print('gen move_cnt:', move_cnt)
-		currentAgent = agent0 if player == -1 else agent1
 		temperature = 1 if move_cnt < 10 else 0
-		move(currentAgent, chessboards, player, temperature, _dataset)
+		if not move(agent, chessboards, roots, player, temperature, _dataset):
+			break
 		player = -player
 
 	make(dataset, _dataset, chessboards)
@@ -61,19 +65,20 @@ def gen_batch(agent0, agent1, number, path):
 		pickle.dump(dataset, f)
 
 
-def gen(agent0, agent1, number, path):
+def gen(agent, number, path):
 	log('GEN: ' + path + ' ' + str(number))
 	while number:
 		gen_batch_number = min(number, config.gen_batch_size)
-		gen_batch(agent0, agent1, gen_batch_number, path)
+		gen_batch(agent, gen_batch_number, path)
 		number -= gen_batch_number
 
 
 def main():
-	net = Network('cnn_vnet', bn_training=False)
-	net.restore(version=version_str(193))
-	agent0 = agent1 = Agent(net)
-	gen(agent0, agent1, 1, 'gen/lalala.pkl')
+	net = Network('train', bn_training=False)
+	net.restore()
+	agent = Agent(net)
+	gen(agent, 12288, 'gen/train008.pkl')
+	gen(agent, 256, 'gen/test008.pkl')
 
 
 if __name__ == '__main__':

@@ -6,6 +6,7 @@ class Config:
 		self.momentum = 0
 		self.learning_rate = 0
 		self.learning_rate2 = 0
+		self.learning_rate3 = 0
 		self.save_interval = 0
 		self.l2_regularizer_alpha = 0
 		self.simulate_cnt = 0
@@ -31,6 +32,7 @@ class Config:
 		self.momentum = config_mp['momentum']
 		self.learning_rate = config_mp['learning_rate']
 		self.learning_rate2 = config_mp['learning_rate2']
+		self.learning_rate3 = config_mp['learning_rate3']
 		self.save_interval = config_mp['save_interval']
 		self.l2_regularizer_alpha = config_mp['l2_regularizer_alpha']
 		self.simulate_cnt = config_mp['simulate_cnt']
@@ -47,6 +49,7 @@ class Config:
 		print('momentum:', self.momentum)
 		print('learning_rate:', self.learning_rate)
 		print('learning_rate2:', self.learning_rate2)
+		print('learning_rate3:', self.learning_rate3)
 		print('save_interval:', self.save_interval)
 		print('l2_regularizer_alpha:', self.l2_regularizer_alpha)
 		print('simulate_cnt:', self.simulate_cnt)

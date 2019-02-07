@@ -20,12 +20,18 @@ class Node:
 		if not self.edges:
 			self.edges.append([64, dist[64], None])
 
+	def son(self, p):
+		for action, P, son in self.edges:
+			if action == p:
+				return Node() if son is None else son
+		return Node()
+
 
 class MCT:
-	def __init__(self, init_board=ChessBoard(), init_player=-1):
+	def __init__(self, init_board=ChessBoard(), init_player=-1, root=None):
 		self.init_board = init_board.clone()
 		self.init_player = init_player
-		self.root = Node()
+		self.root = Node() if root is None else root
 
 	def reach_leaf(self):
 		if not self.root.edges:
@@ -33,21 +39,14 @@ class MCT:
 		currentNode = self.root
 		board, player = self.init_board.clone(), self.init_player
 		while not board.is_finish():
-			# print('move_to_leaf:')
-			# board.out()
 			MaxQU = sim_edge = None
-			if currentNode == self.root:
-				eps = 0.25
-				nu = np.random.dirichlet([0.03] * len(currentNode.edges))
-			else:
-				eps = 0
-				nu = [0] * len(currentNode.edges)
+			nu = np.random.dirichlet([0.03] * len(currentNode.edges))
+			eps = 0.25 if currentNode == self.root else 0.05
 			N = currentNode.N
 			for i, edge in enumerate(currentNode.edges):
 				action, P, son = edge
 				ni = 0 if son is None else son.N
 				U = ((1 - eps) * P + eps * nu[i]) * np.sqrt(N) / (1 + ni)
-				# U = P * np.sqrt(N) / (1 + ni)
 				Q = 0 if son is None else -son.Q
 				if MaxQU is None or Q + U > MaxQU:
 					MaxQU = Q + U

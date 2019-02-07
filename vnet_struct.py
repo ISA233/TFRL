@@ -54,8 +54,8 @@ class NetStructure:
 		return tf.nn.leaky_relu(ADD_layer)
 
 	def build_body(self):
-		conv_layer_shape = [3, 3, 2, 128]
-		residual_layer_shape = [3, 3, 128, 128]
+		conv_layer_shape = [3, 3, 2, self.filters]
+		residual_layer_shape = [3, 3, self.filters, self.filters]
 		residual_layer_number = 5
 		body = self.build_conv_layer(self.state, conv_layer_shape, self.bn_training)
 		for i in range(residual_layer_number):
@@ -64,10 +64,10 @@ class NetStructure:
 
 	def build_vhead(self, body):
 		feature_number = 1
-		flatten_conv_layer_shape = [1, 1, 128, feature_number]
+		flatten_conv_layer_shape = [1, 1, self.filters, feature_number]
 		vhead = self.build_conv_layer(body, flatten_conv_layer_shape, self.bn_training)
 		vhead = tf.reshape(vhead, [-1, 64 * feature_number])
-		dense_shapes = [128, 1]
+		dense_shapes = [self.filters, 1]
 		for shape in dense_shapes:
 			activation = tf.nn.tanh if shape == 1 else tf.nn.leaky_relu
 			vhead = self.build_dense_layer(vhead, shape, activation)
@@ -75,7 +75,7 @@ class NetStructure:
 
 	def build_phead(self, body):
 		feature_number = 2
-		flatten_conv_layer_shape = [3, 3, 128, feature_number]
+		flatten_conv_layer_shape = [3, 3, self.filters, feature_number]
 		phead = self.build_conv_layer(body, flatten_conv_layer_shape, self.bn_training)
 		phead = tf.reshape(phead, [-1, 64 * feature_number])
 		dense_shapes = [65]
@@ -89,6 +89,7 @@ class NetStructure:
 		self.cnt = -1
 		self.learning_rate = tf.Variable(learning_rate, dtype='float', trainable=False, name='learning_date')
 		self.state = tf.placeholder('float', [None, 8, 8, 2])
+		self.filters = 128
 
 		body = self.build_body()
 		self.vhead = self.build_vhead(body)

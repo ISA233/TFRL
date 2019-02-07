@@ -14,7 +14,7 @@ def cost(net):
 
 def test(net):
 	print('test.')
-	data = load_data('gen/test005.pkl')
+	data = load_data('gen/test007.pkl')
 	data = sample(data, 40)
 	Xs, Vs, Ps = unzip(data)
 	for X, V, P in zip(Xs, Vs, Ps):
@@ -60,9 +60,9 @@ def test2(net):
 
 
 def main():
-	net = Network('vnet005', bn_training=False, use_GPU=False)
+	net = Network('train', bn_training=False, use_GPU=False)
 	net.restore()
-	test2(net)
+	test(net)
 
 
 # cost(net)
