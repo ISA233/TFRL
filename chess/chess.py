@@ -42,9 +42,6 @@ class ChessBoard:
 	def drop_list(self, player):
 		pass
 
-	def drop_list_xy(self, player):
-		pass
-
 	def move_xy(self, x, y, player):
 		pass
 

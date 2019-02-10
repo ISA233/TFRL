@@ -9,7 +9,7 @@ def get_time():
 	return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
 
 
-def version_str(ver, zfill=5):
+def version(ver, zfill=3):
 	return str(ver).zfill(zfill)
 
 

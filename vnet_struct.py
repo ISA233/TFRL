@@ -24,6 +24,9 @@ class NetStructure:
 		self.cnt += 1
 		return '__' + str(self.cnt)
 
+	def build_bn_layer(self, input_tensor):
+		return tf.layers.batch_normalization(input_tensor, training=self.bn_training, name=self.name + self.get_cnt())
+
 	def build_dense_layer(self, input_tensor, shape, activation=tf.identity):
 		with tf.name_scope(self.name):
 			W = weight_variable([input_tensor.shape[-1].value, shape])
@@ -31,25 +34,25 @@ class NetStructure:
 		dense = tf.matmul(input_tensor, W) + b
 		return activation(dense)
 
-	def build_conv_layer(self, input_tensor, shape, bn_training):
+	def build_conv_layer(self, input_tensor, shape):
 		with tf.name_scope(self.name):
 			W_conv = weight_variable(shape)
 			b_conv = bias_variable([shape[-1]])
 		h_conv = conv2d(input_tensor, W_conv) + b_conv
-		h_conv_bn = tf.layers.batch_normalization(h_conv, training=bn_training, name=self.name + self.get_cnt())
+		h_conv_bn = self.build_bn_layer(h_conv)
 		return tf.nn.leaky_relu(h_conv_bn)
 
-	def build_residual_layer(self, input_tensor, shape, bn_training):
+	def build_residual_layer(self, input_tensor, shape):
 		with tf.name_scope(self.name):
 			W1_conv = weight_variable(shape)
 			b1_conv = bias_variable([shape[-1]])
 			W2_conv = weight_variable(shape)
 			b2_conv = bias_variable([shape[-1]])
 		h1_conv = conv2d(input_tensor, W1_conv) + b1_conv
-		h1_conv_bn = tf.layers.batch_normalization(h1_conv, training=bn_training, name=self.name + self.get_cnt())
+		h1_conv_bn = self.build_bn_layer(h1_conv)
 		h1_conv_bn_relu = tf.nn.leaky_relu(h1_conv_bn)
 		h2_conv = conv2d(h1_conv_bn_relu, W2_conv) + b2_conv
-		h2_conv_bn = tf.layers.batch_normalization(h2_conv, training=bn_training, name=self.name + self.get_cnt())
+		h2_conv_bn = self.build_bn_layer(h2_conv)
 		ADD_layer = h2_conv_bn + input_tensor
 		return tf.nn.leaky_relu(ADD_layer)
 
@@ -57,15 +60,15 @@ class NetStructure:
 		conv_layer_shape = [3, 3, 2, self.filters]
 		residual_layer_shape = [3, 3, self.filters, self.filters]
 		residual_layer_number = 5
-		body = self.build_conv_layer(self.state, conv_layer_shape, self.bn_training)
+		body = self.build_conv_layer(self.state, conv_layer_shape)
 		for i in range(residual_layer_number):
-			body = self.build_residual_layer(body, residual_layer_shape, self.bn_training)
+			body = self.build_residual_layer(body, residual_layer_shape)
 		return body
 
 	def build_vhead(self, body):
-		feature_number = 1
+		feature_number = 2
 		flatten_conv_layer_shape = [1, 1, self.filters, feature_number]
-		vhead = self.build_conv_layer(body, flatten_conv_layer_shape, self.bn_training)
+		vhead = self.build_conv_layer(body, flatten_conv_layer_shape)
 		vhead = tf.reshape(vhead, [-1, 64 * feature_number])
 		dense_shapes = [self.filters, 1]
 		for shape in dense_shapes:
@@ -75,8 +78,8 @@ class NetStructure:
 
 	def build_phead(self, body):
 		feature_number = 2
-		flatten_conv_layer_shape = [3, 3, self.filters, feature_number]
-		phead = self.build_conv_layer(body, flatten_conv_layer_shape, self.bn_training)
+		flatten_conv_layer_shape = [1, 1, self.filters, feature_number]
+		phead = self.build_conv_layer(body, flatten_conv_layer_shape)
 		phead = tf.reshape(phead, [-1, 64 * feature_number])
 		dense_shapes = [65]
 		for shape in dense_shapes:

@@ -1,0 +1,496 @@
+C:\Users\22683\AppData\Local\Programs\Python\Python36\python.exe C:/Users/22683/Desktop/TFRL/gen.py
+===============
+### CONFIG:
+momentum: 0.9
+learning_rate: 0.1
+learning_rate2: 0.001
+learning_rate3: 1e-05
+save_interval: 250
+l2_regularizer_alpha: 0.001
+simulate_cnt: 300
+gen_simulate_cnt: 128
+bad_net_limit: 6
+test_games_size: 256
+train_games_size: 10240
+gen_batch_size: 1024
+===============
+2019-02-10 12:29:56.477898: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1432] Found device 0 with properties: 
+name: GeForce GTX 950M major: 5 minor: 0 memoryClockRate(GHz): 1.124
+pciBusID: 0000:01:00.0
+totalMemory: 2.00GiB freeMemory: 1.64GiB
+2019-02-10 12:29:56.478489: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-02-10 12:29:57.543008: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-02-10 12:29:57.543271: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-02-10 12:29:57.543427: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-02-10 12:29:57.543712: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 1395 MB memory) -> physical GPU (device: 0, name: GeForce GTX 950M, pci bus id: 0000:01:00.0, compute capability: 5.0)
+8
+-1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x _ _ _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ o x _ _ _ 
+_ _ o _ _ x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x x _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ o x _ _ _ 
+_ _ o _ _ x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x x _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ o o _ _ _ 
+_ _ o _ o x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x x _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ o o x _ _ 
+_ _ o _ o x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ _ _ 
+_ _ _ o _ _ _ _ 
+_ _ _ o x x _ _ 
+_ _ _ o x _ _ _ 
+_ _ _ o o x _ _ 
+_ _ o _ o x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+------------------
+gen_xot move_cnt: 0 -1
+43.0
+gen_xot move_cnt: 1 1
+62.0
+gen_xot move_cnt: 2 -1
+61.0
+gen_xot move_cnt: 3 1
+138.0
+gen_xot move_cnt: 4 -1
+147.0
+gen_xot move_cnt: 5 1
+169.0
+gen_xot move_cnt: 6 -1
+111.0
+gen_xot move_cnt: 7 1
+96.0
+gen_xot move_cnt: 8 -1
+109.0
+gen_xot move_cnt: 9 1
+111.0
+gen_xot move_cnt: 10 -1
+96.0
+gen_xot move_cnt: 11 1
+95.0
+gen_xot move_cnt: 12 -1
+163.0
+gen_xot move_cnt: 13 1
+116.0
+gen_xot move_cnt: 14 -1
+141.0
+gen_xot move_cnt: 15 1
+92.0
+gen_xot move_cnt: 16 -1
+101.0
+gen_xot move_cnt: 17 1
+176.0
+gen_xot move_cnt: 18 -1
+192.0
+gen_xot move_cnt: 19 1
+246.0
+gen_xot move_cnt: 20 -1
+220.0
+gen_xot move_cnt: 21 1
+160.0
+gen_xot move_cnt: 22 -1
+133.0
+gen_xot move_cnt: 23 1
+128.0
+gen_xot move_cnt: 24 -1
+189.0
+gen_xot move_cnt: 25 1
+162.0
+gen_xot move_cnt: 26 -1
+165.0
+gen_xot move_cnt: 27 1
+127.0
+gen_xot move_cnt: 28 -1
+108.0
+gen_xot move_cnt: 29 1
+128.0
+gen_xot move_cnt: 30 -1
+192.0
+gen_xot move_cnt: 31 1
+192.0
+gen_xot move_cnt: 32 -1
+143.0
+gen_xot move_cnt: 33 1
+238.0
+gen_xot move_cnt: 34 -1
+117.0
+gen_xot move_cnt: 35 1
+206.0
+gen_xot move_cnt: 36 -1
+91.0
+gen_xot move_cnt: 37 1
+194.0
+gen_xot move_cnt: 38 -1
+91.0
+gen_xot move_cnt: 39 1
+200.0
+gen_xot move_cnt: 40 -1
+62.0
+gen_xot move_cnt: 41 1
+173.0
+gen_xot move_cnt: 42 -1
+78.0
+gen_xot move_cnt: 43 1
+119.0
+gen_xot move_cnt: 44 -1
+93.0
+gen_xot move_cnt: 45 1
+137.0
+gen_xot move_cnt: 46 -1
+129.0
+gen_xot move_cnt: 47 1
+219.0
+gen_xot move_cnt: 48 -1
+346.0
+gen_xot move_cnt: 49 1
+362.0
+gen_xot move_cnt: 50 -1
+489.0
+gen_xot move_cnt: 51 1
+527.0
+gen_xot move_cnt: 52 -1
+654.0
+gen_xot move_cnt: 53 1
+23
+-1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ o x _ _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ o o o _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ x _ _ 
+_ _ _ o x o _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ x _ _ 
+_ _ _ o x o _ _ 
+_ _ _ o o _ _ _ 
+_ _ _ o x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ x _ _ 
+_ _ _ o x o _ _ 
+_ _ _ x o _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ o x _ _ 
+_ _ _ o o o _ _ 
+_ _ _ x o _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x x _ _ 
+_ _ _ x o o _ _ 
+_ _ _ x o _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x x _ _ 
+_ _ _ x o o _ _ 
+_ _ o o o _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x x x _ _ 
+_ x _ x o o _ _ 
+_ _ x o o _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ x x o _ _ 
+_ x _ x o o _ _ 
+_ _ x o o _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ x x x x _ 
+_ x _ x o x _ _ 
+_ _ x o x _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ x x x x _ 
+_ x _ x o x _ _ 
+_ o o o x _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ x x x x _ 
+_ x _ x o x _ _ 
+x x x x x _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ x x x x _ 
+_ x o o o x _ _ 
+x x x x x _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ x _ 
+_ _ _ _ _ x _ _ 
+_ _ _ x x x x _ 
+_ x o o o x _ _ 
+x x x x x _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ x _ 
+_ _ _ _ _ x _ _ 
+_ _ _ x x x x _ 
+_ x o o o x _ _ 
+x x x o x _ _ _ 
+_ _ x x o _ _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ x _ 
+_ _ _ _ _ x _ _ 
+_ _ _ x x x x _ 
+_ x o o o x _ _ 
+x x x o x _ _ _ 
+_ _ x x x x _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ x _ 
+_ _ _ _ _ x _ _ 
+_ _ _ x x x x _ 
+_ x o o o x _ _ 
+x x x o o o _ _ 
+_ _ x x x o _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ x _ 
+_ _ _ _ _ x _ _ 
+_ _ _ x x x x _ 
+_ x o o o x x _ 
+x x x o o x _ _ 
+_ _ x x x o _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ x _ 
+_ _ _ _ _ x o _ 
+_ _ _ x x o x _ 
+_ x o o o x x _ 
+x x x o o x _ _ 
+_ _ x x x o _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ x _ 
+_ _ _ _ _ x x x 
+_ _ _ x x o x _ 
+_ x o o o x x _ 
+x x x o o x _ _ 
+_ _ x x x o _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ _ _ _ _ _ 
+1
+_ _ _ _ _ _ x _ 
+_ _ _ _ _ x x x 
+_ _ _ x x o x _ 
+_ x o o o o o o 
+x x x o o x _ _ 
+_ _ x x x o _ _ 
+_ _ _ _ _ o _ _ 
+_ _ _ _ _ _ _ _ 
+-1
+_ _ _ _ _ _ x _ 
+_ _ _ _ _ x x x 
+_ _ _ x x o x _ 
+_ x o o o o o o 
+x x x o o x _ _ 
+_ _ x x x o _ _ 
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ _ x _ 
+------------------
+gen_xot move_cnt: 0 1
+23.0
+gen_xot move_cnt: 1 -1
+35.0
+gen_xot move_cnt: 2 1
+27.0
+gen_xot move_cnt: 3 -1
+26.0
+gen_xot move_cnt: 4 1
+26.0
+gen_xot move_cnt: 5 -1
+45.0
+gen_xot move_cnt: 6 1
+46.0
+gen_xot move_cnt: 7 -1
+34.0
+gen_xot move_cnt: 8 1
+52.0
+gen_xot move_cnt: 9 -1
+74.0
+gen_xot move_cnt: 10 1
+56.0
+gen_xot move_cnt: 11 -1
+71.0
+gen_xot move_cnt: 12 1
+83.0
+gen_xot move_cnt: 13 -1
+108.0
+gen_xot move_cnt: 14 1
+109.0
+gen_xot move_cnt: 15 -1
+94.0
+gen_xot move_cnt: 16 1
+62.0
+gen_xot move_cnt: 17 -1
+95.0
+gen_xot move_cnt: 18 1
+56.0
+gen_xot move_cnt: 19 -1
+75.0
+gen_xot move_cnt: 20 1
+84.0
+gen_xot move_cnt: 21 -1
+211.0
+gen_xot move_cnt: 22 1
+207.0
+gen_xot move_cnt: 23 -1
+334.0
+gen_xot move_cnt: 24 1
+259.0
+gen_xot move_cnt: 25 -1
+386.0
+gen_xot move_cnt: 26 1
+236.0
+gen_xot move_cnt: 27 -1
+140.0
+gen_xot move_cnt: 28 1
+127.0
+gen_xot move_cnt: 29 -1
+177.0
+gen_xot move_cnt: 30 1
+114.0
+gen_xot move_cnt: 31 -1
+241.0
+gen_xot move_cnt: 32 1
+130.0
+gen_xot move_cnt: 33 -1
+257.0
+gen_xot move_cnt: 34 1
+166.0
+gen_xot move_cnt: 35 -1
+293.0
+gen_xot move_cnt: 36 1
+223.0
+gen_xot move_cnt: 37 -1
+206.0
+gen_xot move_cnt: 38 1
+333.0
+gen_xot move_cnt: 39 -1
+
+Process finished with exit code 0

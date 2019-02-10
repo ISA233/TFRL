@@ -1,53 +1,25 @@
 from chess.chess import ChessBoard
 from vnet import Network
 from agent import Agent
-from tools import version_str
+from tools import version
 from MCTS import Node
-import profile
-
-
-def match_with_human(agent, human_player=-1):
-	board = ChessBoard()
-	root = Node()
-	board.out()
-	print('---------------')
-	current_player = -1
-	while not board.is_finish():
-		print('Player: ' + ('x' if current_player == -1 else 'o'))
-		print(agent.net.vhead(board, current_player))
-		if not board.could_drop_by(current_player):
-			root = root.son(64)
-			current_player = -current_player
-			continue
-		if current_player == human_player:
-			print('Your turn: ', end='')
-			try:
-				x, y = map(int, input().split())
-			except ValueError:
-				print('* Input format ERROR.')
-				continue
-			if not board.could_drop_xy(x, y, current_player):
-				print('* Can\'t move here.')
-				continue
-			board.move_xy(x, y, current_player)
-			root = root.son(x * 8 + y)
-		else:
-			action = agent.play(board, current_player, root=root)
-			board.move(action, current_player)
-			root = root.son(action)
-		board.out()
-		current_player = -current_player
-		print('---------------')
-	v = board.evaluate()
-	print('Result:', v)
+import numpy as np
 
 
 def match(agent0, agent1, stdout=False):
-	board = ChessBoard()
+	_, x, o = 0, -1, 1
+	board = np.array([[_, _, _, _, _, _, _, _],
+	                  [_, _, x, _, _, _, _, _],
+	                  [x, x, _, o, x, _, _, _],
+	                  [x, x, o, x, x, _, x, _],
+	                  [x, o, x, o, x, x, o, _],
+	                  [x, o, o, x, x, x, x, x],
+	                  [x, o, o, o, x, o, _, _],
+	                  [_, _, x, o, x, x, _, _]])
+	board = ChessBoard(board)
 	root0, root1 = Node(), Node()
 	current_player = 1
 	while not board.is_finish():
-		current_player = -current_player
 		agent = agent0 if current_player == -1 else agent1
 		root = root0 if current_player == -1 else root1
 		if stdout:
@@ -55,12 +27,13 @@ def match(agent0, agent1, stdout=False):
 		print('root:', root.N)
 		action = agent.play(board, current_player, root=root)
 		board.move(action, current_player)
-		root0 = root0.son(action)
-		root1 = root1.son(action)
+		root0.move_root(action)
+		root1.move_root(action)
 		if stdout:
 			print('x' if current_player == -1 else 'o')
 			board.out()
 			print('=============================')
+		current_player = -current_player
 	return board
 
 
@@ -83,15 +56,14 @@ def contest(agent0, agent1, match_number=100):
 
 
 def main():
-	net0 = Network('train', bn_training=False, use_GPU=True)
+	net0 = Network('train', bn_training=False, use_GPU=False)
 	net0.restore()
-	net1 = Network('vnet' + version_str(6, 3), bn_training=False, use_GPU=False)
+	net1 = Network('vnet' + version(6), bn_training=False, use_GPU=False)
 	net1.restore()
 	agent0 = Agent(net0)
 	agent1 = Agent(net1)
 	# contest(agent0, agent0)
-	# match(agent0, agent0, stdout=True)
-	match_with_human(agent0, 1)
+	match(agent0, agent0, stdout=True)
 
 
 # contest(agent0, agent1)

@@ -19,12 +19,30 @@ class Node:
 				self.edges.append([p, dist[p], None])
 		if not self.edges:
 			self.edges.append([64, dist[64], None])
+		# self.edges.sort(key=lambda edge: edge[1], reverse=True)
+
+	def delete(self):
+		self.father = None
+		for action, P, son in self.edges:
+			if son:
+				son.delete()
 
 	def son(self, p):
 		for action, P, son in self.edges:
 			if action == p:
 				return Node() if son is None else son
 		return Node()
+
+	def move_root(self, p):
+		new_root = self.son(p)
+		for action, P, son in self.edges:
+			if son and son != new_root:
+				son.delete()
+		self.V, self.N, self.Q = new_root.V, new_root.N, new_root.Q
+		self.edges = new_root.edges
+		for action, P, son in self.edges:
+			if son:
+				son.father = self
 
 
 class MCT:

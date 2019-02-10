@@ -1,0 +1,135 @@
+gen move_cnt: 0
+32.44140625
+gen move_cnt: 1
+53.625
+gen move_cnt: 2
+50.16015625
+gen move_cnt: 3
+53.61328125
+gen move_cnt: 4
+36.46484375
+gen move_cnt: 5
+39.73828125
+gen move_cnt: 6
+34.80859375
+gen move_cnt: 7
+34.92578125
+gen move_cnt: 8
+34.9140625
+gen move_cnt: 9
+43.21875
+gen move_cnt: 10
+69.76953125
+gen move_cnt: 11
+88.6328125
+gen move_cnt: 12
+93.421875
+gen move_cnt: 13
+103.015625
+gen move_cnt: 14
+103.0390625
+gen move_cnt: 15
+110.46875
+gen move_cnt: 16
+107.51171875
+gen move_cnt: 17
+113.40234375
+gen move_cnt: 18
+111.67578125
+gen move_cnt: 19
+118.62890625
+gen move_cnt: 20
+119.27734375
+gen move_cnt: 21
+124.75390625
+gen move_cnt: 22
+126.078125
+gen move_cnt: 23
+133.12109375
+gen move_cnt: 24
+130.15234375
+gen move_cnt: 25
+134.05078125
+gen move_cnt: 26
+131.2421875
+gen move_cnt: 27
+140.296875
+gen move_cnt: 28
+136.984375
+gen move_cnt: 29
+146.0625
+gen move_cnt: 30
+142.1328125
+gen move_cnt: 31
+149.56640625
+gen move_cnt: 32
+149.421875
+gen move_cnt: 33
+156.37890625
+gen move_cnt: 34
+157.28515625
+gen move_cnt: 35
+163.96484375
+gen move_cnt: 36
+163.3515625
+gen move_cnt: 37
+167.02734375
+gen move_cnt: 38
+167.65625
+gen move_cnt: 39
+177.15625
+gen move_cnt: 40
+181.67578125
+gen move_cnt: 41
+188.9921875
+gen move_cnt: 42
+191.5
+gen move_cnt: 43
+197.46875
+gen move_cnt: 44
+203.67578125
+gen move_cnt: 45
+217.90234375
+gen move_cnt: 46
+229.5234375
+gen move_cnt: 47
+243.171875
+gen move_cnt: 48
+243.96484375
+gen move_cnt: 49
+266.7421875
+gen move_cnt: 50
+270.82421875
+gen move_cnt: 51
+287.4765625
+gen move_cnt: 52
+292.9296875
+gen move_cnt: 53
+310.14453125
+gen move_cnt: 54
+325.765625
+gen move_cnt: 55
+352.5859375
+gen move_cnt: 56
+378.85546875
+gen move_cnt: 57
+429.046875
+gen move_cnt: 58
+495.4296875
+gen move_cnt: 59
+571.6613545816733
+gen move_cnt: 60
+652.3776223776224
+gen move_cnt: 61
+570.1627906976744
+gen move_cnt: 62
+537.7368421052631
+gen move_cnt: 63
+560.8888888888889
+gen move_cnt: 64
+584.0
+gen move_cnt: 65
+451.0
+gen move_cnt: 66
+
+128模拟，可以发现模拟次数几乎多了一倍。

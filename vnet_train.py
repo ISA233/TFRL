@@ -85,10 +85,10 @@ def train(net, trainPath, testPath, mini_batch_size=256):
 
 
 def train_vnet():
-	net = Network('train100')
-	# net.restore()
-	trainPath = 'gen/train007.pkl'
-	testPath = 'gen/test007.pkl'
+	net = Network('vnet008_11_2f')
+	net.restore()
+	trainPath = 'gen/train008.pkl'
+	testPath = 'gen/test008.pkl'
 	train(net, trainPath, testPath)
 
 

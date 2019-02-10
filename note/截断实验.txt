@@ -1,0 +1,106 @@
+
+board = np.array([[o, _, _, x, o, _, _, o],
+	              [_, _, _, _, o, _, _, _],
+	              [_, _, o, x, o, _, _, _],
+	              [_, _, o, x, x, o, _, _],
+	              [_, x, x, x, x, _, _, _],
+	              [_, _, o, o, o, o, _, _],
+	              [_, _, _, _, _, _, _, _],
+	              [o, _, _, _, _, _, _, o]])
+
+
+
+	out(root)
+	print('----------------------')
+	out(root.son(10))
+	print('----------------------')
+	out(root.son(5))
+	print('----------------------')
+	out(root.son(10).son(11))
+	print('----------------------')
+	out(root.son(10).son(11).son(5))
+	print('----------------------')
+	out(root.son(10).son(11).son(5).son(37))
+
+
+
+
+
+0.00	0.00	0.00	0.00	0.00	45.09	0.00	0.00	
+0.00	0.00	0.35	0.01	0.00	3.42	0.00	0.00	
+0.00	0.15	0.00	0.00	0.00	1.18	0.08	0.00	
+0.00	47.11	0.00	0.00	0.00	0.00	0.31	0.00	
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	
+0.01	0.01	0.00	0.00	0.00	0.00	0.01	0.00	
+0.00	0.00	0.17	0.53	0.60	0.95	0.00	0.00	
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	
+pass: 0.00
+--------------------------------
+[-0.99409753]
+25 0.47106093 <MCTS.Node object at 0x000001E6B41A2EB8> 145 	0.998931
+ 5 0.45085472 <MCTS.Node object at 0x000001E6B41BAF98> 134 	0.999109
+13 0.03418702 <MCTS.Node object at 0x000001E6B3A21A90> 63 	0.999033
+21 0.01181929 <MCTS.Node object at 0x000001E6B3A21978> 40 	0.999261
+53 0.00953526 <MCTS.Node object at 0x000001E6B42C5F98> 53 	0.999633
+52 0.00602693 <MCTS.Node object at 0x000001E6B3624DA0> 54 	0.999652
+51 0.00530792 <MCTS.Node object at 0x000001E6B42F20F0> 60 	0.998980
+10 0.00347158 <MCTS.Node object at 0x000001E6B42C5E80> 57 	0.999374
+30 0.00310808 <MCTS.Node object at 0x000001E6B42F2048> 59 	0.999287
+50 0.00170903 <MCTS.Node object at 0x000001E6B42C5FD0> 63 	0.999327
+17 0.00151543 <MCTS.Node object at 0x000001E6B42F2080> 53 	0.999400
+22 0.00076087 <MCTS.Node object at 0x000001E6B42C5F60> 54 	0.999182
+49 0.00000314 <MCTS.Node object at 0x000001E6B42F2160> 54 	0.999027
+ 9 0.00000159 <MCTS.Node object at 0x000001E6B42C5EF0> 54 	0.999159
+54 0.00000084 <MCTS.Node object at 0x000001E6B42C5DD8> 56 	0.999471
+----------------------
+11 0.62768978 <MCTS.Node object at 0x000001E6B42F22B0> 36 	-0.999403
+21 0.23207742 <MCTS.Node object at 0x000001E6B4448B00> 13 	-0.999273
+41 0.12915230 <MCTS.Node object at 0x000001E6B649AA58> 7 	-0.999372
+ 2 0.00449385 None 0 None
+25 0.00393651 None 0 None
+24 0.00163697 None 0 None
+17 0.00038769 None 0 None
+40 0.00010174 None 0 None
+ 9 0.00002326 None 0 None
+----------------------
+25 0.36023808 <MCTS.Node object at 0x000001E6B42F2128> 47 	-0.999190
+11 0.25724512 <MCTS.Node object at 0x000001E6B43A3CC0> 34 	-0.999048
+21 0.24222288 <MCTS.Node object at 0x000001E6B43CD320> 31 	-0.998936
+41 0.13708308 <MCTS.Node object at 0x000001E6B4428C50> 21 	-0.999271
+40 0.00147010 None 0 None
+24 0.00141841 None 0 None
+----------------------
+ 5 0.67384547 <MCTS.Node object at 0x000001E6B42F2400> 18 	0.999266
+21 0.18408966 <MCTS.Node object at 0x000001E6B42F24E0> 5 	0.999296
+51 0.11246943 <MCTS.Node object at 0x000001E6B42F29E8> 4 	0.999642
+30 0.00826868 <MCTS.Node object at 0x000001E6B43A3D68> 1 	0.999869
+53 0.00724632 <MCTS.Node object at 0x000001E6B43CD0B8> 1 	0.999875
+13 0.00513731 <MCTS.Node object at 0x000001E6B43A3EB8> 1 	0.999914
+50 0.00382484 <MCTS.Node object at 0x000001E6B43CDC18> 1 	0.999963
+52 0.00231758 <MCTS.Node object at 0x000001E6B43CD2E8> 1 	0.999951
+22 0.00226692 <MCTS.Node object at 0x000001E6B43CDE10> 1 	0.999876
+49 0.00001774 <MCTS.Node object at 0x000001E6B42F2CF8> 1 	0.999873
+54 0.00000562 <MCTS.Node object at 0x000001E6B43CDB00> 1 	0.999817
+----------------------
+37 0.42868844 <MCTS.Node object at 0x000001E6B43CD5C0> 9 	-0.999004
+21 0.38089558 <MCTS.Node object at 0x000001E6B4428CC0> 8 	-0.999501
+41 0.09899963 None 0 None
+13 0.07802561 None 0 None
+17 0.00932311 None 0 None
+32 0.00111061 None 0 None
+24 0.00107373 None 0 None
+25 0.00096299 None 0 None
+ 2 0.00033376 None 0 None
+ 9 0.00005363 None 0 None
+----------------------
+21 0.97624308 <MCTS.Node object at 0x000001E6B43CDEB8> 2 	0.997092
+13 0.01978264 <MCTS.Node object at 0x000001E6B4428470> 1 	0.999778
+50 0.00196787 <MCTS.Node object at 0x000001E6B43EE128> 1 	0.999858
+30 0.00101863 None 0 None
+38 0.00040950 <MCTS.Node object at 0x000001E6B43EE710> 1 	0.999781
+51 0.00025674 None 0 None
+46 0.00009810 <MCTS.Node object at 0x000001E6B43EEDA0> 1 	0.999864
+49 0.00003227 None 0 None
+53 0.00001553 <MCTS.Node object at 0x000001E6B44287B8> 1 	0.999905
+52 0.00001538 None 0 None
+54 0.00000060 <MCTS.Node object at 0x000001E6B43EEF98> 1 	0.999828

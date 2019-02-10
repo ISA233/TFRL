@@ -1,0 +1,606 @@
+vhead: [-0.05765904]
+MCTS: 11600 -0.02454
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ o x _ _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.08024265]
+MCTS: 65784 -0.08182
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ x _ _ _ _ 
+_ _ _ x o o _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.0973927]
+MCTS: 5860 -0.15248
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ x x _ _ _ _ 
+_ _ o x o o _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.06630243]
+MCTS: 10167 -0.22051
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ x x _ _ _ _ 
+_ _ o x o o _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ o x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.17092802]
+MCTS: 5161 -0.19164
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ x x _ _ _ _ 
+_ _ o x x o _ _ 
+_ _ _ x x x _ _ 
+_ _ _ o o x _ _ 
+_ _ _ _ o _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.0915745]
+MCTS: 7679 -0.03627
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ x x _ _ _ _ 
+_ _ o x x x x _ 
+_ _ _ x x x _ _ 
+_ _ _ o o o o _ 
+_ _ _ _ o _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.09634193]
+MCTS: 9125 0.03773
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ x x o _ _ _ 
+_ _ o x o x x _ 
+_ _ _ x x x _ _ 
+_ _ _ x o o o _ 
+_ _ x _ o _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.27616566]
+MCTS: 12421 -0.01908
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ x x o _ _ _ 
+_ x x x x x x _ 
+_ _ o x x x _ _ 
+_ _ _ o o o o _ 
+_ _ x _ o _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.27862838]
+MCTS: 14656 -0.00490
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x _ _ _ 
+_ _ x x x _ o _ 
+_ x x x x o x _ 
+_ _ o x o x _ _ 
+_ _ _ o o o o _ 
+_ _ x _ o _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.03959554]
+MCTS: 6784 0.20852
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x o _ _ 
+_ _ x x o _ o _ 
+_ x x o x o x _ 
+_ _ x x o x _ _ 
+_ _ x o o o o _ 
+_ _ x _ o _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.05263231]
+MCTS: 10723 0.22718
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x o _ _ 
+_ _ x x x x o _ 
+_ x x o x x o o 
+_ _ x x o x _ _ 
+_ _ x o o o o _ 
+_ _ x _ o _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.08631807]
+MCTS: 8555 0.27278
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x o _ _ 
+_ _ x x x x o _ 
+_ x x x x x o o 
+_ o o x o x _ _ 
+_ _ x x x o o _ 
+_ _ x x o _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.1632479]
+MCTS: 9407 0.15106
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x o _ _ 
+_ _ x x x x o _ 
+_ x x x x x o o 
+_ x o x o x _ _ 
+x o o o o o o _ 
+_ _ x x o _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.17426282]
+MCTS: 11676 0.23391
+_ _ _ _ _ _ _ _ 
+_ _ _ _ x o _ _ 
+_ _ x x x x o _ 
+_ x x x x x o o 
+_ x o x o x _ _ 
+x o o x o o o _ 
+_ _ x x o _ _ _ 
+_ _ _ x o _ _ _ 
+vhead: [0.5270704]
+MCTS: 5174 0.51261
+_ _ _ _ _ x _ _ 
+_ _ _ _ x x _ _ 
+_ _ x x x x o _ 
+_ x x x x x o o 
+_ x o x o x _ _ 
+x o o x o o o _ 
+_ _ o o o _ _ _ 
+_ _ o o o _ _ _ 
+vhead: [0.22984555]
+MCTS: 10577 0.58111
+_ _ _ _ _ x _ _ 
+_ _ _ _ x x _ _ 
+_ _ x x x x x x 
+_ x x x x x o o 
+_ x o x o o o _ 
+x o o x o o o _ 
+_ _ o o o _ _ _ 
+_ _ o o o _ _ _ 
+vhead: [0.41431147]
+MCTS: 9823 0.60428
+_ _ _ _ _ x _ _ 
+_ _ _ _ x x _ o 
+_ _ x x x x o o 
+_ x x x x x o o 
+_ x o x o x o _ 
+x o o x x x o _ 
+_ _ o o o x _ _ 
+_ _ o o o _ _ _ 
+vhead: [0.3523383]
+MCTS: 8682 0.68897
+_ _ _ _ x x _ _ 
+_ _ _ x x x _ o 
+_ _ x o o x o o 
+_ x x o x o o o 
+_ x o o o x o _ 
+x o o o x x o _ 
+_ _ o o o x _ _ 
+_ _ o o o _ _ _ 
+vhead: [0.3015068]
+MCTS: 6880 0.72925
+_ _ o _ x x _ _ 
+_ _ _ o x x _ o 
+_ _ x o o x o o 
+_ x x o x o o o 
+_ x x o o x o _ 
+x o o x x x o _ 
+_ _ o o x x _ _ 
+_ _ o o o x _ _ 
+vhead: [0.58505744]
+MCTS: 6754 0.80806
+_ _ o x x x _ _ 
+_ _ _ x x x _ o 
+_ _ x x o x o o 
+_ x x x x o o o 
+_ x x x o x o _ 
+x o o x o x o _ 
+_ _ o o x o _ _ 
+_ _ o o o o o _ 
+vhead: [0.43314984]
+MCTS: 7589 0.86893
+_ _ o o o o o _ 
+_ _ _ x x o _ o 
+_ _ x x x x o o 
+_ x x x x x o o 
+_ x x x o x x _ 
+x o o x o x x x 
+_ _ o o x o _ _ 
+_ _ o o o o o _ 
+vhead: [0.6545203]
+MCTS: 9951 0.87692
+_ _ o o o o o x 
+_ _ _ x x o _ x 
+_ _ x x x x o x 
+_ x x x x x o x 
+_ x x x o o o x 
+x o o x o x o x 
+_ _ o o x o _ _ 
+_ _ o o o o o _ 
+vhead: [0.8754658]
+MCTS: 9225 0.88054
+_ _ o o o o o x 
+_ _ o o o o _ x 
+_ _ o o x x o x 
+_ x o x o x o x 
+_ x o x o o o x 
+x o o x o x o x 
+_ _ o o x x x _ 
+_ _ o o o o o _ 
+vhead: [0.82371056]
+MCTS: 8262 0.91610
+_ _ o o o o o x 
+_ _ o o o o _ x 
+_ x x x x x o x 
+_ x x x o x o x 
+_ x o x o o o x 
+x o o x o o o x 
+_ _ o o x x o _ 
+_ _ o o o o o o 
+vhead: [0.6930556]
+MCTS: 9066 0.94773
+_ _ o o o o o x 
+_ x x x x x x x 
+_ x x x x o o x 
+_ x x x o x o x 
+_ x o x o o o x 
+x o o x o o o x 
+_ _ o o x x o _ 
+_ _ o o o o o o 
+vhead: [0.7927556]
+MCTS: 8140 0.97498
+o x x x x x x x 
+_ x x x x x x x 
+_ x o x x o o x 
+_ x x o o x o x 
+_ x o x o o o x 
+x o o x o o o x 
+_ _ o o x x o _ 
+_ _ o o o o o o 
+vhead: [0.958702]
+MCTS: 8410 0.98415
+o x x x x x x x 
+_ x x x x x x x 
+_ x o x x o o x 
+x x x o o x o x 
+x o o x o o o x 
+x o o x o o o x 
+_ _ o o x x o _ 
+_ _ o o o o o o 
+vhead: [0.98849916]
+MCTS: 12947 0.99578
+o x x x x x x x 
+o x x x x x x x 
+x x x x x o o x 
+x x o o o x o x 
+x o o o o o o x 
+x o o x o o o x 
+_ _ o o x x o _ 
+_ _ o o o o o o 
+vhead: [0.98515075]
+MCTS: 17881 0.99969
+o x x x x x x x 
+o x x x x x x x 
+o x x x x o o x 
+o x o o x x o x 
+o o o o o x o x 
+o o o x o o x x 
+o _ o o x x x x 
+_ _ o o o o o o 
+vhead: [0.9795093]
+MCTS: 15942 0.99995
+o x x x x x x x 
+o x x x x x x x 
+o x x x x o o x 
+o x o o x x o x 
+o x o x o x o x 
+o x x x o o x x 
+o x x x x x x x 
+_ _ o o o o o o 
+
+500是打不过的，5000可以
+
+vhead: [-0.05765904]
+MCTS: 3035 0.01176
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ x x x _ _ _ 
+_ _ _ x o _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.09406035]
+MCTS: 3207 -0.05691
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ o _ _ _ 
+_ _ x x o _ _ _ 
+_ _ _ x x _ _ _ 
+_ _ _ _ _ x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.09963193]
+MCTS: 3527 -0.13760
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ o _ _ _ 
+_ _ x x o _ _ _ 
+_ _ _ x x x _ _ 
+_ _ _ _ o x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.0422804]
+MCTS: 5450 -0.18598
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ x _ o _ _ _ 
+_ _ x x o _ _ _ 
+_ _ o x x x _ _ 
+_ _ _ _ o x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.11159587]
+MCTS: 6631 -0.24917
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ x x o _ _ _ 
+_ _ x x x _ _ _ 
+_ _ o o x x _ _ 
+_ _ o _ o x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.01960305]
+MCTS: 8060 -0.24510
+_ _ _ _ _ _ _ _ 
+_ _ x o _ _ _ _ 
+_ _ x x o _ _ _ 
+_ _ x o x _ _ _ 
+_ _ o o x x _ _ 
+_ _ o _ o x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.2137057]
+MCTS: 9343 -0.25562
+_ _ _ _ _ _ _ _ 
+_ _ x o _ _ _ _ 
+_ _ x x o _ _ _ 
+_ _ x x o o _ _ 
+_ _ o x x x _ _ 
+_ _ o x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.1320224]
+MCTS: 2350 -0.04478
+_ _ _ _ _ _ _ _ 
+_ _ x o _ _ _ _ 
+_ o o o o _ _ _ 
+_ x x x o o _ _ 
+_ _ x x x x _ _ 
+_ _ o x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [-0.16267458]
+MCTS: 3967 -0.06655
+_ _ _ _ _ _ _ _ 
+_ _ x o _ _ _ _ 
+x o o o o _ _ _ 
+_ x x x o o _ _ 
+o _ x x x x _ _ 
+_ _ o x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.0150728]
+MCTS: 5661 0.00304
+_ _ _ _ _ _ _ _ 
+_ _ x o _ _ _ _ 
+x o o o o _ _ _ 
+_ x x o o o _ _ 
+o x x x x x _ _ 
+_ o o x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.08487637]
+MCTS: 4515 -0.02660
+_ _ _ _ _ _ _ _ 
+_ _ x o _ _ _ _ 
+x x o o o _ _ _ 
+x x o o o o _ _ 
+o o x x x x _ _ 
+o o o x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.00895028]
+MCTS: 6367 -0.01408
+_ _ _ _ _ _ _ _ 
+o _ x o _ _ _ _ 
+o o o o o _ x _ 
+o x o o o x _ _ 
+o o x x x x _ _ 
+o o o x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.08781901]
+MCTS: 2056 0.44911
+_ _ _ o _ _ _ _ 
+o _ o o _ _ _ _ 
+o o o o o x x _ 
+o x o o x x _ _ 
+o o x x x x _ _ 
+o o o x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.4039849]
+MCTS: 4149 0.39696
+_ _ _ o _ _ _ _ 
+o _ o o _ _ _ _ 
+o o o o o x x _ 
+o x x x x x x x 
+o o x x x x _ _ 
+o o o x x x _ _ 
+_ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.5289111]
+MCTS: 4332 0.31476
+_ _ _ o _ _ _ _ 
+o _ o o _ _ _ _ 
+o o o o o x x _ 
+o x x x x o x x 
+o o x o o o o _ 
+o o x x x x _ _ 
+_ _ x _ _ _ _ _ 
+_ _ _ _ _ _ _ _ 
+vhead: [0.34982058]
+MCTS: 2077 0.38264
+_ _ _ o _ _ _ _ 
+o _ o o x _ _ _ 
+o o o o x x x _ 
+o x o x x o x x 
+o o o o o o o _ 
+o o o x x x _ _ 
+_ _ o _ _ _ _ _ 
+_ _ o _ _ _ _ _ 
+vhead: [0.41237447]
+MCTS: 2054 0.59832
+_ _ _ o o _ _ _ 
+o _ o o o x _ _ 
+o o o o x x x _ 
+o x o x o o x x 
+o o o o o o o _ 
+o o o x x x _ _ 
+_ _ o _ _ _ _ _ 
+_ _ o _ _ _ _ _ 
+vhead: [0.54910177]
+MCTS: 4163 0.60318
+_ _ _ o o o _ _ 
+o _ o o o o _ _ 
+o o o o x o x _ 
+o x o x o x x x 
+o o o o o o x _ 
+o o o x x x _ x 
+_ _ o _ _ _ _ _ 
+_ _ o _ _ _ _ _ 
+vhead: [0.7282431]
+MCTS: 4844 0.53994
+_ _ _ o o o _ _ 
+o _ o o o o x _ 
+o o o o x o x o 
+o x o x o x x x 
+o o o o o o x _ 
+o o o x x x _ x 
+_ _ o _ _ _ _ _ 
+_ _ o _ _ _ _ _ 
+vhead: [0.8878003]
+MCTS: 2055 0.64075
+_ _ _ o o o _ _ 
+o _ o o o o x _ 
+o o o o x o x o 
+o x o x o x x x 
+o o o x o x x _ 
+o o o x x o o x 
+_ _ o x _ _ _ _ 
+_ _ o _ _ _ _ _ 
+vhead: [0.8254383]
+MCTS: 2088 0.43989
+_ _ _ o o o _ _ 
+o _ o o o o x _ 
+o o o o x o x o 
+o x o o o x x x 
+o o o o o x x _ 
+o o o o x x o x 
+_ _ o o _ x _ _ 
+_ _ o o _ _ _ _ 
+vhead: [0.88016975]
+MCTS: 3929 0.52212
+_ _ _ o o o _ _ 
+o _ o o o o x _ 
+o o o o x o x o 
+o x o o o x x x 
+o o o o o x x _ 
+o o o o x x o x 
+_ _ o o _ x _ _ 
+_ _ o o o x _ _ 
+vhead: [0.7726804]
+MCTS: 3008 0.78103
+_ _ _ o o o _ _ 
+o _ o o o o x x 
+o o o o x o x x 
+o x o o o x o x 
+o o o o o o o x 
+o o o o x x o x 
+_ _ o o _ x _ _ 
+_ _ o o o x _ _ 
+vhead: [0.5941959]
+MCTS: 3444 0.89506
+_ _ _ o o o _ _ 
+o _ o o o o x x 
+o o o o x x x x 
+o x o o x x o x 
+o x o x o o o x 
+o x x o o o o x 
+_ x x x x x _ _ 
+_ _ o o o x _ _ 
+vhead: [0.01698969]
+MCTS: 4048 0.93859
+_ _ _ o o o _ _ 
+o _ o o o o x x 
+o o o o x x x x 
+o x o o x x o x 
+o x o x o x o x 
+o x x o o o x x 
+_ x x x x o _ x 
+_ _ o o o o o _ 
+vhead: [-0.05767639]
+MCTS: 5598 0.96661
+_ _ x o o o _ _ 
+o _ x x o o x x 
+o o x o x x x x 
+o x x o x x o x 
+o x x x o x o x 
+o x x o o o o x 
+_ x x x x o o x 
+_ _ o o o o o _ 
+vhead: [0.9108032]
+MCTS: 3679 0.98463
+_ _ x x x x x x 
+o _ x x o o x x 
+o o x o x x o x 
+o x x o x x o x 
+o x x x o x o x 
+o x x o o o o x 
+_ x x x x o o x 
+_ _ o o o o o _ 
+vhead: [0.73100054]
+MCTS: 5878 0.99901
+_ x x x x x x x 
+o x x o o o x x 
+o x o x x x o x 
+o x x o x x o x 
+o x x x o x o x 
+o x x o o o o x 
+_ x x x x o o x 
+_ _ o o o o o _ 
+vhead: [0.8906358]
+MCTS: 6634 0.99992
+o x x x x x x x 
+o o x o o o x x 
+o x o x x x o x 
+o x x o x x o x 
+o x o x o x o x 
+o o x o o o o x 
+o x o o o o o x 
+x _ o o o o o _ 
+vhead: [0.82250375]
+MCTS: 13262 0.99999
+o x x x x x x x 
+o o x o o o x x 
+o x o x x x o x 
+o x x o x x o x 
+o x o x o x o x 
+o o x o o o o x 
+o o o o o o o x 
+x x x x x x x x 
+
+2000也可以，不过我不知道这局在干啥
+1000赢了，暴打
